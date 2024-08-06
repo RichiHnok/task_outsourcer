@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body>
+    <h2>Task Sample Data</h2>
+    <br>
+    <form action="#" th:action="@{/editor/saveTaskSample}" th:object="${taskSample}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+    
+        Name:<br> <input type="text" th:field="*{name}"/>
+        <br>
+        Description:<br> <textarea type="text" th:field="*{description}" style="height:100px;width:200px;resize:none"/>
+        <br>
+        Params:<br>
+        
+        <div th:if="${not #lists.isEmpty(taskSample.params)}">
+            <div th:each="par, itemStat : *{params}">
+                <input type="hidden" th:field="*{params[__${itemStat.index}__].id}"/>
+                <span><input th:field="*{params[__${itemStat.index}__].name}" /></span>
+                <select th:field="*{params[__${itemStat.index}__].type}">
+                    <option th:each="typeOpt : ${T(com.richi.richis_app.enums.TaskSampleParamType).values()}" 
+                        th:value="${typeOpt}" th:text="${typeOpt}">
+                    </option>
+                </select>
+                <input type="submit" th:formaction="@{/editor/removeParam(taskSampleParamId=${par.id}, taskSampleParamName=${par.name})}" value="X"/> 
+            </div>
+        </div>
+        <div th:unless="${not #lists.isEmpty(taskSample.params)}">
+            <p>This samle dont have parameteres</p>
+        </div>
+
+        <input type="submit" name="addParam" value="Add param"/>
+        <br>
+        <input type="submit" name="save" value="Save"/>
+        <a th:href="@{/editor/taskSamples}">
+            <button type="button">Cancel</button> 
+        </a>
+    </form>
+</body>
+</html>

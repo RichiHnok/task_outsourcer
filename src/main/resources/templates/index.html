@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+>
+    <head>
+        <title>Page</title>
+        <meta content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <h1>Start страницы</h1>
+        <a th:href="@{/editor}">
+            <button type="button">Editor</button> 
+        </a>
+        <br>
+        Current time is <span th:text="${serverTime}"></span>
+        <br>
+        <h2>Tasks:</h2>
+        <div th:each="taskSample : ${taskSamples}">
+            <a th:href="@{/task/{id}(id = ${taskSample.id})}">
+                <span th:text="${taskSample.name}"/><br><br>
+            </a>
+        </div>
+    </body>
+</html>

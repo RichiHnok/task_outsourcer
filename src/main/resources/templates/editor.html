@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body>
+    Back to main Page
+    <a th:href="@{/}">
+        <button type="button">Main page</button> 
+    </a>
+    <br>
+    <h1>Editor</h1>
+    <br>
+    <a th:href="@{/editor/taskSamples}">
+        <button type="button">Task Samples</button> 
+    </a>
+</body>
+</html>

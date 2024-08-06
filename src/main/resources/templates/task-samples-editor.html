@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset='utf-8'>
+    <title>Page Title</title>
+</head>
+<body>
+    Back to main Page
+    <a th:href="@{/}">
+        <button type="button">Main page</button> 
+    </a>
+    <br>
+    Back to editor
+    <a th:href="@{/editor}">
+        <button type="button">Editor</button> 
+    </a>
+    <br>
+    <br>
+    <h2>TaskSample in DB editor</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Update</th>
+            <th>Delete</th>
+        </tr>
+        <tr th:each="object : ${taskSamples}">
+            
+            <div th:with="
+            updateButton=@{/editor/updateInfo(taskSampleId=${object.id})},
+            deleteButton=@{/editor/deleteInfo(taskSampleId=${object.id})}">
+            
+
+                <td th:text="${object.id}"></td>
+                <td th:text="${object.name}"></td>
+                <td th:text="${object.description}" style="height:20px;width:20px;"></td>
+                <td>
+                    <a th:href="${updateButton}">
+                        <button type="button">Update</button> 
+                    </a>
+                </td>
+                <td>
+                    <a th:href="${deleteButton}">
+                        <button type="button">Delete</button> 
+                    </a>    
+                </td>
+            </div>
+        </tr>
+    </table>
+    <br>
+    <input type="button" value="Add" onclick="window.location.href = 'addTaskSample'"/>
+</body>
+</html>
