@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body>
+    <h2>User Data</h2>
+    <br>
+    <form action="#" th:action="@{/editor/saveUser}" th:object="${user}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        Name:<br> <input type="text" th:field="*{name}"/>
+        <br>
+        Surname:<br> <input type="text" th:field="*{surname}"/>
+        <br>
+        Priority:<br> <input type="text" th:field="*{priority}"/>
+        <br>
+        Minutes To Proc Task:<br> <input type="text" th:field="*{minutesToProcessTask}"/>
+
+        <br>
+        <input type="submit" name="save" value="Save"/>
+        <a th:href="@{/editor/taskSamples}">
+            <button type="button">Cancel</button> 
+        </a>
+    </form>
+</body>
+</html>

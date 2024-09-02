@@ -28,8 +28,8 @@
         <tr th:each="object : ${taskSamples}">
             
             <div th:with="
-            updateButton=@{/editor/updateInfo(taskSampleId=${object.id})},
-            deleteButton=@{/editor/deleteInfo(taskSampleId=${object.id})}">
+            updateButton=@{/editor/updateInfo/taskSample(taskSampleId=${object.id})},
+            deleteButton=@{/editor/deleteInfo/taskSample(taskSampleId=${object.id})}">
             
 
                 <td th:text="${object.id}"></td>

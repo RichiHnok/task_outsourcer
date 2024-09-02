@@ -1,4 +1,4 @@
-package com.richi.richis_app.service;
+package com.richi.richis_app.service.task_sample_param_service;
 
 import com.richi.richis_app.entity.TaskSampleParam;
 

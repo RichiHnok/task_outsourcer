@@ -11,12 +11,18 @@
 <body>
     <h2>Task Sample Data</h2>
     <br>
-    <form action="#" th:action="@{/editor/saveTaskSample}" th:object="${taskSample}" method="post">
+    <form action="#"
+    th:action="@{/editor/saveTaskSample}"
+    th:object="${taskSample}"
+    method="post"
+    enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}"/>
     
         Name:<br> <input type="text" th:field="*{name}"/>
         <br>
         Description:<br> <textarea type="text" th:field="*{description}" style="height:100px;width:200px;resize:none"/>
+        <br>
+        Set script file: <input type="file" th:field="*{scriptFile}"/>
         <br>
         Params:<br>
         
@@ -33,7 +39,7 @@
             </div>
         </div>
         <div th:unless="${not #lists.isEmpty(taskSample.params)}">
-            <p>This samle dont have parameteres</p>
+            <p>This sample dont have parameteres</p>
         </div>
 
         <input type="submit" name="addParam" value="Add param"/>

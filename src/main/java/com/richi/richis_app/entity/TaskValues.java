@@ -29,4 +29,8 @@ public class TaskValues {
     public String toString() {
         return "TaskValues [values=" + values + "]";
     }
+
+    public String getValuesAsJoinedString(){
+        return String.join("$#$", values);
+    }
 }

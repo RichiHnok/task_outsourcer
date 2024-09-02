@@ -1,4 +1,4 @@
-package com.richi.richis_app.repository;
+package com.richi.richis_app.repository.task_sample_rep;
 
 import java.util.ArrayList;
 import java.util.Collection;

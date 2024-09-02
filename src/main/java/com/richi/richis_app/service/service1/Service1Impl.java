@@ -1,24 +1,33 @@
-package com.richi.richis_app.service;
+package com.richi.richis_app.service.service1;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+// import java.io.IOException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.richi.richis_app.entity.TaskSample;
-import com.richi.richis_app.repository.TaskSampleRepository;
+import com.richi.richis_app.repository.task_sample_rep.TaskSampleRepository;
 
 @Service
-public class TaskSampleServiceImpl implements TaskSampleService{
-    
+public class Service1Impl implements Service1{
+
     @Autowired
     private TaskSampleRepository taskSampleRepository;
 
     @Override
-    @Transactional
-    public void deleteTaskSample(int id) {
-        taskSampleRepository.deleteTaskSample(id);
+    public void launchProgram() {
+        // System.out.println("Launching program");
+        // Runtime runtime = Runtime.getRuntime();
+        // String[] cmdarray = {"start", "calc"};
+        // try {
+        //     runtime.exec("cmd /c start \"\" start calc");
+        // } catch (IOException e) {
+        //     e.printStackTrace();
+        // }
     }
 
     @Override
@@ -29,15 +38,11 @@ public class TaskSampleServiceImpl implements TaskSampleService{
 
     @Override
     @Transactional
-    public TaskSample getTaskSample(int id) {
-        return taskSampleRepository.getTaskSample(id);
-    }
-
-    @Override
-    @Transactional
     public void saveTaskSample(TaskSample taskSample) {
         taskSampleRepository.saveTaskSample(taskSample);
     }
-
-
+    
+    public void test(){
+        System.out.println("it works");
+    }
 }

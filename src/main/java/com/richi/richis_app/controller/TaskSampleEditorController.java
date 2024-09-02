@@ -8,38 +8,52 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.richi.richis_app.entity.TaskSample;
 import com.richi.richis_app.entity.TaskSampleParam;
-import com.richi.richis_app.service.TaskSampleService;
+import com.richi.richis_app.functions.RandomString;
+import com.richi.richis_app.service.storage_service.StorageService;
+import com.richi.richis_app.service.task_sample_service.TaskSampleService;
 
 @Controller
 @RequestMapping("/editor")
-public class EditorController {
+public class TaskSampleEditorController {
     
     @Autowired
     private TaskSampleService taskSampleService;
+
+    @Autowired
+    private StorageService storageService;
+
+    @Autowired
+    private RandomString randomString;
     
     @GetMapping("/taskSamples")
     public String showAllTaskSamples(Model model){
 
         List<TaskSample> allTaskSamples = taskSampleService.getAllTaskSamples();
         model.addAttribute("taskSamples", allTaskSamples);
-        return "task-samples-editor";
+        return "editor/task-sample/task-samples-editor";
     }
 
     @RequestMapping("/addTaskSample")
     public String addNewTaskSample(Model model){
         TaskSample taskSample = new TaskSample();
         model.addAttribute("taskSample", taskSample);
-        return "task-sample-info";
+        return "editor/task-sample/task-sample-info";
     }
 
-    @RequestMapping(value = "/saveTaskSample", method = RequestMethod.POST, params = "save")
+    @PostMapping(value = "/saveTaskSample", params = "save")
     public String saveTaskSample(@ModelAttribute("taskSample") TaskSample taskSample){
+        System.out.println("-888-888-8--8-88-8-8  " + taskSample.getScriptFile().getOriginalFilename());
+        MultipartFile file = taskSample.getScriptFile();
+        
+        
         taskSampleService.saveTaskSample(taskSample);
         return "redirect:/editor/taskSamples";
     }
@@ -58,7 +72,7 @@ public class EditorController {
         TaskSampleParam param = new TaskSampleParam(paramName);
         taskSample.addParamToTaskSample(param);
         model.addAttribute("taskSample", taskSample);
-        return "task-sample-info";
+        return "editor/task-sample/task-sample-info";
     }
 
     // @RequestMapping(value = "/saveTaskSample", method = RequestMethod.POST, params = "removeParam")
@@ -66,7 +80,7 @@ public class EditorController {
     //     TaskSampleParam param = new TaskSampleParam("No name");
     //     taskSample.addParamToTaskSample(param);
     //     model.addAttribute("taskSample", taskSample);
-    //     return "task-sample-info";
+    //     return "editor/task-sample/task-sample-info";
     // }
 
     @RequestMapping(value = "/removeParam")
@@ -78,17 +92,17 @@ public class EditorController {
     ){
         taskSample.removeParamFromTaskSample(paramId, paramName);
         model.addAttribute("taskSample", taskSample);
-        return "task-sample-info";
+        return "editor/task-sample/task-sample-info";
     }
 
-    @RequestMapping("/updateInfo")
+    @RequestMapping("/updateInfo/taskSample")
     public String updateTaskSample(@RequestParam("taskSampleId") int id, Model model){
         TaskSample taskSample = taskSampleService.getTaskSample(id);
         model.addAttribute("taskSample", taskSample);
-        return "task-sample-info";
+        return "editor/task-sample/task-sample-info";
     }
 
-    @RequestMapping("/deleteInfo")
+    @RequestMapping("/deleteInfo/taskSample")
     public String deleteTaskSample(@RequestParam("taskSampleId") int id){
         taskSampleService.deleteTaskSample(id);
         return "redirect:/editor/taskSamples";

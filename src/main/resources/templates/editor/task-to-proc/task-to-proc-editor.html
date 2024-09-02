@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
+    <script src='main.js'></script>
+</head>
+<body>
+    Back to main Page
+    <a th:href="@{/}">
+        <button type="button">Main page</button> 
+    </a>
+    <br>
+    Back to editor
+    <a th:href="@{/editor}">
+        <button type="button">Editor</button> 
+    </a>
+    <br>
+    <br>
+    <h2>Task To Proc in DB</h2>
+    <table>
+        <tr>
+            <th>ID|</th>
+            <th>Start Time|</th>
+            <th>User|</th>
+            <th>Task|</th>
+            <th>Params|</th>
+        </tr>
+        <tr th:each="task : ${tasksToProc}">
+                <td th:text="${task.id}"></td>
+                <td th:text="${task.startTime}"></td>
+                <td th:text="${task.user.name + ' ' + task.user.surname}"></td>
+                <td th:text="${task.taskSample.name}"></td>
+                <td th:text="${task.joinedParams}"></td>
+        </tr>
+    </table>
+</body>
+</html>

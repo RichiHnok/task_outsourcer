@@ -9,10 +9,17 @@
     </head>
     <body>
         <h1>Start страницы</h1>
+        User in session <span th:text="${currentUser.name}"></span>
+        <a th:href="@{/set-user}">
+            <button type="button">Set User</button> 
+        </a>
+        <br>
+
         <a th:href="@{/editor}">
             <button type="button">Editor</button> 
         </a>
         <br>
+        
         Current time is <span th:text="${serverTime}"></span>
         <br>
         <h2>Tasks:</h2>

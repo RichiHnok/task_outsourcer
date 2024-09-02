@@ -10,7 +10,7 @@
 </head>
 <body>
     <!-- Check -->
-    You launched <b th:text="${taskSample.name}"/> processing with following params:
+    User <span th:text="${currentUser.name}"/> <span th:text="${currentUser.surname}"/> launched <b th:text="${taskSample.name}"/> processing with following params:
     <div th:each="val, itemStat : ${taskValues.values}">
         <span th:text="${taskSample.params[__${itemStat.index}__].name}"/>: <span th:text="${val}"/>
     </div>
