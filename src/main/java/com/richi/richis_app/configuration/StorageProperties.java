@@ -1,8 +1,10 @@
 package com.richi.richis_app.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 @ConfigurationProperties("storage")
+@Component
 public class StorageProperties {
 
 	/**
