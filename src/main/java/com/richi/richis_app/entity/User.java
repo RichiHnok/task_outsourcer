@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -34,9 +33,9 @@ public class User {
     @Column(name = "minutes_to_proc_task")
     private int minutesToProcessTask = 60;
 
-    // @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = false)
     // @JoinColumn(name = "ttp_user_id")
-    // private List<TaskToProc> tasksToProc;
+    private List<TaskToProc> tasksToProc;
 
     public User() {
     }
@@ -53,13 +52,13 @@ public class User {
         this.minutesToProcessTask = minutesToProcessTask;
     }
 
-    // public void addTaskToProcToUser(TaskToProc task){
-    //     if(tasksToProc == null){
-    //         tasksToProc = new ArrayList<>();
-    //     }
-    //     tasksToProc.add(task);
-    //     // task.setUser(this);
-    // }
+    public void addTaskToProcToUser(TaskToProc task){
+        if(tasksToProc == null){
+            tasksToProc = new ArrayList<>();
+        }
+        tasksToProc.add(task);
+        task.setUser(this);
+    }
 
     public int getId() {
         return id;
@@ -101,13 +100,13 @@ public class User {
         this.minutesToProcessTask = minutesToProcessTask;
     }
 
-    // public List<TaskToProc> getTasksToProc() {
-    //     return tasksToProc;
-    // }
+    public List<TaskToProc> getTasksToProc() {
+        return tasksToProc;
+    }
 
-    // public void setTasksToProc(List<TaskToProc> tasksToProc) {
-    //     this.tasksToProc = tasksToProc;
-    // }
+    public void setTasksToProc(List<TaskToProc> tasksToProc) {
+        this.tasksToProc = tasksToProc;
+    }
 
     @Override
     public String toString() {

@@ -23,8 +23,9 @@ import com.richi.richis_app.exceptions.StorageFileNotFoundException;
 @Service
 public class StorageServiceImpl implements StorageService{
     
-    private final Path rootLocation;
+   private final Path rootLocation;
 
+	@Autowired
 	public StorageServiceImpl(StorageProperties properties) {
         
         if(properties.getLocation().trim().length() == 0){
@@ -96,6 +97,11 @@ public class StorageServiceImpl implements StorageService{
 	}
 
 	@Override
+	public void deleteFile(Path filePath) throws IOException{
+		boolean deletionResult = Files.deleteIfExists(filePath);
+	}
+
+	@Override
 	public void deleteAll() {
 		FileSystemUtils.deleteRecursively(rootLocation.toFile());
 	}
@@ -108,5 +114,10 @@ public class StorageServiceImpl implements StorageService{
 		catch (IOException e) {
 			throw new StorageException("Could not initialize storage", e);
 		}
+	}
+
+	@Override
+	public Path getRootLocation() {
+		return rootLocation;
 	}
 }

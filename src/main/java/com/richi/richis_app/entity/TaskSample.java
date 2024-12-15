@@ -44,9 +44,9 @@ public class TaskSample {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TaskSampleParam> params;
 
-    // @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "taskSample", orphanRemoval = false)
     // @JoinColumn(name = "ttp_task_sample_id")
-    // private List<TaskToProc> tasksToProc;
+    private List<TaskToProc> tasksToProc;
 
     public TaskSample() {
     }
@@ -75,13 +75,13 @@ public class TaskSample {
         }
     }
 
-    // public void addTaskToProcToTaskSample(TaskToProc task){
-    //     if(tasksToProc == null){
-    //         tasksToProc = new ArrayList<>();
-    //     }
-    //     tasksToProc.add(task);
-    //     // task.setTaskSample(this);
-    // }
+    public void addTaskToProcToTaskSample(TaskToProc task){
+        if(tasksToProc == null){
+            tasksToProc = new ArrayList<>();
+        }
+        tasksToProc.add(task);
+        task.setTaskSample(this);
+    }
 
     // public void removeTaskToProcFromTaskSample(TaskToProc task) {
     //     this.tasksToProc.remove(task);
@@ -120,13 +120,13 @@ public class TaskSample {
         this.params = params;
     }
 
-    // public List<TaskToProc> getTasksToProc() {
-    //     return tasksToProc;
-    // }
+    public List<TaskToProc> getTasksToProc() {
+        return tasksToProc;
+    }
 
-    // public void setTasksToProc(List<TaskToProc> tasksToProc) {
-    //     this.tasksToProc = tasksToProc;
-    // }
+    public void setTasksToProc(List<TaskToProc> tasksToProc) {
+        this.tasksToProc = tasksToProc;
+    }
 
     public String getSciptFilePath() {
         return sciptFilePath;

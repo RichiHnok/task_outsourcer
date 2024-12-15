@@ -22,7 +22,10 @@
         <br>
         Description:<br> <textarea type="text" th:field="*{description}" style="height:100px;width:200px;resize:none"/>
         <br>
-        Set script file: <input type="file" th:field="*{scriptFile}"/>
+        Set <span th:if="${file}">new</span> script file: <input type="file" th:field="*{scriptFile}"/>
+        <div th:if="${file}">
+            Download current file: <a th:href="${file}" th:text="${fileName}"/>
+        </div>
         <br>
         Params:<br>
         
@@ -45,9 +48,9 @@
         <input type="submit" name="addParam" value="Add param"/>
         <br>
         <input type="submit" name="save" value="Save"/>
-        <a th:href="@{/editor/taskSamples}">
-            <button type="button">Cancel</button> 
-        </a>
     </form>
+    <a th:href="@{/editor/taskSamples}">
+        <button type="button">Cancel</button> 
+    </a>
 </body>
 </html>

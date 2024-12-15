@@ -10,8 +10,8 @@ public class StorageProperties {
 	/**
 	 * Folder location for storing files
 	 */
-	private String location = "C:\\RichiFolder\\Projects\\RichisAppForServer\\richis_app\\src\\main\\resources\\files";
-
+	private String location = "src\\main\\resources\\files";
+	
 	public String getLocation() {
 		return location;
 	}

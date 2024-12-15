@@ -20,7 +20,9 @@ public class TaskToProcController {
     @RequestMapping("/tasksToProc")
     public String showAllTasksToProc(Model model){
         List<TaskToProc> tasksToProc = taskToProcService.getAllTasksToProc();
+        System.out.println(tasksToProc);
         model.addAttribute("tasksToProc", tasksToProc);
+        // return "placeholder";
         return "editor/task-to-proc/task-to-proc-editor";
     }
 }

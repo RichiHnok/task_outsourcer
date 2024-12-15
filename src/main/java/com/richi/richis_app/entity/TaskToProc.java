@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.richi.richis_app.enums.TaskToProcStatus;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,13 +27,17 @@ public class TaskToProc {
     @Column(name = "id")
     private int id;
 
-    // @ManyToOne(cascade = CascadeType.ALL)
-    // @JoinColumn(name = "ttp_user_id")
-    // private User user;
+    @Column(name = "status")
+    @Enumerated
+    private TaskToProcStatus status = TaskToProcStatus.CREATED;
 
-    // @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    // @JoinColumn(name = "ttp_task_sample_id")
-    // private TaskSample taskSample;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "ttp_user_id")
+    private User user;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "ttp_task_sample_id")
+    private TaskSample taskSample;
 
     @Column(name = "start_time")
     private LocalDateTime startTime;
@@ -65,21 +72,21 @@ public class TaskToProc {
         this.id = id;
     }
 
-    // public User getUser() {
-    //     return user;
-    // }
+    public User getUser() {
+        return user;
+    }
 
-    // public void setUser(User user) {
-    //     this.user = user;
-    // }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    // public TaskSample getTaskSample() {
-    //     return taskSample;
-    // }
+    public TaskSample getTaskSample() {
+        return taskSample;
+    }
 
-    // public void setTaskSample(TaskSample taskSample) {
-    //     this.taskSample = taskSample;
-    // }
+    public void setTaskSample(TaskSample taskSample) {
+        this.taskSample = taskSample;
+    }
 
     public LocalDateTime getStartTime() {
         return startTime;
@@ -97,11 +104,11 @@ public class TaskToProc {
         this.joinedParams = params;
     }
 
-    // @Override
-    // public String toString() {
-    //     return "TaskToProc [id=" + id + ", user=" + user + ", taskSample=" + taskSample + ", startTime=" + startTime
-    //             + ", params=" + joinedParams + "]";
-    // }
+    @Override
+    public String toString() {
+        return "TaskToProc [id=" + id + ", startTime=" + startTime
+                + ", params=" + joinedParams + "]";
+    }
 
     public List<String> getParamsAsList(){
         return new ArrayList<>(Arrays.asList(joinedParams.split("~")));

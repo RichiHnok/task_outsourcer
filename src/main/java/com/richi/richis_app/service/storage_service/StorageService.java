@@ -1,5 +1,6 @@
 package com.richi.richis_app.service.storage_service;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -18,5 +19,9 @@ public interface StorageService {
 
 	Resource loadAsResource(String filename);
 
+	void deleteFile(Path filePath) throws IOException;
+
 	void deleteAll();
+
+	public Path getRootLocation();
 }
