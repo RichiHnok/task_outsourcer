@@ -1,4 +1,4 @@
-package com.richi.richis_app.service.user_service;
+package com.richi.richis_app.service;
 
 import java.util.Optional;
 

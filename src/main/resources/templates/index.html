@@ -11,31 +11,35 @@
         <h1>Start страницы</h1>
         <div th:if="${currentUser}">
             User in session <span th:text="${currentUser.name}"></span>
-            <a th:href="@{/login}">
-                <button type="button">ReLogin</button> 
+            <a th:href="@{/logout}">
+                <button type="button">Logout</button> 
             </a>
+            <br>
+
+            <a th:href="@{/editor}">
+                <button type="button">Editor</button> 
+            </a>
+            <br>    
+            
+            <h2>Tasks:</h2>
+            <div th:each="taskSample : ${taskSamples}">
+                <a th:href="@{/task/{id}(id = ${taskSample.id})}">
+                    <span th:text="${taskSample.name}"/><br><br>
+                </a>
+            </div>
         </div>
         <div th:unless="${currentUser}">
             Unauthorized user 
             <a th:href="@{/login}">
                 <button type="button">Login</button> 
             </a>
-        </div>
-        <!-- <span th:text="${someObject.someProperty != null} ? ${someObject.someProperty} : 'null value!'">someValue</span> -->
-        <br>
-
-        <a th:href="@{/editor}">
-            <button type="button">Editor</button> 
-        </a>
-        <br>
-        
-        Current time is <span th:text="${serverTime}"></span>
-        <br>
-        <h2>Tasks:</h2>
-        <div th:each="taskSample : ${taskSamples}">
-            <a th:href="@{/task/{id}(id = ${taskSample.id})}">
-                <span th:text="${taskSample.name}"/><br><br>
+            <a th:href="@{/register}">
+                <button type="button">Register</button> 
             </a>
         </div>
+        Current time is <span th:text="${serverTime}"></span>
+        <br>
+        <!-- <span th:text="${someObject.someProperty != null} ? ${someObject.someProperty} : 'null value!'">someValue</span> -->
+        
     </body>
 </html>

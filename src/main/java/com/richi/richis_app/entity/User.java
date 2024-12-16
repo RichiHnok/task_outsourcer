@@ -39,8 +39,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    // @Column(name = "role")
-    // private String role;
+    @Column(name = "email")
+    private String email;
     
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -161,6 +161,14 @@ public class User {
 
     public void setUsersRoles(Set<Role> usersRoles) {
         this.usersRoles = usersRoles;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

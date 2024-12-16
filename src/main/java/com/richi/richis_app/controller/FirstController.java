@@ -19,9 +19,9 @@ import com.richi.richis_app.entity.TaskSample;
 import com.richi.richis_app.entity.TaskToProc;
 import com.richi.richis_app.entity.TaskValues;
 import com.richi.richis_app.entity.User;
+import com.richi.richis_app.service.UserService;
 import com.richi.richis_app.service.task_sample_service.TaskSampleService;
 import com.richi.richis_app.service.task_to_proc_service.TaskToProcService;
-import com.richi.richis_app.service.user_service.UserService;
 
 @Controller
 @SessionAttributes({"currentUser"})
