@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,16 +33,18 @@ public class FirstController {
     private UserService userService;
     @Autowired
     private TaskToProcService taskToProcService;
-
-    @ModelAttribute("currentUser")
-    public User user(){
-        return userService.getUser(1);
-    }
     
     @RequestMapping("/")
-    public String index(Model model){
+    public String index(Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception{
         model.addAttribute("serverTime", new Date());
         model.addAttribute("taskSamples", taskSampleService.getAllTaskSamples());
+        if(userDetails == null){
+            model.addAttribute("currentUser", null);
+        }else{
+            User user = userService.getUserByLogin(userDetails.getUsername());
+            System.out.println(user);
+            model.addAttribute("currentUser", user);
+        }
         return "index";
     }
 
@@ -83,6 +87,7 @@ public class FirstController {
         return "task-launched-info";
     }
 
+    //TODO deprecated method
     @RequestMapping("/set-user")
     public String setUserInSession(Model model){
         List<User> users = userService.getAllUsers();
@@ -90,8 +95,9 @@ public class FirstController {
         return "set-user";
     }
 
+    //TODO deprecated method
     @RequestMapping("/set-user/setting")
-    public String ssetUserInSession(@RequestParam("selectedUser") int selectedUser, Model model){
+    public String ssetUserInSession(@RequestParam("selectedUser") int selectedUser, Model model) throws Exception{
         model.addAttribute("currentUser", userService.getUser(selectedUser));
         return "redirect:/";
     }

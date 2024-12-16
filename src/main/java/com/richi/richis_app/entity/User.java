@@ -2,13 +2,19 @@ package com.richi.richis_app.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -18,14 +24,31 @@ public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_id")
     private int id;
+
+    @Column(name = "login")
+    private String login;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "surname")
     private String surname;
+
+    @Column(name = "password")
+    private String password;
+
+    // @Column(name = "role")
+    // private String role;
+    
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_role"
+        , joinColumns = @JoinColumn(name = "user_id")
+        , inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> usersRoles;
 
     @Column(name = "priority")
     private int priority = 5;
@@ -45,11 +68,11 @@ public class User {
         this.surname = surname;
     }
 
-    public User(String name, String surname, int priority, int minutesToProcessTask) {
-        this.name = name;
-        this.surname = surname;
-        this.priority = priority;
-        this.minutesToProcessTask = minutesToProcessTask;
+    public void addRoleTouser(Role role){
+        if(usersRoles == null){
+            usersRoles = new HashSet<>();
+        }
+        // usersRoles.add(role);
     }
 
     public void addTaskToProcToUser(TaskToProc task){
@@ -108,10 +131,41 @@ public class User {
         this.tasksToProc = tasksToProc;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // public String getRole() {
+    //     return role;
+    // }
+
+    // public void setRole(String role) {
+    //     this.role = role;
+    // }
+    
+    public String getLogin() {
+        return login;
+    }
+    
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public Set<Role> getUsersRoles() {
+        return usersRoles;
+    }
+
+    public void setUsersRoles(Set<Role> usersRoles) {
+        this.usersRoles = usersRoles;
+    }
+
     @Override
     public String toString() {
         return "User [id=" + id + ", name=" + name + ", surname=" + surname + ", priority=" + priority
                 + ", minutesToProcessTask=" + minutesToProcessTask + "]";
     }
-    
 }

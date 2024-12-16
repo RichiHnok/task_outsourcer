@@ -1,4 +1,4 @@
-package com.richi.richis_app.server_part;
+package com.richi.task_manager;
 
 import java.util.LinkedList;
 

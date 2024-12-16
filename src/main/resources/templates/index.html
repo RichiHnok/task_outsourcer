@@ -9,10 +9,19 @@
     </head>
     <body>
         <h1>Start страницы</h1>
-        User in session <span th:text="${currentUser.name}"></span>
-        <a th:href="@{/set-user}">
-            <button type="button">Set User</button> 
-        </a>
+        <div th:if="${currentUser}">
+            User in session <span th:text="${currentUser.name}"></span>
+            <a th:href="@{/login}">
+                <button type="button">ReLogin</button> 
+            </a>
+        </div>
+        <div th:unless="${currentUser}">
+            Unauthorized user 
+            <a th:href="@{/login}">
+                <button type="button">Login</button> 
+            </a>
+        </div>
+        <!-- <span th:text="${someObject.someProperty != null} ? ${someObject.someProperty} : 'null value!'">someValue</span> -->
         <br>
 
         <a th:href="@{/editor}">

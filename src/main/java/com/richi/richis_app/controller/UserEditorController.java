@@ -48,7 +48,7 @@ public class UserEditorController {
     }
 
     @RequestMapping("/updateInfo/user")
-    public String updateUser(@RequestParam("userId") int id, Model model){
+    public String updateUser(@RequestParam("userId") int id, Model model) throws Exception{
         User user = userService.getUser(id);
         model.addAttribute("user", user);
         return "editor/user/user-info";
