@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.richi.richis_app.configuration.MyUserDetails;
 import com.richi.richis_app.entity.User;
-import com.richi.richis_app.repository.user_rep.UserRepository;
+import com.richi.richis_app.repository.UserRepository;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService{

@@ -1,4 +1,4 @@
-package com.richi.richis_app.repository.user_rep;
+package com.richi.richis_app.repository;
 
 import java.util.Optional;
 

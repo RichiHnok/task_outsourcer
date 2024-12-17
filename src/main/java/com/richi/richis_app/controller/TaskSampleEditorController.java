@@ -66,23 +66,37 @@ public class TaskSampleEditorController {
     public String saveTaskSample(@ModelAttribute("taskSample") TaskSample taskSample) throws IOException{
         //DONE+ При изменении скрипта старого на новый, старый не удаляется. Это надо исправить
         //TODO При заугрузке скрипта, переименовывать его используя название шаблона
-        //TODO Сделать обработку пустых файлов
+        //DONE+ Сделать обработку пустых файлов
+        //TODO при изменении параметров удалять старый шаблон и создавать новый, а не изменять старый, чтобы в базе данных в таблице task_to_proc_не былопутаницы с параметрами
 
-        // System.out.println("-888-888-8--8-88-8-8  " + taskSample.getScriptFile().getOriginalFilename());
+        // System.out.println("-888-  " + taskSample.getScriptFile().getOriginalFilename());
 
         TaskSample currentTaskSampleInDB = taskSampleService.getTaskSample(taskSample.getId());
-        storageService.deleteFile(Paths.get(currentTaskSampleInDB.getSciptFilePath()));
-        
-        MultipartFile file = taskSample.getScriptFile();
-        taskSample.setSciptFilePath(storageService.getRootLocation().resolve(Paths.get(file.getOriginalFilename())).normalize().toAbsolutePath().toString());
-        storageService.store(taskSample.getScriptFile());
+        String olderScriptPath = currentTaskSampleInDB.getScriptFilePath();
+        if(!taskSample.getScriptFile().isEmpty() && olderScriptPath != null){
+            Path olderFilePath = Paths.get(olderScriptPath);
+            storageService.deleteFile(olderFilePath);
+        }
+        // System.out.println("script file: " + taskSample.getScriptFile().toString());
+        if(!taskSample.getScriptFile().isEmpty()){
+            MultipartFile file = taskSample.getScriptFile();
+            taskSample.setScriptFilePath(storageService.getRootLocation().resolve(Paths.get(file.getOriginalFilename())).normalize().toAbsolutePath().toString());
+            storageService.store(taskSample.getScriptFile());
+        }else{
+            taskSample.setScriptFilePath(olderScriptPath);
+        }
         
         taskSampleService.saveTaskSample(taskSample);
         return "redirect:/editor/taskSamples";
     }
 
     @RequestMapping(value = "/saveTaskSample", method = RequestMethod.POST, params = "addParam")
-    public String addParamToTaskSample(@ModelAttribute("taskSample") TaskSample taskSample, Model model){
+    public String addParamToTaskSample(@ModelAttribute("taskSample") TaskSample taskSample
+        , @RequestParam("fileUrl") String fileUrl
+        , @RequestParam("fileName") String fileName
+        , Model model
+    ){
+        //TODO при добавлении/удаления параметра и страница обновляется исчезает информация о прикреплённом скрипте
         String paramName = "";
         
         while(true){
@@ -95,6 +109,8 @@ public class TaskSampleEditorController {
         TaskSampleParam param = new TaskSampleParam(paramName);
         taskSample.addParamToTaskSample(param);
         model.addAttribute("taskSample", taskSample);
+        model.addAttribute("file", fileUrl);
+        model.addAttribute("fileName", fileName);
         return "editor/task-sample/task-sample-info";
     }
 
@@ -107,23 +123,28 @@ public class TaskSampleEditorController {
     // }
 
     @RequestMapping(value = "/removeParam")
-    public String removeParamFromTaskSample(
-        @RequestParam("taskSampleParamId") int paramId,
-        @RequestParam("taskSampleParamName") String paramName,
-        @ModelAttribute("taskSample") TaskSample taskSample,
-        Model model
+    public String removeParamFromTaskSample(@RequestParam("taskSampleParamId") int paramId
+        , @RequestParam("taskSampleParamName") String paramName
+        , @RequestParam("fileUrl") String fileUrl
+        , @RequestParam("fileName") String fileName
+        , @ModelAttribute("taskSample") TaskSample taskSample
+        , Model model
     ){
         taskSample.removeParamFromTaskSample(paramId, paramName);
         model.addAttribute("taskSample", taskSample);
+        model.addAttribute("file", fileUrl);
+        model.addAttribute("fileName", fileName);
         return "editor/task-sample/task-sample-info";
     }
 
     @RequestMapping("/updateInfo/taskSample")
-    public String updateTaskSample(@RequestParam("taskSampleId") int id, Model model){
+    public String updateTaskSample(@RequestParam("taskSampleId") int id
+        , Model model
+    ){
         TaskSample taskSample = taskSampleService.getTaskSample(id);
 
-        if(taskSample.getSciptFilePath() != null){
-            Path scriptLocationPath = Paths.get(taskSample.getSciptFilePath());
+        if(taskSample.getScriptFilePath() != null){
+            Path scriptLocationPath = Paths.get(taskSample.getScriptFilePath());
             model.addAttribute("file",
                 MvcUriComponentsBuilder.fromMethodName(
                     TaskSampleEditorController.class,

@@ -44,7 +44,8 @@
         <div th:unless="${not #lists.isEmpty(taskSample.params)}">
             <p>This sample dont have parameteres</p>
         </div>
-
+        <input type="hidden" th:value="${file}" name="fileUrl">
+        <input type="hidden" th:value="${fileName}" name="fileName">
         <input type="submit" name="addParam" value="Add param"/>
         <br>
         <input type="submit" name="save" value="Save"/>

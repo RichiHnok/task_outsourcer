@@ -29,7 +29,7 @@ public class AuthController {
         List<Role> roles = roleService.getAllRoles();
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
-        return "register";
+        return "auth/register";
     }
 
     @PostMapping("/register")
@@ -37,7 +37,7 @@ public class AuthController {
         try{
             if(userService.getUserByLogin(user.getLogin()) != null){
                 model.addAttribute("error", "Username is already taken");
-                return "register";
+                return "auth/register";
             }
         }catch(NoSuchElementException e){
             userService.registerUser(user, roleName);
@@ -47,6 +47,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public String showLoginForm(){
-        return "login";
+        return "auth/login";
     }
 }

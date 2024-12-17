@@ -26,16 +26,16 @@
             <th>Update</th>
             <th>Delete</th>
         </tr>
-        <tr th:each="object : ${taskSamples}">
+        <tr th:each="taskSample : ${taskSamples}">
             
             <div th:with="
-            updateButton=@{/editor/updateInfo/taskSample(taskSampleId=${object.id})},
-            deleteButton=@{/editor/deleteInfo/taskSample(taskSampleId=${object.id})}">
+            updateButton=@{/editor/updateInfo/taskSample(taskSampleId=${taskSample.id})},
+            deleteButton=@{/editor/deleteInfo/taskSample(taskSampleId=${taskSample.id})}">
             
 
-                <td th:text="${object.id}"></td>
-                <td th:text="${object.name}"></td>
-                <td th:text="${object.description}" style="height:20px;width:20px;"></td>
+                <td th:text="${taskSample.id}"></td>
+                <td th:text="${taskSample.name}"></td>
+                <td th:text="${taskSample.description}" style="height:20px;width:20px;"></td>
                 <td>
                     <a th:href="${updateButton}">
                         <button type="button">Update</button> 

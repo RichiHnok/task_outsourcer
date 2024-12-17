@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.richi.richis_app.entity.Role;
 import com.richi.richis_app.entity.User;
 import com.richi.richis_app.repository.RoleRepository;
-import com.richi.richis_app.repository.user_rep.UserRepository;
+import com.richi.richis_app.repository.UserRepository;
 
 @Service
 public class UserService {
@@ -57,7 +57,7 @@ public class UserService {
         Optional<Role> optRole = roleRepository.findByRoleName(roleName);
         if(optRole.isPresent()){
             Role selectedRole = optRole.get();
-            user.addRoleTouser(selectedRole);
+            user.addRoleToUser(selectedRole);
             return userRepository.save(user);
         }else{
             throw new Exception("Cannot find role " + roleName);

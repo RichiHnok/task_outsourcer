@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,12 +20,12 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
-@Table(name = "tasks_samples")
+@Table(name = "task_sample")
 public class TaskSample {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "task_sample_id")
     private int id;
     
     @Column(name = "name")
@@ -34,7 +35,7 @@ public class TaskSample {
     private String description;
 
     @Column(name = "script_path")
-    private String sciptFilePath;
+    private String scriptFilePath;
 
     @Transient
     private MultipartFile scriptFile;
@@ -44,8 +45,7 @@ public class TaskSample {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TaskSampleParam> params;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "taskSample", orphanRemoval = false)
-    // @JoinColumn(name = "ttp_task_sample_id")
+    @OneToMany(/* cascade = CascadeType.ALL, */ mappedBy = "taskSample", fetch = FetchType.EAGER)
     private List<TaskToProc> tasksToProc;
 
     public TaskSample() {
@@ -55,7 +55,7 @@ public class TaskSample {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.sciptFilePath = sciptFilePath;
+        this.scriptFilePath = sciptFilePath;
     }
 
     public void addParamToTaskSample(TaskSampleParam param){
@@ -75,18 +75,13 @@ public class TaskSample {
         }
     }
 
-    public void addTaskToProcToTaskSample(TaskToProc task){
+    public void addTaskOfThisTaskSample(TaskToProc taskToProc){
         if(tasksToProc == null){
             tasksToProc = new ArrayList<>();
         }
-        tasksToProc.add(task);
-        task.setTaskSample(this);
+        tasksToProc.add(taskToProc);
+        taskToProc.setTaskSample(this);
     }
-
-    // public void removeTaskToProcFromTaskSample(TaskToProc task) {
-    //     this.tasksToProc.remove(task);
-    //     // task.setTaskSample(null);
-    // }
 
     public int getId() {
         return id;
@@ -120,20 +115,12 @@ public class TaskSample {
         this.params = params;
     }
 
-    public List<TaskToProc> getTasksToProc() {
-        return tasksToProc;
+    public String getScriptFilePath() {
+        return scriptFilePath;
     }
 
-    public void setTasksToProc(List<TaskToProc> tasksToProc) {
-        this.tasksToProc = tasksToProc;
-    }
-
-    public String getSciptFilePath() {
-        return sciptFilePath;
-    }
-
-    public void setSciptFilePath(String sciptFilePath) {
-        this.sciptFilePath = sciptFilePath;
+    public void setScriptFilePath(String scriptFilePath) {
+        this.scriptFilePath = scriptFilePath;
     }
 
     public MultipartFile getScriptFile() {
@@ -142,6 +129,14 @@ public class TaskSample {
 
     public void setScriptFile(MultipartFile scriptFile) {
         this.scriptFile = scriptFile;
+    }
+
+    public List<TaskToProc> getTasksToProc() {
+        return tasksToProc;
+    }
+
+    public void setTasksToProc(List<TaskToProc> tasksToProc) {
+        this.tasksToProc = tasksToProc;
     }
 
     @Override

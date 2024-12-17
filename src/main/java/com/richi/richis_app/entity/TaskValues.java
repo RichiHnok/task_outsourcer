@@ -31,6 +31,6 @@ public class TaskValues {
     }
 
     public String getValuesAsJoinedString(){
-        return String.join("$#$", values);
+        return String.join("~", values);
     }
 }

@@ -1,9 +1,9 @@
 package com.richi.richis_app.entity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -50,15 +50,14 @@ public class User {
     )
     private Set<Role> usersRoles;
 
+    @OneToMany(/* cascade = CascadeType.ALL,  */mappedBy = "user", fetch = FetchType.EAGER)
+    private List<TaskToProc> tasksToProc;
+
     @Column(name = "priority")
     private int priority = 5;
 
     @Column(name = "minutes_to_proc_task")
     private int minutesToProcessTask = 60;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = false)
-    // @JoinColumn(name = "ttp_user_id")
-    private List<TaskToProc> tasksToProc;
 
     public User() {
     }
@@ -68,19 +67,19 @@ public class User {
         this.surname = surname;
     }
 
-    public void addRoleTouser(Role role){
+    public void addRoleToUser(Role role){
         if(usersRoles == null){
             usersRoles = new HashSet<>();
         }
-        // usersRoles.add(role);
+        usersRoles.add(role);
     }
 
-    public void addTaskToProcToUser(TaskToProc task){
+    public void addTaskOfThisUser(TaskToProc taskToProc){
         if(tasksToProc == null){
             tasksToProc = new ArrayList<>();
         }
-        tasksToProc.add(task);
-        task.setUser(this);
+        tasksToProc.add(taskToProc);
+        taskToProc.setUser(this);
     }
 
     public int getId() {
@@ -123,14 +122,6 @@ public class User {
         this.minutesToProcessTask = minutesToProcessTask;
     }
 
-    public List<TaskToProc> getTasksToProc() {
-        return tasksToProc;
-    }
-
-    public void setTasksToProc(List<TaskToProc> tasksToProc) {
-        this.tasksToProc = tasksToProc;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -138,14 +129,6 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    // public String getRole() {
-    //     return role;
-    // }
-
-    // public void setRole(String role) {
-    //     this.role = role;
-    // }
     
     public String getLogin() {
         return login;
@@ -171,9 +154,17 @@ public class User {
         this.email = email;
     }
 
+    public List<TaskToProc> getTasksToProc() {
+        return tasksToProc;
+    }
+
+    public void setTasksToProc(List<TaskToProc> tasksToProc) {
+        this.tasksToProc = tasksToProc;
+    }
+
     @Override
     public String toString() {
-        return "User [id=" + id + ", name=" + name + ", surname=" + surname + ", priority=" + priority
-                + ", minutesToProcessTask=" + minutesToProcessTask + "]";
+        return "User [id=" + id + ", login=" + login + ", name=" + name + ", surname=" + surname + ", email=" + email
+                + ", usersRoles=" + usersRoles + "]";
     }
 }
