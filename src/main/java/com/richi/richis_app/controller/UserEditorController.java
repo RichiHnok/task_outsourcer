@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -38,8 +38,8 @@ public class UserEditorController {
         return "editor/user/user-info";
     }
 
-    @RequestMapping(value = "/saveUser", method = RequestMethod.POST, params = "save")
-    public String saveTaskSample(@ModelAttribute("user") User user, Model model){
+    @PostMapping(value = "/saveUser", params = "save")
+    public String saveTaskSample(@ModelAttribute User user, Model model){
         userService.saveUser(user);
         User currentUser = (User) model.getAttribute("currentUser");
         if(user.getId() == currentUser.getId()){

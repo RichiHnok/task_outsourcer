@@ -2,8 +2,8 @@ package com.richi.richis_app.controller;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 import com.richi.richis_app.entity.TaskSample;
 import com.richi.richis_app.entity.TaskSampleParam;
-import com.richi.richis_app.functions.RandomString;
 import com.richi.richis_app.service.storage_service.StorageService;
 import com.richi.richis_app.service.task_sample_service.TaskSampleService;
 
@@ -63,7 +61,7 @@ public class TaskSampleEditorController {
     }
 
     @PostMapping(value = "/saveTaskSample", params = "save")
-    public String saveTaskSample(@ModelAttribute("taskSample") TaskSample taskSample) throws IOException{
+    public String saveTaskSample(@ModelAttribute TaskSample taskSample) throws IOException{
         //DONE+ При изменении скрипта старого на новый, старый не удаляется. Это надо исправить
         //TODO При заугрузке скрипта, переименовывать его используя название шаблона
         //DONE+ Сделать обработку пустых файлов
@@ -74,13 +72,13 @@ public class TaskSampleEditorController {
         TaskSample currentTaskSampleInDB = taskSampleService.getTaskSample(taskSample.getId());
         String olderScriptPath = currentTaskSampleInDB.getScriptFilePath();
         if(!taskSample.getScriptFile().isEmpty() && olderScriptPath != null){
-            Path olderFilePath = Paths.get(olderScriptPath);
+            Path olderFilePath = Path.of(olderScriptPath);
             storageService.deleteFile(olderFilePath);
         }
         // System.out.println("script file: " + taskSample.getScriptFile().toString());
         if(!taskSample.getScriptFile().isEmpty()){
             MultipartFile file = taskSample.getScriptFile();
-            taskSample.setScriptFilePath(storageService.getRootLocation().resolve(Paths.get(file.getOriginalFilename())).normalize().toAbsolutePath().toString());
+            taskSample.setScriptFilePath(storageService.getRootLocation().resolve(Path.of(file.getOriginalFilename())).normalize().toAbsolutePath().toString());
             storageService.store(taskSample.getScriptFile());
         }else{
             taskSample.setScriptFilePath(olderScriptPath);
@@ -90,7 +88,7 @@ public class TaskSampleEditorController {
         return "redirect:/editor/taskSamples";
     }
 
-    @RequestMapping(value = "/saveTaskSample", method = RequestMethod.POST, params = "addParam")
+    @PostMapping(value = "/saveTaskSample", params = "addParam")
     public String addParamToTaskSample(@ModelAttribute("taskSample") TaskSample taskSample
         , @RequestParam("fileUrl") String fileUrl
         , @RequestParam("fileName") String fileName
@@ -100,7 +98,7 @@ public class TaskSampleEditorController {
         String paramName = "";
         
         while(true){
-            paramName = "No name " + (Integer.toString(1000 + (int)(Math.random() * ((9999 - 1000) + 1))));
+            paramName = "No name " + (Integer.toString(1000 + (int)(ThreadLocalRandom.current().nextDouble() * ((9999 - 1000) + 1))));
             if(taskSample.getParams() == null || !taskSample.getParams().stream().map(TaskSampleParam::getName).collect(Collectors.toList()).contains(paramName)){
                 break;
             }
@@ -125,9 +123,9 @@ public class TaskSampleEditorController {
     @RequestMapping(value = "/removeParam")
     public String removeParamFromTaskSample(@RequestParam("taskSampleParamId") int paramId
         , @RequestParam("taskSampleParamName") String paramName
-        , @RequestParam("fileUrl") String fileUrl
-        , @RequestParam("fileName") String fileName
-        , @ModelAttribute("taskSample") TaskSample taskSample
+        , @RequestParam String fileUrl
+        , @RequestParam String fileName
+        , @ModelAttribute TaskSample taskSample
         , Model model
     ){
         taskSample.removeParamFromTaskSample(paramId, paramName);
@@ -144,7 +142,7 @@ public class TaskSampleEditorController {
         TaskSample taskSample = taskSampleService.getTaskSample(id);
 
         if(taskSample.getScriptFilePath() != null){
-            Path scriptLocationPath = Paths.get(taskSample.getScriptFilePath());
+            Path scriptLocationPath = Path.of(taskSample.getScriptFilePath());
             model.addAttribute("file",
                 MvcUriComponentsBuilder.fromMethodName(
                     TaskSampleEditorController.class,

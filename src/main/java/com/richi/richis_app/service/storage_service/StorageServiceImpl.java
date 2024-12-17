@@ -5,11 +5,9 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -25,14 +23,13 @@ public class StorageServiceImpl implements StorageService{
     
    private final Path rootLocation;
 
-	@Autowired
 	public StorageServiceImpl(StorageProperties properties) {
         
         if(properties.getLocation().trim().length() == 0){
             throw new StorageException("File upload location can not be Empty."); 
         }
 
-		this.rootLocation = Paths.get(properties.getLocation());
+		this.rootLocation = Path.of(properties.getLocation());
 	}
 
 	@Override
@@ -42,9 +39,33 @@ public class StorageServiceImpl implements StorageService{
 				throw new StorageException("Failed to store empty file.");
 			}
 			Path destinationFile = this.rootLocation.resolve(
-					Paths.get(file.getOriginalFilename()))
+					Path.of(file.getOriginalFilename()))
 					.normalize().toAbsolutePath();
 			if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
+				// This is a security check
+				throw new StorageException(
+						"Cannot store file outside current directory.");
+			}
+			try (InputStream inputStream = file.getInputStream()) {
+				Files.copy(inputStream, destinationFile,
+					StandardCopyOption.REPLACE_EXISTING);
+			}
+		}
+		catch (IOException e) {
+			throw new StorageException("Failed to store file.", e);
+		}
+	}
+
+	@Override
+	public void storeInFolder(MultipartFile file, Path folderPath) {
+		try {
+			if (file.isEmpty()) {
+				throw new StorageException("Failed to store empty file.");
+			}
+			Path destinationFile = folderPath.resolve(
+					Path.of(file.getOriginalFilename()))
+					.normalize().toAbsolutePath();
+			if (!destinationFile.getParent().equals(folderPath.toAbsolutePath())) {
 				// This is a security check
 				throw new StorageException(
 						"Cannot store file outside current directory.");

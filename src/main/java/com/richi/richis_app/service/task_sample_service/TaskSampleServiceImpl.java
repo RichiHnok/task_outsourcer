@@ -38,6 +38,4 @@ public class TaskSampleServiceImpl implements TaskSampleService{
     public void saveTaskSample(TaskSample taskSample) {
         taskSampleRepository.saveTaskSample(taskSample);
     }
-
-
 }

@@ -13,6 +13,8 @@ public interface StorageService {
     
     void store(MultipartFile file);
 
+	void storeInFolder(MultipartFile file, Path folderPath) throws Exception;
+
     Stream<Path> loadAll();
 
 	Path load(String filename);

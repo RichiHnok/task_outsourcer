@@ -1,5 +1,9 @@
 package com.richi.richis_app.service;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +41,31 @@ public class TaskToProcService {
         }
     }
 
-    public void saveTaskToProc(TaskToProc taskToProc) {
-        taskToProcRepository.save(taskToProc);
+    public TaskToProc saveTaskToProc(TaskToProc taskToProc) {
+        return taskToProcRepository.save(taskToProc);
+    }
+
+    public Path getInputFolderForTask(int id) throws Exception {
+        TaskToProc taskToProc = getTaskToProc(id);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");
+        Path userFolder = Paths.get("src\\main\\resources\\files\\users\\"
+            , taskToProc.getUser().getLogin() 
+            , Integer.toString(taskToProc.getTaskSample().getId())
+            + taskToProc.getStartTime().format(dtf)
+            , "input"
+        );
+        return userFolder;
+    }
+
+    public Path getOutputFolderForTask(int id) throws Exception {
+        TaskToProc taskToProc = getTaskToProc(id);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");
+        Path userFolder = Paths.get("src\\main\\resources\\files\\users\\"
+            , taskToProc.getUser().getLogin() 
+            , Integer.toString(taskToProc.getTaskSample().getId())
+            + taskToProc.getStartTime().format(dtf)
+            , "output"
+        );
+        return userFolder;
     }
 }

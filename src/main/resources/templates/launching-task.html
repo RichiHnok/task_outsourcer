@@ -17,11 +17,13 @@
     <h2 th:text="${taskSample.name}">text</h2>
     <br>
     <span th:text="${taskSample.description != null} ? ${taskSample.description} : 'This task dont have description'"/>
-    <form action="#" th:action="@{/task/{taskId}/start(taskId=${taskSample.id})}" th:object="${taskValues}" method="post">
+    <form action="#" th:action="@{/task/{taskId}/start(taskId=${taskSample.id})}" enctype="multipart/form-data" th:object="${taskValues}" method="post">
         <div th:each="val, itemStat : *{values}">
             <span th:text="${taskSample.params[__${itemStat.index}__].name}"/>
-            <input th:field="*{values[__${itemStat.index}__]}" /></span>
+            <input th:field="*{values[__${itemStat.index}__]}" />
         </div>
+        <input type="file" name="file"/>
+        <br>
         <input type="submit" value="Start"/>
     </form>
 </body>

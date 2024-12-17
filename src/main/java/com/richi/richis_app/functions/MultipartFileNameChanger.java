@@ -3,7 +3,7 @@ package com.richi.richis_app.functions;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class MultipartFileNameChanger {
         try {
             byte[] bytes = file.getBytes();
             String insPath = storageProperties.getLocation() + newFileName; // Directory path where you want to save ;
-            Files.write(Paths.get(insPath), bytes);
+            Files.write(Path.of(insPath), bytes);
         }catch (IOException e) {
             e.printStackTrace();
         }
