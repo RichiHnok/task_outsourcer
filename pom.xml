@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.richi</groupId>
-	<artifactId>richis_app</artifactId>
+	<artifactId>richi_app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>richis_app</name>
@@ -29,6 +29,7 @@
 	</scm>
 	<properties>
 		<java.version>22</java.version>
+		<start-class>com.richi.RichisAppApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -66,6 +67,16 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+		</dependency>
+
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -78,6 +89,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.richi.RichisAppApplication</mainClass>
+				</configuration>
 			</plugin>
 
 			<plugin>
