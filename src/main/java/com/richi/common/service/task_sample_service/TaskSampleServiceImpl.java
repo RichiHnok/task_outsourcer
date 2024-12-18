@@ -38,4 +38,12 @@ public class TaskSampleServiceImpl implements TaskSampleService{
     public void saveTaskSample(TaskSample taskSample) {
         taskSampleRepository.saveTaskSample(taskSample);
     }
+
+    @Override
+    public String getFolderForStoreScriptFile(int id) {
+        TaskSample taskSample = getTaskSample(id);
+        StringBuilder relativePathBuilder = new StringBuilder();
+        relativePathBuilder.append("src\\main\\resources\\files\\samples\\").append("sample"+taskSample.getId());
+        return relativePathBuilder.toString();
+    }
 }

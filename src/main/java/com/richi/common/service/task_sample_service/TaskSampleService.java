@@ -14,4 +14,6 @@ public interface TaskSampleService {
     TaskSample getTaskSample(int id);
 
     void deleteTaskSample(int id);
+
+    String getFolderForStoreScriptFile(int id);
 }

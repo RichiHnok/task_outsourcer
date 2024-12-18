@@ -1,6 +1,5 @@
 package com.richi.web_part.controller;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,9 +37,9 @@ public class TaskSampleEditorController {
     private StorageService storageService;
 
     // @Autowired
-	// public TaskSampleEditorController(StorageService storageService) {
-	// 	this.storageService = storageService;
-	// }
+    // public TaskSampleEditorController(StorageService storageService) {
+    // 	this.storageService = storageService;
+    // }
 
     // @Autowired
     // private RandomString randomString;
@@ -61,7 +60,7 @@ public class TaskSampleEditorController {
     }
 
     @PostMapping(value = "/saveTaskSample", params = "save")
-    public String saveTaskSample(@ModelAttribute TaskSample taskSample) throws IOException{
+    public String saveTaskSample(@ModelAttribute TaskSample taskSample) throws Exception{
         //DONE+ При изменении скрипта старого на новый, старый не удаляется. Это надо исправить
         //TODO При заугрузке скрипта, переименовывать его используя название шаблона
         //DONE+ Сделать обработку пустых файлов
@@ -75,11 +74,12 @@ public class TaskSampleEditorController {
             Path olderFilePath = Path.of(olderScriptPath);
             storageService.deleteFile(olderFilePath);
         }
+
         // System.out.println("script file: " + taskSample.getScriptFile().toString());
         if(!taskSample.getScriptFile().isEmpty()){
-            MultipartFile file = taskSample.getScriptFile();
-            taskSample.setScriptFilePath(storageService.getRootLocation().resolve(Path.of(file.getOriginalFilename())).normalize().toAbsolutePath().toString());
-            storageService.store(taskSample.getScriptFile());
+            //TODO стльно торопился поэтому пришлось наговнокодить сохранение файла и запись пути сохранения в базу. Надо поправить
+            Path relativePathToStore = storageService.storeInFolder(taskSample.getScriptFile(), Path.of(taskSampleService.getFolderForStoreScriptFile(taskSample.getId())));
+            taskSample.setScriptFilePath(relativePathToStore.toString());
         }else{
             taskSample.setScriptFilePath(olderScriptPath);
         }

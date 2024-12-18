@@ -1,5 +1,6 @@
 package com.richi.common.service.storage_service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -33,7 +34,7 @@ public class StorageServiceImpl implements StorageService{
 	}
 
 	@Override
-	public void store(MultipartFile file) {
+	public Path store(MultipartFile file) {
 		try {
 			if (file.isEmpty()) {
 				throw new StorageException("Failed to store empty file.");
@@ -54,10 +55,11 @@ public class StorageServiceImpl implements StorageService{
 		catch (IOException e) {
 			throw new StorageException("Failed to store file.", e);
 		}
+		return this.rootLocation.resolve(Path.of(file.getOriginalFilename())).normalize();
 	}
 
 	@Override
-	public void storeInFolder(MultipartFile file, Path folderPath) {
+	public Path storeInFolder(MultipartFile file, Path folderPath) {
 		try {
 			if (file.isEmpty()) {
 				throw new StorageException("Failed to store empty file.");
@@ -65,6 +67,9 @@ public class StorageServiceImpl implements StorageService{
 			Path destinationFile = folderPath.resolve(
 					Path.of(file.getOriginalFilename()))
 					.normalize().toAbsolutePath();
+			if(!destinationFile.toFile().exists()){
+				destinationFile.toFile().mkdirs();
+			}
 			if (!destinationFile.getParent().equals(folderPath.toAbsolutePath())) {
 				// This is a security check
 				throw new StorageException(
@@ -78,6 +83,7 @@ public class StorageServiceImpl implements StorageService{
 		catch (IOException e) {
 			throw new StorageException("Failed to store file.", e);
 		}
+		return folderPath.resolve(Path.of(file.getOriginalFilename())).normalize();
 	}
 
 	@Override

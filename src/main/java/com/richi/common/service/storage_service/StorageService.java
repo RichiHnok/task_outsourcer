@@ -11,9 +11,9 @@ public interface StorageService {
 
 	void init();
     
-    void store(MultipartFile file);
+    Path store(MultipartFile file);
 
-	void storeInFolder(MultipartFile file, Path folderPath) throws Exception;
+	Path storeInFolder(MultipartFile file, Path folderPath) throws Exception;
 
     Stream<Path> loadAll();
 
