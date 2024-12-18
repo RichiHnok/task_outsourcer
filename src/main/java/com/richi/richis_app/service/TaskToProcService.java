@@ -2,7 +2,6 @@ package com.richi.richis_app.service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -25,11 +24,11 @@ public class TaskToProcService {
     }
 
     public List<TaskToProc> getAllTasksToProc() {
-        return taskToProcRepository.findAll();
+        return taskToProcRepository.findAllByOrderByStartTimeDesc();
     }
 
     public List<TaskToProc> geTaskToProcsByUser(User user){
-        return taskToProcRepository.findByUser(user);
+        return taskToProcRepository.findByUserOrderByStartTimeDesc(user);
     }
 
     public TaskToProc getTaskToProc(int id) throws Exception {

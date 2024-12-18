@@ -16,12 +16,14 @@
             <th>Start Time</th>
             <th>Task</th>
             <th>Params</th>
+            <th>Status</th>
         </tr>
         <tr th:each="task : ${tasksToProc}">
                 <td th:text="${task.id}"></td>
                 <td th:text="${task.startTime}"></td>
                 <td th:text="${task.taskSample.name}"></td>
                 <td th:text="${task.joinedParams}"></td>
+                <td th:text="${task.status}"></td>
         </tr>
     </table>
 </body>

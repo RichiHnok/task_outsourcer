@@ -23,10 +23,6 @@ public class TaskToProc {
     @Column(name = "task_to_proc_id")
     private int id;
 
-    // @Column(name = "status")
-    // @Enumerated
-    // private TaskToProcStatus status = TaskToProcStatus.CREATED;
-
     @ManyToOne(/* cascade = CascadeType.ALL */)
     @JoinColumn(name = "task_sample_id")
     private TaskSample taskSample;
@@ -40,6 +36,10 @@ public class TaskToProc {
 
     @Column(name = "params")
     private String joinedParams;
+
+    @Column(name = "status")
+    @Enumerated
+    private TaskToProcStatus status = TaskToProcStatus.CREATED;
 
     public TaskToProc() {
     }
@@ -89,6 +89,14 @@ public class TaskToProc {
 
     public void setJoinedParams(String joinedParams) {
         this.joinedParams = joinedParams;
+    }
+
+    public TaskToProcStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskToProcStatus status) {
+        this.status = status;
     }
 
     @Override
