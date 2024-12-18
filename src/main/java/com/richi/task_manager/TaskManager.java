@@ -2,10 +2,10 @@ package com.richi.task_manager;
 
 import java.util.LinkedList;
 
-import com.richi.richis_app.entity.TaskToProc;
-import com.richi.richis_app.entity.TaskSample;
-import com.richi.richis_app.entity.TaskValues;
-import com.richi.richis_app.entity.User;
+import com.richi.common.entity.TaskSample;
+import com.richi.common.entity.TaskToProc;
+import com.richi.common.entity.TaskValues;
+import com.richi.common.entity.User;
 
 public class TaskManager extends Thread{
     

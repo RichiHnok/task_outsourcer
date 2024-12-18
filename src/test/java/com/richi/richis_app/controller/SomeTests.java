@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.richi.richis_app.entity.User;
+import com.richi.common.entity.User;
 
 // @WebMvcTest(controllers = TaskSampleEditorController.class)
 @ComponentScan(basePackages = {"com.richi.richis_app"})
