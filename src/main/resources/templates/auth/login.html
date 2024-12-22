@@ -2,21 +2,23 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>Login</title>
+    <title>Вход</title>
 </head>
 <body>
     <div>
-        <h2>Login:</h2>
+        <h2>Вход</h2>
         <form th:action="@{/login}" method="post">
-            <div>
-                <label for="username">Login:</label>
-                <input type="text" id="username" name="username"/>
-            </div>
-            <div>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password"/>
-            </div>
-            <button type="submit">Login</button>
+            <table>
+                <tr>
+                    <td><label for="username">Логин:</label></td>
+                    <td><input type="text" id="username" name="username"/></td>
+                </tr>
+                <tr>
+                    <td><label for="password">Пароль:</label></td>
+                    <td><input type="password" id="password" name="password"/></td>
+                </tr>
+            </table>
+            <button type="submit">Войти</button>
         </form>
     </div>
 </body>

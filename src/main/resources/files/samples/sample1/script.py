@@ -1,5 +1,6 @@
 print('Hello')
 #python  src/main/resources/files/script.py 480 240 rendered_image
+# os.startfile('C:\\ForInstallation\\Blender Foundation\\Blender 4.3\\blender.exe')
 import sys
 resX = sys.argv[1]
 resY = sys.argv[2]
@@ -8,7 +9,6 @@ imageName = sys.argv[3]
 import pyautogui as pg
 import os
 import time
-# os.startfile('C:\\ForInstallation\\Blender Foundation\\Blender 4.3\\blender.exe')
 os.startfile('C:\\RichiFolder\\Projects\\RichisAppForServer\\richis_app\\src\\main\\resources\\files\\project_to_render.blend')
 time.sleep(6)
 

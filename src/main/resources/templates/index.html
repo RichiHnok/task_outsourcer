@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Page</title>
+    <title>Richis app</title>
     <meta content="text/html; charset=UTF-8">
 </head>
 <body>
-    <h1>Start страницы</h1>
+    <h2>Главная страница</h2>
     <div th:if="${currentUser}">
-        User in session <span th:text="${currentUser.name}"></span>
+        Пользователь: <span th:text="${currentUser.name}"></span><span th:text="${currentUser.surname}"></span>
+        <br><br>
         <a th:href="@{/logout}">
-            <button type="button">Logout</button> 
+            <button type="button">Выход</button> 
         </a>
         <br>
-
         <a th:href="@{/editor}">
-            <button type="button">Editor</button> 
+            <button type="button">Редактор</button> 
         </a>
         <br>
         <a th:href="@{/taskHistory}">
-            <button type="button">Task History</button> 
+            <button type="button">История задач</button> 
         </a>
         <br>
         
-        <h2>Tasks:</h2>
+        <h2>Задачи:</h2>
         <div th:each="taskSample : ${taskSamples}">
             <a th:href="@{/task/{id}(id = ${taskSample.id})}">
                 <span th:text="${taskSample.name}"/><br><br>
@@ -30,17 +30,16 @@
         </div>
     </div>
     <div th:unless="${currentUser}">
-        Unauthorized user 
+        Неавторизованный пользователь 
+        <br> 
         <a th:href="@{/login}">
-            <button type="button">Login</button> 
+            <button type="button">Вход</button> 
         </a>
+        <br> 
         <a th:href="@{/register}">
-            <button type="button">Register</button> 
+            <button type="button">Регистрация</button> 
         </a>
     </div>
-    Current time is <span th:text="${serverTime}"></span>
-    <br>
-    <!-- <span th:text="${someObject.someProperty != null} ? ${someObject.someProperty} : 'null value!'">someValue</span> -->
     
 </body>
 </html>
