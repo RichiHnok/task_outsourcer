@@ -1,16 +1,10 @@
 package com.richi.web_part.controller;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -26,9 +20,9 @@ import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.TaskValues;
 import com.richi.common.entity.User;
+import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
-import com.richi.common.service.storage_service.StorageService;
 import com.richi.common.service.task_sample_service.TaskSampleService;
 
 @Controller
@@ -68,7 +62,6 @@ public class FirstController {
         TaskSample taskSample = taskSampleService.getTaskSample(id);
         model.addAttribute("taskSample", taskSample);
         TaskValues taskValues = new TaskValues(taskSample);
-        // System.out.println("\n\n" + taskValues);
         model.addAttribute("taskValues", taskValues);
         return "launching-task";
     }
@@ -91,18 +84,16 @@ public class FirstController {
             values.getValuesAsJoinedString()
         );
         task = taskToProcService.saveTaskToProc(task);
+        taskToProcService.createWorkFoldersForTask(task.getId());
 
-        Path taskInputFolder = taskToProcService.getInputFolderForTask(task.getId());
-        if(!taskInputFolder.toFile().mkdirs()){
-            throw new Exception("Troubles with creating input folder for task processing");
-        }
-        Path taskOutputFolder = taskToProcService.getOutputFolderForTask(task.getId());;
-        if(!taskOutputFolder.toFile().mkdirs()){
-            throw new Exception("Troubles with creating output folder for task processing");
-        }
-        storageService.storeInFolder(file, taskInputFolder);
+        storageService.storeInFolder(file, taskToProcService.getInputFolderForTask(task.getId()));
         
         return "task-launched-info";
+    }
+
+    @RequestMapping("/placeholder")
+    public String placeholder(){
+        return "placeholder";
     }
 
     //TODO deprecated method

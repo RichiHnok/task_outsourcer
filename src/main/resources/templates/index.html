@@ -3,10 +3,28 @@
 <head>
     <title>Richis app</title>
     <meta content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
-    <h2>Главная страница</h2>
     <div th:if="${currentUser}">
+        
+        <div th:if="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: admin-header"></div>
+        <div th:unless="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: user-header"></div>
+
+        <!-- <p th:text="${currentUser.usersRoles}">Roles will be displayed here</p> -->
+        <!-- <div th:if="${currentUser.hasRole('admin')}">
+            <p>User has admin role.</p>
+        </div>
+        <div th:unless="${currentUser.hasRole('admin')}">
+            <p>User does not have admin role.</p>
+        </div>
+        <div th:if="${currentUser.hasRole('user')}">
+            <p>User has user role.</p>
+        </div>
+        <div th:unless="${currentUser.hasRole('user')}">
+            <p>User does not have user role.</p>
+        </div> -->
+
         Пользователь: <span th:text="${currentUser.name}"></span><span th:text="${currentUser.surname}"></span>
         <br><br>
         <a th:href="@{/logout}">
@@ -30,6 +48,7 @@
         </div>
     </div>
     <div th:unless="${currentUser}">
+        <div th:insert="fragments/header.html :: guest-header"></div>
         Неавторизованный пользователь 
         <br> 
         <a th:href="@{/login}">
@@ -40,6 +59,5 @@
             <button type="button">Регистрация</button> 
         </a>
     </div>
-    
 </body>
 </html>

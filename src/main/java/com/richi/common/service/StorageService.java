@@ -1,6 +1,5 @@
-package com.richi.common.service.storage_service;
+package com.richi.common.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -20,11 +19,11 @@ import com.richi.common.exception.StorageFileNotFoundException;
 import com.richi.web_part.configuration.StorageProperties;
 
 @Service
-public class StorageServiceImpl implements StorageService{
-    
+public class StorageService {
+
    private final Path rootLocation;
 
-	public StorageServiceImpl(StorageProperties properties) {
+	public StorageService(StorageProperties properties) {
         
         if(properties.getLocation().trim().length() == 0){
             throw new StorageException("File upload location can not be Empty."); 
@@ -33,7 +32,6 @@ public class StorageServiceImpl implements StorageService{
 		this.rootLocation = Path.of(properties.getLocation());
 	}
 
-	@Override
 	public Path store(MultipartFile file) {
 		try {
 			if (file.isEmpty()) {
@@ -58,7 +56,6 @@ public class StorageServiceImpl implements StorageService{
 		return this.rootLocation.resolve(Path.of(file.getOriginalFilename())).normalize();
 	}
 
-	@Override
 	public Path storeInFolder(MultipartFile file, Path folderPath) {
 		try {
 			if (file.isEmpty()) {
@@ -86,7 +83,6 @@ public class StorageServiceImpl implements StorageService{
 		return folderPath.resolve(Path.of(file.getOriginalFilename())).normalize();
 	}
 
-	@Override
 	public Stream<Path> loadAll() {
 		try {
 			return Files.walk(this.rootLocation, 1)
@@ -99,12 +95,10 @@ public class StorageServiceImpl implements StorageService{
 
 	}
 
-	@Override
 	public Path load(String filename) {
 		return rootLocation.resolve(filename);
 	}
 
-	@Override
 	public Resource loadAsResource(String filename) {
 		try {
 			Path file = load(filename);
@@ -123,17 +117,14 @@ public class StorageServiceImpl implements StorageService{
 		}
 	}
 
-	@Override
 	public void deleteFile(Path filePath) throws IOException{
-		boolean deletionResult = Files.deleteIfExists(filePath);
+		Files.deleteIfExists(filePath);
 	}
 
-	@Override
 	public void deleteAll() {
 		FileSystemUtils.deleteRecursively(rootLocation.toFile());
 	}
 
-	@Override
 	public void init() {
 		try {
 			Files.createDirectories(rootLocation);
@@ -143,7 +134,6 @@ public class StorageServiceImpl implements StorageService{
 		}
 	}
 
-	@Override
 	public Path getRootLocation() {
 		return rootLocation;
 	}

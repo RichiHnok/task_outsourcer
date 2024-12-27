@@ -167,4 +167,8 @@ public class User {
         return "User [id=" + id + ", login=" + login + ", name=" + name + ", surname=" + surname + ", email=" + email
                 + ", usersRoles=" + usersRoles + "]";
     }
+
+    public boolean hasRole(String roleName){
+        return usersRoles.stream().anyMatch(role -> role.getRoleName().equals(roleName));
+    }
 }

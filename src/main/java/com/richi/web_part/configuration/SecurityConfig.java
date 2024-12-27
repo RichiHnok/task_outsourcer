@@ -44,8 +44,9 @@ public class SecurityConfig {
         return http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> {
+                auth.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
                 auth.requestMatchers("/", "/register", "/login").permitAll();
-                auth.requestMatchers("/task", "/task/**", "/taskHistory").hasAuthority("user");
+                auth.requestMatchers("/task", "/task/**", "/taskHistory", "/placeholder").hasAuthority("user");
                 auth.requestMatchers("/editor", "/editor/**").hasAuthority("admin");
             })
             .formLogin(form -> form

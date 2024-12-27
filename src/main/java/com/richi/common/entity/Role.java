@@ -45,6 +45,10 @@ public class Role {
     public Role() {
     }
 
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
+
     public int getRoleId() {
         return roleId;
     }
@@ -72,5 +76,5 @@ public class Role {
     @Override
     public String toString() {
         return "Role [roleId=" + roleId + ", roleName=" + roleName + "]";
-    }
+    }    
 }

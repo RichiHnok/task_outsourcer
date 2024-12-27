@@ -44,6 +44,17 @@ public class TaskToProcService {
         return taskToProcRepository.save(taskToProc);
     }
 
+    public void createWorkFoldersForTask(int taskToProcId) throws Exception{
+        Path taskInputFolder = getInputFolderForTask(taskToProcId);
+        if(!taskInputFolder.toFile().mkdirs()){
+            throw new Exception("Troubles with creating input folder for task processing");
+        }
+        Path taskOutputFolder = getOutputFolderForTask(taskToProcId);
+        if(!taskOutputFolder.toFile().mkdirs()){
+            throw new Exception("Troubles with creating output folder for task processing");
+        }
+    }
+
     public Path getInputFolderForTask(int id) throws Exception {
         TaskToProc taskToProc = getTaskToProc(id);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");

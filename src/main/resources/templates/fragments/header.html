@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>My Website</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+    <header th:fragment="guest-header">
+        <div class="header">
+            <nav class="navbar">
+                <a href="/" class="nav-title">Richis App</a>
+                <ul class="nav-menu">
+                    <li><a href="/login" class="nav-link">Вход</a></li>
+                    <li><a href="/register" class="nav-link">Регистрация</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <header th:fragment="user-header">
+        <!-- <h1>This is user header</h1> -->
+         <div class="header">
+             <nav class="navbar">
+                <a href="/" class="nav-title">Richis App</a>
+                 <ul class="nav-menu">
+                     <li><a href="/" class="nav-link">Выбор задачи</a></li>
+                     <li><a href="/placeholder" class="nav-link">Запрос админу</a></li>
+                     <li><a href="/placeholder" class="nav-link">Личное</a></li>
+                 </ul>
+             </nav>
+         </div>
+    </header>
+
+    <header th:fragment="admin-header">
+        <h1>This is admin header</h1>
+        <div class="header">
+            <nav class="navbar">
+               <a href="/" class="nav-title">Richis App</a>
+                <ul class="nav-menu">
+                    <li><a href="/" class="nav-link">Выбор задачи</a></li>
+                    <li><a href="/placeholder" class="nav-link">Запрос админу</a></li>
+                    <li><a href="/placeholder" class="nav-link">Личное</a></li>
+                    <li><a href="/" class="nav-link">Редактор</a></li>
+                    <li><a href="/placeholder" class="nav-link">Запросы</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+</body>
+
+</html>
