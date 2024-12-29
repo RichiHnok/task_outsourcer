@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<!-- <scope>test</scope> -->
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -77,11 +77,11 @@
 			<artifactId>flyway-mysql</artifactId>
 		</dependency>
 
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
-		</dependency> -->
-		
+			<scope>runtime</scope>
+		</dependency>	
 	</dependencies>
 
 	<build>
@@ -112,5 +112,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

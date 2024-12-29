@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Richis app</title>
+    <meta content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+	Личная страница
+	Пользователь: <span th:text="${currentUser.name}"></span><span th:text="${currentUser.surname}"></span>
+        <br><br>
+        <a th:href="@{/logout}">
+            <button type="button">Выход</button> 
+        </a>
+</body>
+</html>

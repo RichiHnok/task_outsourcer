@@ -39,7 +39,19 @@ public class FirstController {
     private StorageService storageService;
     
     @RequestMapping("/")
-    public String index(Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception{
+    public String welcomePage(Model model, @AuthenticationPrincipal UserDetails userDetails){
+        if(userDetails == null){
+            model.addAttribute("currentUser", null);
+        }else{
+            User user = userService.getUserByLogin(userDetails.getUsername());
+            // System.out.println(user);
+            model.addAttribute("currentUser", user);
+        }
+        return "welcome";
+    }
+    
+    @RequestMapping("/tasks")
+    public String choosingTask(Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception{
         model.addAttribute("serverTime", new Date());
         model.addAttribute("taskSamples", taskSampleService.getAllTaskSamples());
         if(userDetails == null){
