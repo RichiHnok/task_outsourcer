@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>My Website</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+
+<body>
+	<select th:fragment="choosing-language" name=language onchange="location = this.value;">
+		<option value='' th:text="#{choose_language}"></option>
+		<option value='http://localhost:8081/?locale=ru' th:text="#{russian}"></option>
+		<option value='http://localhost:8081/?locale=en' th:text="#{english}"></option>
+  </select>
+</body>

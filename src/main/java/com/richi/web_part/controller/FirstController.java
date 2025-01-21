@@ -39,29 +39,30 @@ public class FirstController {
     private StorageService storageService;
     
     @RequestMapping("/")
-    public String welcomePage(Model model, @AuthenticationPrincipal UserDetails userDetails){
+    public String welcomePage(
+        Model model
+        , @AuthenticationPrincipal UserDetails userDetails
+    ){
         if(userDetails == null){
             model.addAttribute("currentUser", null);
         }else{
             User user = userService.getUserByLogin(userDetails.getUsername());
-            // System.out.println(user);
             model.addAttribute("currentUser", user);
         }
-        return "welcome";
+        return "index";
     }
     
     @RequestMapping("/tasks")
     public String choosingTask(Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception{
         model.addAttribute("serverTime", new Date());
         model.addAttribute("taskSamples", taskSampleService.getAllTaskSamples());
-        if(userDetails == null){
-            model.addAttribute("currentUser", null);
-        }else{
-            User user = userService.getUserByLogin(userDetails.getUsername());
-            // System.out.println(user);
-            model.addAttribute("currentUser", user);
-        }
-        return "index";
+        // if(userDetails == null){
+        //     model.addAttribute("currentUser", null);
+        // }else{
+        //     User user = userService.getUserByLogin(userDetails.getUsername());
+        //     model.addAttribute("currentUser", user);
+        // }
+        return "tasks/choosing-task";
     }
 
     @RequestMapping("/editor")
@@ -75,7 +76,7 @@ public class FirstController {
         model.addAttribute("taskSample", taskSample);
         TaskValues taskValues = new TaskValues(taskSample);
         model.addAttribute("taskValues", taskValues);
-        return "launching-task";
+        return "tasks/launching-task";
     }
 
     @RequestMapping("/task/{id}/start")
@@ -100,26 +101,11 @@ public class FirstController {
 
         storageService.storeInFolder(file, taskToProcService.getInputFolderForTask(task.getId()));
         
-        return "task-launched-info";
+        return "tasks/task-launched-info";
     }
 
     @RequestMapping("/placeholder")
     public String placeholder(){
         return "placeholder";
-    }
-
-    //TODO deprecated method
-    @RequestMapping("/set-user")
-    public String setUserInSession(Model model){
-        List<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
-        return "set-user";
-    }
-
-    //TODO deprecated method
-    @RequestMapping("/set-user/setting")
-    public String ssetUserInSession(@RequestParam int selectedUser, Model model) throws Exception{
-        model.addAttribute("currentUser", userService.getUser(selectedUser));
-        return "redirect:/";
     }
 }

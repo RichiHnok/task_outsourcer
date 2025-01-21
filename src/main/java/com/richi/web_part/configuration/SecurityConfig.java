@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices.RememberMeTokenAlgorithm;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,10 +47,11 @@ public class SecurityConfig {
         return http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> {
+                auth.requestMatchers("/**").permitAll();
                 auth.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
                 auth.requestMatchers("/", "/register", "/login").permitAll();
-                auth.requestMatchers("/task", "/task/**", "/taskHistory", "/personal", "/tasks", "/placeholder").hasAuthority("user");
-                auth.requestMatchers("/editor", "/editor/**").hasAuthority("admin");
+                auth.requestMatchers("/task", "/task/**", "/taskHistory", "/personal", "/tasks", "/placeholder").hasAuthority("ROLE_USER");
+                auth.requestMatchers("/editor", "/editor/**").hasAuthority("ROLE_ADMIN");
             })
             .formLogin(form -> form
                 .loginPage("/login")
@@ -58,6 +62,9 @@ public class SecurityConfig {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/")
                 .permitAll()
+            )
+            .rememberMe(remember -> remember
+                .rememberMeServices(rememberMeServices(userDetailsService()))
             )
             .build();
     }
@@ -85,5 +92,13 @@ public class SecurityConfig {
                 }
             }
         };
+    }
+
+    @Bean
+    RememberMeServices rememberMeServices(UserDetailsService userDetailsService){
+        RememberMeTokenAlgorithm encodingAlgorithm = RememberMeTokenAlgorithm.SHA256;
+        TokenBasedRememberMeServices rememberMe = new TokenBasedRememberMeServices("key", userDetailsService, encodingAlgorithm);
+        rememberMe.setMatchingAlgorithm(RememberMeTokenAlgorithm.MD5);
+        return rememberMe;
     }
 }

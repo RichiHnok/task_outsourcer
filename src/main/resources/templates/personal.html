@@ -6,11 +6,13 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
 </head>
 <body>
-	Личная страница
-	Пользователь: <span th:text="${currentUser.name}"></span><span th:text="${currentUser.surname}"></span>
-        <br><br>
-        <a th:href="@{/logout}">
-            <button type="button">Выход</button> 
-        </a>
+    <span th:text="#{s-personal-cabinet}"/>
+    <br>
+	<span th:text="#{s-user}"/>: <span th:text="${user.name}"></span> <span th:text="${user.surname}"></span>
+    <br><br>
+    <a th:href="@{/logout}">
+        <button type="button" th:text="#{b-logout}"></button> 
+    </a>
+    <!-- <div th:insert="fragments/personal-cab.html :: task-history"></div> -->
 </body>
 </html>

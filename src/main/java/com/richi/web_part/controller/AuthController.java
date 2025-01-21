@@ -33,7 +33,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, String roleName, Model model) throws Exception{
+    public String registerUser(
+        @ModelAttribute User user
+        , String roleName
+        , Model model
+    ) throws Exception{
         try{
             if(userService.getUserByLogin(user.getLogin()) != null){
                 model.addAttribute("error", "Username is already taken");

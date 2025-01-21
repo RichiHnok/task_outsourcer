@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Richis app</title>
+    <meta content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+</head>
+<body>
+	<div th:if="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: admin-header"></div>
+	<div th:unless="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: user-header"></div>
+	
+	<h2>Задачи:</h2>
+	<div th:each="taskSample : ${taskSamples}">
+		<a th:href="@{/task/{id}(id = ${taskSample.id})}">
+				<span th:text="${taskSample.name}"/><br><br>
+		</a>
+	</div>
+</body>
+</html>

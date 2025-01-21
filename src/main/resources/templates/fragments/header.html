@@ -11,37 +11,40 @@
         <div class="header">
             <nav class="navbar">
                 <a href="/" class="nav-title">Richis App</a>
+                <div th:insert="fragments/components.html :: choosing-language"></div>
                 <ul class="nav-menu">
-                    <li><a href="/login" class="nav-link">Вход</a></li>
-                    <li><a href="/register" class="nav-link">Регистрация</a></li>
+                    <li><a href="/login" class="nav-link" th:text="#{sign-in}"></a></li>
+                    <li><a href="/register" class="nav-link" th:text="#{sign-out}"></a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <header th:fragment="user-header">
-         <div class="header">
-             <nav class="navbar">
+        <div class="header">
+            <nav class="navbar">
                 <a href="/" class="nav-title">Richis App</a>
-                 <ul class="nav-menu">
-                     <li><a href="/tasks" class="nav-link">Выбор задачи</a></li>
-                     <li><a href="/placeholder" class="nav-link">Запрос админу</a></li>
-                     <li><a href="/personal" class="nav-link">Личное</a></li>
-                 </ul>
-             </nav>
-         </div>
+                <div th:insert="fragments/components.html :: choosing-language"></div>
+                <ul class="nav-menu">
+                    <li><a href="/tasks" class="nav-link" th:text="#{choosing-task}"></a></li>
+                    <li><a href="/placeholder" class="nav-link" th:text="#{request-to-admin}"></a></li>
+                    <li><a href="/personal" class="nav-link" th:text="#{personal-cabinet}"></a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
     <header th:fragment="admin-header">
         <div class="header">
             <nav class="navbar">
-               <a href="/" class="nav-title">Richis App</a>
+                <a href="/" class="nav-title">Richis App</a>
+                <div th:insert="fragments/components.html :: choosing-language"></div>
                 <ul class="nav-menu">
-                    <li><a href="/tasks" class="nav-link">Выбор задачи</a></li>
-                    <li><a href="/placeholder" class="nav-link">Запрос админу</a></li>
-                    <li><a href="/personal" class="nav-link">Личное</a></li>
-                    <li><a href="/editor" class="nav-link">Редактор</a></li>
-                    <li><a href="/placeholder" class="nav-link">Запросы</a></li>
+                    <li><a href="/tasks" class="nav-link" th:text="#{choosing-task}"></a></li>
+                    <li><a href="/placeholder" class="nav-link" th:text="#{request-to-admin}"></a></li>
+                    <li><a href="/personal" class="nav-link" th:text="#{personal-cabinet}"></a></li>
+                    <li><a href="/editor" class="nav-link" th:text="#{editor}"></a></li>
+                    <li><a href="/placeholder" class="nav-link" th:text="#{requests-from-users}"></a></li>
                 </ul>
             </nav>
         </div>

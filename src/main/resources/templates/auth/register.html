@@ -2,43 +2,47 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>Регистрация</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <title th:text="#{t-sign-up}"></title>
 </head>
 <body>
+    <div th:insert="fragments/header.html :: guest-header"></div>
     <div>
-        <h2>Регистрация</h2>
+        <h2 th:text="#{h-sign-up}"></h2>
         <form th:action="@{/register}" th:object="${user}" method="post">
             <table>
                 <tr>
-                    <td><label for="login">Логин:</label></td>
+                    <td><label for="login" th:text="#{l-login}"></label>:</td>
                     <td><input type="text" id="login" th:field="*{login}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="First name">Имя:</label></td>
+                    <td><label for="First name" th:text="#{l-first-name}"></label>:</td>
                     <td><input type="text" id="name" th:field="*{name}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="Surname">Фамилия:</label></td>
+                    <td><label for="Surname" th:text="#{l-last-name}"></label>:</td>
                     <td><input type="text" id="surname" th:field="*{surname}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="password">Пароль:</label></td>
+                    <td><label for="password" th:text="#{l-password}"></label>:</td>
                     <td><input type="password" id="password" th:field="*{password}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="email">Почта:</label></td>
+                    <td><label for="email" th:text="#{l-email}"></label>:</td>
                     <td><input type="email"id="email" th:field="*{email}"/></td>
+                </tr>
+                <tr>
+                    <td><label for="role" th:text="#{l-choosing-role}"></label>:</td>
+                    <td>
+                        <select id="role" name="roleName">
+                            <option value="" disabled selected th:text="#{o-choose-role}"></option>
+                            <option th:each="role : ${roles}" th:value="${role.roleName}" th:text="${role.roleName}"></option>
+                        </select>
+                    </td>
                 </tr>
             </table>
             <div>
-                <label for="role">Выбор роли:</label>
-                <select id="role" name="roleName">
-                    <option value="" disabled selected>Выберите вашу роль</option>
-                    <option th:each="role : ${roles}" th:value="${role.roleName}" th:text="${role.roleName}"></option>
-                </select>
-            </div>
-            <div>
-                <button type="submit">Зарегистрироваться</button>
+                <button type="submit" th:text="#{b-sign-up}"></button>
             </div>
             <div th:if="${error}">
                 <p th:text="${error}"></p>

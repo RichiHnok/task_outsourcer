@@ -1,58 +1,35 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
-    <title>Richis app</title>
-    <meta content="text/html; charset=UTF-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+	<title th:text="#{welcome}"></title>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+	<meta content="text/html; charset=UTF-8">
 </head>
 <body>
-    <div th:if="${currentUser}">
-        
-        <div th:if="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: admin-header"></div>
-        <div th:unless="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: user-header"></div>
+	<div th:if="${currentUser}">
+		<div th:if="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: admin-header"></div>
+		<div th:unless="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: user-header"></div>
+	</div>
+	<div th:unless="${currentUser}">
+		<div th:insert="fragments/header.html :: guest-header"></div>
+	</div>
+	<h2>Richis App</h2>
+<!-- 
+	<span th:text="#{hello}"></span><br>
+	<span th:text="#{welcome}"></span><br>
 
-        <!-- <p th:text="${currentUser.usersRoles}">Roles will be displayed here</p> -->
-        <!-- <div th:if="${currentUser.hasRole('admin')}">
-            <p>User has admin role.</p>
-        </div>
-        <div th:unless="${currentUser.hasRole('admin')}">
-            <p>User does not have admin role.</p>
-        </div>
-        <div th:if="${currentUser.hasRole('user')}">
-            <p>User has user role.</p>
-        </div>
-        <div th:unless="${currentUser.hasRole('user')}">
-            <p>User does not have user role.</p>
-        </div> -->
+	<select name=language onchange="location = this.value;">
+		<option value='' th:text="#{choose_language}"></option>
+		<option value='http://localhost:8081/?locale=ru' th:text="#{russian}"></option>
+		<option value='http://localhost:8081/?locale=en' th:text="#{english}"></option>
+	</select> -->
+<!-- 
+	<button type="button" th:text="#{switch-ru}" onclick="window.location.href='http://localhost:8081/?locale=ru'"></button>
+	<button type="button" th:text="#{switch-en}" onclick="window.location.href='http://localhost:8081/?locale=en'"></button> -->
 
-        <br>
-        <a th:href="@{/editor}">
-            <button type="button">Редактор</button> 
-        </a>
-        <br>
-        <a th:href="@{/taskHistory}">
-            <button type="button">История задач</button> 
-        </a>
-        <br>
-        
-        <h2>Задачи:</h2>
-        <div th:each="taskSample : ${taskSamples}">
-            <a th:href="@{/task/{id}(id = ${taskSample.id})}">
-                <span th:text="${taskSample.name}"/><br><br>
-            </a>
-        </div>
-    </div>
-    <div th:unless="${currentUser}">
-        <div th:insert="fragments/header.html :: guest-header"></div>
-        Неавторизованный пользователь 
-        <br> 
-        <a th:href="@{/login}">
-            <button type="button">Вход</button> 
-        </a>
-        <br> 
-        <a th:href="@{/register}">
-            <button type="button">Регистрация</button> 
-        </a>
-    </div>
+	<!-- <form th:action="@{/set-cookie}">
+		<input type="text" th:value="${valueForCookie}" name="valueForCookie">
+		<input type="submit">
+	</form> -->
 </body>
 </html>
