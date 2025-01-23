@@ -2,9 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>My Website</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+	<meta charset='utf-8'>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+	<script type="text/javascript" th:src="@{/js/script.js}"></script>
+	<title th:text="#{placeholder}"></title>
 </head>
+
 <body>
 	<div th:fragment="task-history">
 		<h2>История выполнения задач:</h2>

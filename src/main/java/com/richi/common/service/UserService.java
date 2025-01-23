@@ -8,20 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.richi.common.entity.Role;
 import com.richi.common.entity.User;
-import com.richi.common.repository.RoleRepository;
 import com.richi.common.repository.UserRepository;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private RoleRepository roleRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     public User getUserByLogin(String login) throws NoSuchElementException{
         Optional<User> user = userRepository.findByLogin(login);
@@ -52,15 +46,8 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-    public User registerUser(User user, String roleName) throws Exception{
+    public User registerUser(User user) throws Exception{
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Optional<Role> optRole = roleRepository.findByRoleName(roleName);
-        if(optRole.isPresent()){
-            Role selectedRole = optRole.get();
-            user.addRoleToUser(selectedRole);
-            return userRepository.save(user);
-        }else{
-            throw new Exception("Cannot find role " + roleName);
-        }
+        return userRepository.save(user);
     }
 }

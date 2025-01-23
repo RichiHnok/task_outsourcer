@@ -3,10 +3,12 @@
 <head>
     <meta charset='utf-8'>
 	<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
     <title th:text="#{t-sign-up}"></title>
 </head>
 <body>
-    <div th:insert="fragments/header.html :: guest-header"></div>
+    <div th:insert="~{fragments/header.html :: app-header}"></div>
+    
     <div>
         <h2 th:text="#{h-sign-up}"></h2>
         <form th:action="@{/register}" th:object="${user}" method="post">
@@ -34,9 +36,13 @@
                 <tr>
                     <td><label for="role" th:text="#{l-choosing-role}"></label>:</td>
                     <td>
-                        <select id="role" name="roleName">
-                            <option value="" disabled selected th:text="#{o-choose-role}"></option>
-                            <option th:each="role : ${roles}" th:value="${role.roleName}" th:text="${role.roleName}"></option>
+                        <select id="role" name="roleName" th:field="*{userRole}" onchange="disablePlaceholder(this)">
+                            <option value="" th:text="#{o-choose-role}"></option>
+                            <option
+                                th:each="roleVal : ${T(com.richi.common.enums.UserRole).values()}"
+                                th:value="${roleVal}"
+                                th:text="${roleVal}">
+                            </option>
                         </select>
                     </td>
                 </tr>

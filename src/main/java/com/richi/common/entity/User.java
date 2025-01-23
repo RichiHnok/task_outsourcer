@@ -1,20 +1,18 @@
 package com.richi.common.entity;
 
-import java.util.Set;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
+import com.richi.common.enums.UserRole;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -42,13 +40,9 @@ public class User {
     @Column(name = "email")
     private String email;
     
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "user_role"
-        , joinColumns = @JoinColumn(name = "user_id")
-        , inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> usersRoles;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role")
+    private UserRole userRole;
 
     @OneToMany(/* cascade = CascadeType.ALL,  */mappedBy = "user", fetch = FetchType.EAGER)
     private List<TaskToProc> tasksToProc;
@@ -65,13 +59,6 @@ public class User {
     public User(String name, String surname) {
         this.name = name;
         this.surname = surname;
-    }
-
-    public void addRoleToUser(Role role){
-        if(usersRoles == null){
-            usersRoles = new HashSet<>();
-        }
-        usersRoles.add(role);
     }
 
     public void addTaskOfThisUser(TaskToProc taskToProc){
@@ -138,14 +125,6 @@ public class User {
         this.login = login;
     }
 
-    public Set<Role> getUsersRoles() {
-        return usersRoles;
-    }
-
-    public void setUsersRoles(Set<Role> usersRoles) {
-        this.usersRoles = usersRoles;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -162,13 +141,17 @@ public class User {
         this.tasksToProc = tasksToProc;
     }
 
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", login=" + login + ", name=" + name + ", surname=" + surname + ", email=" + email
-                + ", usersRoles=" + usersRoles + "]";
+    public UserRole getUserRole() {
+        return userRole;
     }
 
-    public boolean hasRole(String roleName){
-        return usersRoles.stream().anyMatch(role -> role.getRoleName().equals(roleName));
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", login=" + login + ", name=" + name + ", surname=" + surname + ", userRole="
+                + userRole + "]";
     }
 }

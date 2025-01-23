@@ -47,16 +47,16 @@ public class SecurityConfig {
         return http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> {
-                auth.requestMatchers("/**").permitAll();
+                auth.requestMatchers("/").permitAll();
                 auth.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
-                auth.requestMatchers("/", "/register", "/login").permitAll();
-                auth.requestMatchers("/task", "/task/**", "/taskHistory", "/personal", "/tasks", "/placeholder").hasAuthority("ROLE_USER");
+                auth.requestMatchers("/register", "/login").anonymous();
+                auth.requestMatchers("/task", "/task/**", "/taskHistory", "/personal", "/tasks", "/placeholder").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
                 auth.requestMatchers("/editor", "/editor/**").hasAuthority("ROLE_ADMIN");
             })
             .formLogin(form -> form
                 .loginPage("/login")
                 .successHandler(customAuthenticationSuccessHandler())
-                .permitAll()
+                .permitAll(false)
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")

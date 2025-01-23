@@ -2,18 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset='utf-8'>
-    <title>Page Title</title>
-    <style>
-		table,
-		th,
-		td {
-			border: 1px solid gray;
-			vertical-align: middle;
-			text-align: start;
-		}
-	</style>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <title th:text="#{placeholder}"></title>
 </head>
 <body>
+    <div th:insert="~{fragments/header.html :: app-header}"></div>
+
     Back to main Page
     
     <a th:href="@{/}">

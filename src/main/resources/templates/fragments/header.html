@@ -2,16 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>My Website</title>
+    <meta charset='utf-8'>
     <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <title th:text="#{placeholder}"></title>
 </head>
 
 <body>
+
+    <div th:fragment="app-header">
+        <div sec:authorize="isAuthenticated()">
+            <div sec:authorize="hasRole('ROLE_ADMIN')" th:insert="~{fragments/header.html :: admin-header}"></div>
+            <div sec:authorize="hasRole('ROLE_USER')" th:insert="~{fragments/header.html :: user-header}"></div>
+        </div>
+        <div sec:authorize="!isAuthenticated()">
+            <div th:insert="~{fragments/header.html :: guest-header}"></div>
+        </div>
+    </div>
+
     <header th:fragment="guest-header">
         <div class="header">
             <nav class="navbar">
                 <a href="/" class="nav-title">Richis App</a>
-                <div th:insert="fragments/components.html :: choosing-language"></div>
+                <div th:insert="~{fragments/components.html :: choosing-language}"></div>
                 <ul class="nav-menu">
                     <li><a href="/login" class="nav-link" th:text="#{sign-in}"></a></li>
                     <li><a href="/register" class="nav-link" th:text="#{sign-out}"></a></li>
@@ -24,7 +37,7 @@
         <div class="header">
             <nav class="navbar">
                 <a href="/" class="nav-title">Richis App</a>
-                <div th:insert="fragments/components.html :: choosing-language"></div>
+                <div th:insert="~{fragments/components.html :: choosing-language}"></div>
                 <ul class="nav-menu">
                     <li><a href="/tasks" class="nav-link" th:text="#{choosing-task}"></a></li>
                     <li><a href="/placeholder" class="nav-link" th:text="#{request-to-admin}"></a></li>
@@ -38,7 +51,7 @@
         <div class="header">
             <nav class="navbar">
                 <a href="/" class="nav-title">Richis App</a>
-                <div th:insert="fragments/components.html :: choosing-language"></div>
+                <div th:insert="~{fragments/components.html :: choosing-language}"></div>
                 <ul class="nav-menu">
                     <li><a href="/tasks" class="nav-link" th:text="#{choosing-task}"></a></li>
                     <li><a href="/placeholder" class="nav-link" th:text="#{request-to-admin}"></a></li>

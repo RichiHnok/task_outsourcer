@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title th:text="#{welcome}"></title>
-	<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
-    <title>Page Title</title>
+    <meta charset='utf-8'>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <title th:text="#{placeholder}"></title>
 </head>
 <body>
-    <div th:if="${currentUser}">
-		<div th:if="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: admin-header"></div>
-		<div th:unless="${currentUser.hasRole('admin')}" th:insert="fragments/header.html :: user-header"></div>
-	</div>
-	<div th:unless="${currentUser}">
-		<div th:insert="fragments/header.html :: guest-header"></div>
-	</div>
+    <div th:insert="~{fragments/header.html :: app-header}"></div>
+
     This is placeholder page
 </body>
 </html>

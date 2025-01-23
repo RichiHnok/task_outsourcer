@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Need to add title</title>
+    <meta charset='utf-8'>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <title th:text="#{placeholder}"></title>
 </head>
 <body>
+    <div th:insert="~{fragments/header.html :: app-header}"></div>
     Back to main Page
     <a th:href="@{/}">
         <button type="button">Main page</button> 

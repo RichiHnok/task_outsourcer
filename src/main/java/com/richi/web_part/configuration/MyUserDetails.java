@@ -1,7 +1,7 @@
 package com.richi.web_part.configuration;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,10 +23,14 @@ public class MyUserDetails implements UserDetails{
         // .map(role -> role.getRoleName())
         // .map(SimpleGrantedAuthority::new)
         // .collect(Collectors.toList()) + "\n");
-        return user.getUsersRoles().stream()
-            .map(role -> role.getRoleName())
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList());
+        var authoritiesList = new ArrayList<SimpleGrantedAuthority>();
+        authoritiesList.add(new SimpleGrantedAuthority(user.getUserRole().name()));
+        return authoritiesList;
+        // return user.getUserRole().stream()
+        //     .map(role -> role.getRoleName())
+        //     .map(SimpleGrantedAuthority::new)
+        //     .collect(Collectors.toList());
+        
         // return Arrays.stream(user.getRole().split(", "))
         //     .map(SimpleGrantedAuthority::new)
         //     .collect(Collectors.toList());

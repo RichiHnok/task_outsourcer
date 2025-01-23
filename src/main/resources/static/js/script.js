@@ -1,0 +1,1 @@
+function disablePlaceholder(select) { select.options[0].disabled = true; } 
