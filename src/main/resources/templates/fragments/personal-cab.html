@@ -10,14 +10,14 @@
 
 <body>
 	<div th:fragment="task-history">
-		<h2>История выполнения задач:</h2>
+		<h2 th:text="#{h-task-history}"></h2>
 		<table>
 			<tr>
-				<th>ID</th>
-				<th>Start Time</th>
-				<th>Task</th>
-				<th>Params</th>
-				<th>Status</th>
+				<th th:text="#{th-task-id}"></th>
+				<th th:text="#{th-task-start-time}"></th>
+				<th th:text="#{th-task-name}"></th>
+				<th th:text="#{th-task-params}"></th>
+				<th th:text="#{th-task-status}"></th>
 			</tr>
 			<tr th:each="task : ${tasksToProc}">
 				<td th:text="${task.id}"></td>

@@ -31,6 +31,9 @@ public class TaskValues {
     }
 
     public String getValuesAsJoinedString(){
+        if(values == null){
+            return "";
+        }
         return String.join("~", values);
     }
 }

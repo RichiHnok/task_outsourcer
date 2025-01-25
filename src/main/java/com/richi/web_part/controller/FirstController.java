@@ -26,7 +26,6 @@ import com.richi.common.service.UserService;
 import com.richi.common.service.task_sample_service.TaskSampleService;
 
 @Controller
-@SessionAttributes({"currentUser"})
 public class FirstController {
 
     @Autowired
@@ -43,12 +42,6 @@ public class FirstController {
         Model model
         , @AuthenticationPrincipal UserDetails userDetails
     ){
-        if(userDetails == null){
-            model.addAttribute("currentUser", null);
-        }else{
-            User user = userService.getUserByLogin(userDetails.getUsername());
-            model.addAttribute("currentUser", user);
-        }
         return "index";
     }
     
@@ -56,12 +49,6 @@ public class FirstController {
     public String choosingTask(Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception{
         model.addAttribute("serverTime", new Date());
         model.addAttribute("taskSamples", taskSampleService.getAllTaskSamples());
-        // if(userDetails == null){
-        //     model.addAttribute("currentUser", null);
-        // }else{
-        //     User user = userService.getUserByLogin(userDetails.getUsername());
-        //     model.addAttribute("currentUser", user);
-        // }
         return "tasks/choosing-task";
     }
 
@@ -80,26 +67,34 @@ public class FirstController {
     }
 
     @RequestMapping("/task/{id}/start")
-    public String startProcessingTask(@PathVariable("id") int id
+    public String startProcessingTask(
+        @PathVariable("id") int id
         , @RequestParam("file") MultipartFile file
         , @ModelAttribute("taskValues") TaskValues values
         , Model model
+        , @AuthenticationPrincipal UserDetails userDetails
     ) throws Exception
     {
         TaskSample taskSample = taskSampleService.getTaskSample(id);
 
         model.addAttribute("taskSample", taskSample);
         model.addAttribute("taskValues", values);
+
+        User currentUser = (User) userService.getUserByLogin(userDetails.getUsername());
+
         TaskToProc task = new TaskToProc(
             taskSample,
-            (User) model.getAttribute("currentUser"),
+            currentUser,
             LocalDateTime.now(),
             values.getValuesAsJoinedString()
         );
         task = taskToProcService.saveTaskToProc(task);
         taskToProcService.createWorkFoldersForTask(task.getId());
 
-        storageService.storeInFolder(file, taskToProcService.getInputFolderForTask(task.getId()));
+        // TODO я здесь поставил проверку на нулл для тестирования, наверное
+        if(file != null){
+            storageService.storeInFolder(file, taskToProcService.getInputFolderForTask(task.getId()));
+        }
         
         return "tasks/task-launched-info";
     }

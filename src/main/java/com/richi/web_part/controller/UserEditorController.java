@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.richi.common.entity.User;
 import com.richi.common.service.UserService;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
 @RequestMapping("/editor")
-@SessionAttributes({"currentUser"})
 public class UserEditorController {
     
     @Autowired
@@ -41,10 +39,6 @@ public class UserEditorController {
     @PostMapping(value = "/saveUser", params = "save")
     public String saveTaskSample(@ModelAttribute User user, Model model){
         userService.saveUser(user);
-        User currentUser = (User) model.getAttribute("currentUser");
-        if(user.getId() == currentUser.getId()){
-            model.addAttribute("currentUser", user);
-        }
         return "redirect:/editor/users";
     }
 

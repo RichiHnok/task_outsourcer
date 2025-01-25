@@ -12,11 +12,13 @@
 
     <h2 th:text="#{h-personal-cabinet}"/>
     <br>
-	<span th:text="#{s-user}"/>: <span th:text="${user.name}"></span> <span th:text="${user.surname}"></span>
+	<span th:text="#{s-user}"/>:
+    <span th:text ="${#authentication.getPrincipal().getUser().getName()}"/>
+    <span th:text ="${#authentication.getPrincipal().getUser().getSurname()}"/>
     <br><br>
     <a th:href="@{/logout}">
         <button type="button" th:text="#{b-logout}"></button> 
     </a>
-    <!-- <div th:insert="fragments/personal-cab.html :: task-history"></div> -->
+    <div th:insert="fragments/components.html :: task-history"></div>
 </body>
 </html>
