@@ -1,12 +1,13 @@
 package com.richi.common.entity;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 
 import com.richi.common.enums.TaskToProcStatus;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "task_to_proc")
@@ -22,7 +24,7 @@ public class TaskToProc {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_to_proc_id")
-    private int id;
+    private Integer id;
 
     @ManyToOne(/* cascade = CascadeType.ALL */)
     @JoinColumn(name = "task_sample_id")
@@ -32,15 +34,18 @@ public class TaskToProc {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "start_time")
+    @Column(name = "start_time", updatable = false, nullable = false)
     private LocalDateTime startTime;
 
     @Column(name = "params")
     private String joinedParams;
 
     @Column(name = "status")
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private TaskToProcStatus status = TaskToProcStatus.CREATED;
+
+    @Transient
+    private URI uriToDownloadResult;
 
     public TaskToProc() {
     }
@@ -100,9 +105,17 @@ public class TaskToProc {
         this.status = status;
     }
 
+    public URI getUriToDownloadResult() {
+        return uriToDownloadResult;
+    }
+
+    public void setUriToDownloadResult(URI uriToDownloadResult) {
+        this.uriToDownloadResult = uriToDownloadResult;
+    }
+
     @Override
     public String toString() {
-        return "TaskToProc [id=" + id + ", taskSample=" + taskSample + ", user=" + user + ", startTime=" + startTime
+        return "TaskToProc [id=" + id + ", taskSample=" + taskSample.getName() + ", user=" + user.getLogin() + ", startTime=" + startTime
                 + ", joinedParams=" + joinedParams + "]";
     }
 }

@@ -9,16 +9,12 @@
 <body>
     <div th:insert="~{fragments/header.html :: app-header}"></div>
 
-    User
-    <span th:text ="${#authentication.getPrincipal().getUser().getName()}"/>
-    <span th:text="${#authentication.getPrincipal().getUser().getSurname()}"/> launched <b th:text="${taskSample.name}"/> processing with following params:
+    
+    <span th:text="#{s-text-task-launched-info-1}"/>
+    <b th:text="${taskSample.name}"/>
+    <span th:text="#{s-text-task-launched-info-2}"/>:
     <div th:each="val, itemStat : ${taskValues.values}">
         <span th:text="${taskSample.params[__${itemStat.index}__].name}"/>: <span th:text="${val}"/>
     </div>
-    <br>
-    Back to main Page
-    <a th:href="@{/}">
-        <button type="button">Main page</button> 
-    </a>
 </body>
 </html>

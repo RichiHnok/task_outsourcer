@@ -13,25 +13,68 @@
 		<option value='' th:text="#{choose_language}"></option>
 		<option value='http://localhost:8081/?locale=ru' th:text="#{russian}"></option>
 		<option value='http://localhost:8081/?locale=en' th:text="#{english}"></option>
-  </select>
+	</select>
 
+	<div th:fragment="task-history-for-user">
+		<h2 th:text="#{h-task-history}"></h2>
+		<table>
+			<thead>
+				<tr>
+					<th th:text="#{th-task-id}"></th>
+					<th th:text="#{th-task-start-time}"></th>
+					<th th:text="#{th-task-name}"></th>
+					<th th:text="#{th-task-params}"></th>
+					<th th:text="#{th-task-status}"></th>
+					<th th:text="#{placeholder}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="task, iStat : ${taskPage.content}">
+					<td th:text="${task.id}"></td>
+					<td th:text="${task.startTime}"></td>
+					<td th:text="${task.taskSample.name}"></td>
+					<td th:text="${task.joinedParams}"></td>
+					<td th:text="${task.status}"></td>
+					<div>
+						<td th:if="${task.uriToDownloadResult}" th:href="${task.uriToDownloadResult}" th:text="#{placeholder}"></td>
+						<td th:unless="${task.uriToDownloadResult}">-</td>
+					</div>
+				</tr>
+			</tbody>
+		</table>
+		<div th:if="${taskPage.totalPages > 0}" th:each="pageNumber : ${pageNumbers}">
+			<a th:href="@{/personal(page=${pageNumber})}"
+				th:text=${pageNumber}
+				th:class="${pageNumber==taskPage.number + 1} ? active"></a>
+		</div>
+	</div>
+<!-- 
   <div th:fragment="task-history">
 		<h2 th:text="#{h-task-history}"></h2>
 		<table>
-			<tr>
-				<th th:text="#{th-task-id}"></th>
-				<th th:text="#{th-task-start-time}"></th>
-				<th th:text="#{th-task-name}"></th>
-				<th th:text="#{th-task-params}"></th>
-				<th th:text="#{th-task-status}"></th>
-			</tr>
-			<tr th:each="task : ${tasksToProc}">
-				<td th:text="${task.id}"></td>
-				<td th:text="${task.startTime}"></td>
-				<td th:text="${task.taskSample.name}"></td>
-				<td th:text="${task.joinedParams}"></td>
-				<td th:text="${task.status}"></td>
-			</tr>
+			<thead>
+				<tr>
+					<th th:text="#{th-task-id}"></th>
+					<th th:text="#{th-task-start-time}"></th>
+					<th th:text="#{th-task-name}"></th>
+					<th th:text="#{th-task-params}"></th>
+					<th th:text="#{th-task-status}"></th>
+					<th th:text="#{placeholder}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="task : ${tasksToProc}">
+					<td th:text="${task.id}"></td>
+					<td th:text="${task.startTime}"></td>
+					<td th:text="${task.taskSample.name}"></td>
+					<td th:text="${task.joinedParams}"></td>
+					<td th:text="${task.status}"></td>
+					<div>
+						<td th:if="${task.uriToDownloadResult}" th:href="${task.uriToDownloadResult}" th:text="#{placeholder}"></td>
+						<td th:unless="${task.uriToDownloadResult}">-</td>
+					</div>
+				</tr>
+			</tbody>
 		</table>
-	</div>
+	</div> -->
 </body>

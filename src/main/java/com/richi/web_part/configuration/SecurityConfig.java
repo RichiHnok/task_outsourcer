@@ -51,7 +51,7 @@ public class SecurityConfig {
                 auth.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
                 auth.requestMatchers("/register", "/login").anonymous();
                 auth.requestMatchers("/task", "/task/**", "/taskHistory", "/personal", "/tasks", "/placeholder").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
-                auth.requestMatchers("/editor", "/editor/**").hasAuthority("ROLE_ADMIN");
+                auth.requestMatchers("/editor", "/editor/**", "/controlPanel/**").hasAuthority("ROLE_ADMIN");
             })
             .formLogin(form -> form
                 .loginPage("/login")

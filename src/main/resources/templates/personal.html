@@ -19,6 +19,6 @@
     <a th:href="@{/logout}">
         <button type="button" th:text="#{b-logout}"></button> 
     </a>
-    <div th:insert="fragments/components.html :: task-history"></div>
+    <div th:insert="~{fragments/components.html :: task-history-for-user}"></div>
 </body>
 </html>

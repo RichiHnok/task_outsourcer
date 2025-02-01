@@ -2,7 +2,6 @@ package com.richi.web_part.controller;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.richi.common.entity.TaskSample;
@@ -23,25 +21,24 @@ import com.richi.common.entity.User;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
-import com.richi.common.service.task_sample_service.TaskSampleService;
+import com.richi.common.service.TaskSampleService;
+import com.richi.common.service.TaskToProcFilesService;
 
 @Controller
 public class FirstController {
 
-    @Autowired
-    private TaskSampleService taskSampleService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TaskToProcService taskToProcService;
-    @Autowired
-    private StorageService storageService;
+    @Autowired private TaskSampleService taskSampleService;
+    @Autowired private UserService userService;
+    @Autowired private TaskToProcService taskToProcService;
+    @Autowired private TaskToProcFilesService taskToProcFilesService;
+    @Autowired private StorageService storageService;
     
     @RequestMapping("/")
     public String welcomePage(
         Model model
         , @AuthenticationPrincipal UserDetails userDetails
     ){
+        // System.out.println("\n\n\n" + taskToProcService.getTaskToProcByTopPriority().toString() + "\n\n\n");
         return "index";
     }
     
@@ -89,11 +86,11 @@ public class FirstController {
             values.getValuesAsJoinedString()
         );
         task = taskToProcService.saveTaskToProc(task);
-        taskToProcService.createWorkFoldersForTask(task.getId());
+        taskToProcFilesService.createInputOutputFoldersForTask(task);
 
         // TODO я здесь поставил проверку на нулл для тестирования, наверное
-        if(file != null){
-            storageService.storeInFolder(file, taskToProcService.getInputFolderForTask(task.getId()));
+        if(!file.isEmpty()){
+            storageService.storeInFolder(file, taskToProcFilesService.getInputFolderForTask(task));
         }
         
         return "tasks/task-launched-info";

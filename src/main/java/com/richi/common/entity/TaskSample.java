@@ -26,7 +26,7 @@ public class TaskSample {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_sample_id")
-    private int id;
+    private Integer id;
     
     @Column(name = "name")
     private String name;

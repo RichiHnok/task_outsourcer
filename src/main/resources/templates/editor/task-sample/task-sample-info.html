@@ -22,6 +22,7 @@
         <br>
         Description:<br> <textarea type="text" th:field="*{description}" style="height:100px;width:200px;resize:none"/>
         <br>
+        
         Set <span th:if="${file}">new</span> script file: <input type="file" th:field="*{scriptFile}"/>
         <div th:if="${file}">
             Download current file: <a th:href="${file}" th:text="${fileName}"/>

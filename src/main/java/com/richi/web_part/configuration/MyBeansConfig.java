@@ -17,9 +17,9 @@ public class MyBeansConfig {
 	@Bean
 	public LocaleResolver localeResolver(){
 		CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-      localeResolver.setDefaultLocale(Locale.of("ru"));
-      localeResolver.setDefaultTimeZone(TimeZone.getTimeZone("UTC+3"));
-      return localeResolver;
+		localeResolver.setDefaultLocale(Locale.of("ru"));
+		localeResolver.setDefaultTimeZone(TimeZone.getTimeZone("UTC+3"));
+		return localeResolver;
 	}
 
 	@Bean

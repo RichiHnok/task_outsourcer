@@ -23,7 +23,9 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskSampleParam;
 import com.richi.common.service.StorageService;
-import com.richi.common.service.task_sample_service.TaskSampleService;
+import com.richi.common.service.TaskSampleService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Controller
 @RequestMapping("/editor")
@@ -59,28 +61,44 @@ public class TaskSampleEditorController {
     }
 
     @PostMapping(value = "/saveTaskSample", params = "save")
-    public String saveTaskSample(@ModelAttribute TaskSample taskSample) throws Exception{
+    public String saveTaskSample(
+        @ModelAttribute TaskSample taskSample
+    ) throws Exception{
         //DONE+ При изменении скрипта старого на новый, старый не удаляется. Это надо исправить
         //TODO При заугрузке скрипта, переименовывать его используя название шаблона
         //DONE+ Сделать обработку пустых файлов
         //TODO при изменении параметров удалять старый шаблон и создавать новый, а не изменять старый, чтобы в базе данных в таблице task_to_proc_не былопутаницы с параметрами
 
         // System.out.println("-888-  " + taskSample.getScriptFile().getOriginalFilename());
+        try {
+            TaskSample currentTaskSampleInDB = taskSampleService.getTaskSample(taskSample.getId());
+            String olderScriptPath = currentTaskSampleInDB.getScriptFilePath();
+            if(!taskSample.getScriptFile().isEmpty() && olderScriptPath != null){
+                Path olderFilePath = Path.of(olderScriptPath);
+                storageService.deleteFile(olderFilePath);
+            }
 
-        TaskSample currentTaskSampleInDB = taskSampleService.getTaskSample(taskSample.getId());
-        String olderScriptPath = currentTaskSampleInDB.getScriptFilePath();
-        if(!taskSample.getScriptFile().isEmpty() && olderScriptPath != null){
-            Path olderFilePath = Path.of(olderScriptPath);
-            storageService.deleteFile(olderFilePath);
-        }
-
-        // System.out.println("script file: " + taskSample.getScriptFile().toString());
-        if(!taskSample.getScriptFile().isEmpty()){
-            //TODO стльно торопился поэтому пришлось наговнокодить сохранение файла и запись пути сохранения в базу. Надо поправить
-            Path relativePathToStore = storageService.storeInFolder(taskSample.getScriptFile(), Path.of(taskSampleService.getFolderForStoreScriptFile(taskSample.getId())));
-            taskSample.setScriptFilePath(relativePathToStore.toString());
-        }else{
-            taskSample.setScriptFilePath(olderScriptPath);
+            // System.out.println("script file: " + taskSample.getScriptFile().toString());
+            if(!taskSample.getScriptFile().isEmpty()){
+                //TODO стльно торопился поэтому пришлось наговнокодить сохранение файла и запись пути сохранения в базу. Надо поправить
+                Path relativePathToStore = storageService.storeInFolder(
+                    taskSample.getScriptFile()
+                    , taskSampleService.getFolderForStoringScriptFile(taskSample)
+                );
+                taskSample.setScriptFilePath(relativePathToStore.toString());
+            }else{
+                taskSample.setScriptFilePath(olderScriptPath);
+            }
+        } catch (EntityNotFoundException e) {
+            taskSample = taskSampleService.saveTaskSample(taskSample);
+            if(!taskSample.getScriptFile().isEmpty()){
+                Path relativePathToStore = storageService.storeInFolder(
+                    taskSample.getScriptFile()
+                    , taskSampleService.getFolderForStoringScriptFile(taskSample)
+                );
+                taskSample.setScriptFilePath(relativePathToStore.toString());
+            }
+            
         }
         
         taskSampleService.saveTaskSample(taskSample);
@@ -146,8 +164,9 @@ public class TaskSampleEditorController {
                 MvcUriComponentsBuilder.fromMethodName(
                     TaskSampleEditorController.class,
                     "serveFile",
-                    scriptLocationPath.getFileName().toString()).build().toUri().toString()
-                );
+                    scriptLocationPath.getFileName().toString()
+                ).build().toUri().toString()
+            );
             model.addAttribute("fileName", scriptLocationPath.getFileName());
         }
 
@@ -158,7 +177,7 @@ public class TaskSampleEditorController {
     @RequestMapping("/deleteInfo/taskSample")
     public String deleteTaskSample(@RequestParam("taskSampleId") int id){
         //TODO Сделать удаление в виде изменения статуса (доп. поля) на "REMOVED". Это нужно для того, чтобы при просмотре tasksToProc не пропадала информация о пользователе.
-        taskSampleService.deleteTaskSample(id);
+        taskSampleService.deleteTaskSampleById(id);
         return "redirect:/editor/taskSamples";
     }
 
