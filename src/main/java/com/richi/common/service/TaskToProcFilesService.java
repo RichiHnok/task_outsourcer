@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.enums.TaskToProcStatus;
+import com.richi.web_part.controller.FilesUploadController;
 
 @Service
 public class TaskToProcFilesService {
@@ -25,32 +26,32 @@ public class TaskToProcFilesService {
     }
 
     public Path getWorkFolderForTask(TaskToProc taskToProc) throws Exception {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");
+        // DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");
         Path userFolder = Paths.get("src\\main\\resources\\files\\users\\"
             , taskToProc.getUser().getLogin() 
             , Integer.toString(taskToProc.getTaskSample().getId())
-            + taskToProc.getStartTime().format(dtf)
+            + taskToProc.getId()
         );
         return userFolder;
     }
 
     public Path getInputFolderForTask(TaskToProc taskToProc) throws Exception {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");
+        // DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");
         Path userFolder = Paths.get("src\\main\\resources\\files\\users\\"
             , taskToProc.getUser().getLogin() 
             , Integer.toString(taskToProc.getTaskSample().getId())
-            + taskToProc.getStartTime().format(dtf)
+            + taskToProc.getId()
             , "input"
         );
         return userFolder;
     }
 
     public Path getOutputFolderForTask(TaskToProc taskToProc) throws Exception {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");
+        // DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmssddMMyyyy");
         Path userFolder = Paths.get("src\\main\\resources\\files\\users\\"
             , taskToProc.getUser().getLogin() 
             , Integer.toString(taskToProc.getTaskSample().getId())
-            + taskToProc.getStartTime().format(dtf)
+            + Integer.toString(taskToProc.getId())
             , "output"
         );
         return userFolder;
@@ -60,11 +61,12 @@ public class TaskToProcFilesService {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH-mm-ss-dd-MM-yyyy");
         StringBuilder resultArchiveName = new StringBuilder()
             .append("Result-")
-            .append(task.getTaskSample().getName())
+            .append(task.getTaskSample().getId())
             .append("-")
             .append(task.getUser().getLogin())
             .append("-")
-            .append(task.getStartTime().format(dtf));
+            .append(task.getStartTime().format(dtf))
+            .append(".zip");
         return resultArchiveName.toString();
     }
 
@@ -77,9 +79,9 @@ public class TaskToProcFilesService {
         if(task.getStatus() == TaskToProcStatus.FINISHED)
             task.setUriToDownloadResult(
                 MvcUriComponentsBuilder.fromMethodName(
-                    TaskToProcFilesService.class,
+                    FilesUploadController.class,
                     "serveFile",
-                    getResultArchive(task).toString()
+                    getResultArchive(task).getFileName().toString()
                 ).build().toUri()
             );
     }

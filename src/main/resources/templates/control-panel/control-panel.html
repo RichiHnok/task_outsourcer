@@ -8,32 +8,7 @@
 </head>
 <body>
     <div th:insert="~{fragments/header.html :: app-header}"></div>
-
-    <h2>Task To Proc in DB</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Start Time</th>
-                <th>User</th>
-                <th>Task</th>
-                <th>Params</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="task : ${taskPage}">
-                <td th:text="${task.id}"></td>
-                <td th:text="${task.startTime}"></td>
-                <td th:text="${task.user.name + ' ' + task.user.surname}"></td>
-                <td th:text="${task.taskSample.name}"></td>
-                <td th:text="${task.joinedParams}"></td>
-            </tr>
-        </tbody>
-    </table>
-    <div th:if="${taskPage.totalPages > 0}" th:each="pageNumber : ${pageNumbers}">
-        <a th:href="@{/personal(page=${pageNumber})}"
-            th:text=${pageNumber}
-            th:class="${pageNumber==taskPage.number + 1} ? active"></a>
-    </div>
+    
+    <div th:insert="~{fragments/components.html :: task-history-for-all-users}"></div>
 </body>
 </html>

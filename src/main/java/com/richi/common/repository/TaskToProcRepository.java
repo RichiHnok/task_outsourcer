@@ -17,4 +17,5 @@ public interface TaskToProcRepository extends JpaRepository<TaskToProc, Integer>
     List<TaskToProc> findAllByOrderByStartTimeDesc();
     Page<TaskToProc> findAllByOrderByStartTimeDesc(Pageable pageable);
     TaskToProc findFirstByStatusOrderByUser_PriorityDescStartTimeDesc(TaskToProcStatus status);
+    TaskToProc deleteById(int taskId);
 }

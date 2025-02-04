@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskToProc;
@@ -15,6 +16,7 @@ import com.richi.common.service.TaskToProcFilesService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.ZipService;
 
+@Service
 public class TaskManager extends Thread{
 
     @Autowired private TaskToProcService taskToProcService;
@@ -38,8 +40,9 @@ public class TaskManager extends Thread{
         
     }
 
-    private void doTask(TaskToProc task) throws Exception{
-        String scriptPath = taskSampleService.getFolderForStoringScriptFile(task.getTaskSample()).toString();
+    //TODO должен быть приватным методом
+    public void doTask(TaskToProc task) throws Exception{
+        String scriptPath = task.getTaskSample().getScriptFilePath().toString();
         ProcessBuilder processBuilder = new ProcessBuilder(
             "python"
             , scriptPath
@@ -52,18 +55,19 @@ public class TaskManager extends Thread{
 
         demoProcess.waitFor();
 
-        BufferedReader bufferedReader = new BufferedReader(
-            new InputStreamReader(
-                demoProcess.getInputStream()
-            )
-        );
+        //TODO Надо как-то сообразить передачу сообщений о результате выполнения из скрипта
+        // BufferedReader bufferedReader = new BufferedReader(
+        //     new InputStreamReader(
+        //         demoProcess.getInputStream()
+        //     )
+        // );
 
-        String outputLine = "";
-        outputLine = bufferedReader.readLine();
+        // String outputLine = "";
+        // outputLine = bufferedReader.readLine();
 
-        if (!outputLine.equals("end")) {
-            throw new Exception();
-        }
+        // if (!outputLine.equals("end")) {
+        //     throw new Exception();
+        // }
         
         taskToProcService.updateTaskStatus(task, TaskToProcStatus.FINISHED);
         zipService.zipDirectory(

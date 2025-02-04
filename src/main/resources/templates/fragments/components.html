@@ -16,16 +16,16 @@
 	</select>
 
 	<div th:fragment="task-history-for-user">
-		<h2 th:text="#{h-task-history}"></h2>
-		<table>
+		<h2 th:text="#{h.task-history-for-user}"></h2>
+		<table border="1">
 			<thead>
 				<tr>
-					<th th:text="#{th-task-id}"></th>
-					<th th:text="#{th-task-start-time}"></th>
-					<th th:text="#{th-task-name}"></th>
-					<th th:text="#{th-task-params}"></th>
-					<th th:text="#{th-task-status}"></th>
-					<th th:text="#{placeholder}"></th>
+					<th th:text="#{th.task-id}"></th>
+					<th th:text="#{th.task-start-time}"></th>
+					<th th:text="#{th.task-name}"></th>
+					<th th:text="#{th.task-params}"></th>
+					<th th:text="#{th.task-status}"></th>
+					<th th:text="#{th.download-link}"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -36,45 +36,72 @@
 					<td th:text="${task.joinedParams}"></td>
 					<td th:text="${task.status}"></td>
 					<div>
-						<td th:if="${task.uriToDownloadResult}" th:href="${task.uriToDownloadResult}" th:text="#{placeholder}"></td>
+						<td th:if="${task.uriToDownloadResult}">
+							<a th:href="${task.uriToDownloadResult}" th:text="#{placeholder}"></a>
+						</td>
 						<td th:unless="${task.uriToDownloadResult}">-</td>
 					</div>
 				</tr>
 			</tbody>
 		</table>
-		<div th:if="${taskPage.totalPages > 0}" th:each="pageNumber : ${pageNumbers}">
+		<div th:if="${taskPage.totalPages > 0}"
+			th:each="pageNumber : ${pageNumbers}"
+			class="pagination">
 			<a th:href="@{/personal(page=${pageNumber})}"
 				th:text=${pageNumber}
 				th:class="${pageNumber==taskPage.number + 1} ? active"></a>
 		</div>
 	</div>
-<!-- 
-  <div th:fragment="task-history">
-		<h2 th:text="#{h-task-history}"></h2>
-		<table>
+
+	<div th:fragment="task-history-for-all-users">
+		<h2 th:text="#{h.task-history-for-all-users}">Task To Proc in DB</h2>
+		<table border="1">
 			<thead>
 				<tr>
-					<th th:text="#{th-task-id}"></th>
-					<th th:text="#{th-task-start-time}"></th>
-					<th th:text="#{th-task-name}"></th>
-					<th th:text="#{th-task-params}"></th>
-					<th th:text="#{th-task-status}"></th>
-					<th th:text="#{placeholder}"></th>
+					<th th:text="#{th.task-id}">ID</th>
+					<th th:text="#{th.task-start-time}">Start Time</th>
+					<th th:text="#{th.task-user}">User</th>
+					<th th:text="#{th.task-name}">Task</th>
+					<th th:text="#{th.task-params}">Params</th>
+					<th th:text="#{th.task-status}">Status</th>
+					<th th:text="#{placeholder}">Delete</th>
+					<th th:text="#{th.task-start-button}"></th>
+					<th th:text="#{th.task-stop-button}"></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="task : ${tasksToProc}">
+				<tr th:each="task : ${taskPage}">
 					<td th:text="${task.id}"></td>
 					<td th:text="${task.startTime}"></td>
+					<td th:text="${task.user.name + ' ' + task.user.surname}"></td>
 					<td th:text="${task.taskSample.name}"></td>
 					<td th:text="${task.joinedParams}"></td>
 					<td th:text="${task.status}"></td>
-					<div>
-						<td th:if="${task.uriToDownloadResult}" th:href="${task.uriToDownloadResult}" th:text="#{placeholder}"></td>
-						<td th:unless="${task.uriToDownloadResult}">-</td>
-					</div>
+					<td>
+						<form th:action="@{/controlPanel/delete/{taskId}(taskId=${task.id})}" method="post">
+							<button type="subbmit">Delete</button>
+						</form>
+					</td>
+					<td>
+						<form th:if="${task.status.name() == 'CREATED'}"
+							th:action="@{/controlPanel/launch/{taskId}(taskId=${task.id})}" method="post">
+							<button type="subbmit">Start</button>
+						</form>
+					</td>
+					<td>
+						<form  th:if="${task.status.name() == 'IN_PROCESSING'}"
+							th:action="@{/controlPanel/stop/{taskId}(taskId=${task.id})}" method="post">
+							<button type="subbmit">Stop</button>
+						</form>
+					</td>
 				</tr>
 			</tbody>
 		</table>
-	</div> -->
+		<div th:if="${taskPage.totalPages > 0}"
+			th:each="pageNumber : ${pageNumbers}"
+			class="pagination">
+			<a th:href="@{/personal(page=${pageNumber})}" th:text=${pageNumber}
+				th:class="${pageNumber==taskPage.number + 1} ? active"></a>
+		</div>
+	</div>
 </body>

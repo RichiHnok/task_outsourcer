@@ -23,11 +23,17 @@
     align-items: center;
     gap: 50px;
 }
-/* 
-.nav-link{
-    width: 100px;
-} */
 
+.pagination {
+    display: inline-block;
+}
+
+.pagination a {
+    color: darkblue;
+    float: left;
+    padding: 1px 4px;
+    text-decoration: none;
+}
 body {
     margin-top: 60px;
 }
