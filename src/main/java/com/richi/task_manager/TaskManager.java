@@ -73,7 +73,7 @@ public class TaskManager extends Thread{
         zipService.zipDirectory(
             taskToProcFilesService.getOutputFolderForTask(task)
             , taskToProcFilesService.getWorkFolderForTask(task)
-            , taskToProcFilesService.getNameForResultFile(task)
+            , taskToProcFilesService.getNameForResultFile(task, false)
         );
     }
 }

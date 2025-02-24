@@ -5,11 +5,8 @@ import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import com.richi.common.entity.TaskToProc;
-import com.richi.common.enums.TaskToProcStatus;
-import com.richi.web_part.controller.FilesUploadController;
 
 @Service
 public class TaskToProcFilesService {
@@ -57,7 +54,8 @@ public class TaskToProcFilesService {
         return userFolder;
     }
 
-    public String getNameForResultFile(TaskToProc task){
+    //TODO Как будто отдельный аргумент для возврата названия с или без '.zip' выглядит не очень
+    public String getNameForResultFile(TaskToProc task, boolean withZipEnding){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH-mm-ss-dd-MM-yyyy");
         StringBuilder resultArchiveName = new StringBuilder()
             .append("Result-")
@@ -65,24 +63,25 @@ public class TaskToProcFilesService {
             .append("-")
             .append(task.getUser().getLogin())
             .append("-")
-            .append(task.getStartTime().format(dtf))
-            .append(".zip");
+            .append(task.getStartTime().format(dtf));
+        if(withZipEnding)
+            resultArchiveName.append(".zip");
         return resultArchiveName.toString();
     }
 
     public Path getResultArchive(TaskToProc task) throws Exception{
-        Path resultFilePath = getWorkFolderForTask(task).resolve(getNameForResultFile(task));
+        Path resultFilePath = getWorkFolderForTask(task).resolve(getNameForResultFile(task, true));
         return resultFilePath;
     }
 
-    public void setUriToDownloadResult(TaskToProc task) throws Exception{
-        if(task.getStatus() == TaskToProcStatus.FINISHED)
-            task.setUriToDownloadResult(
-                MvcUriComponentsBuilder.fromMethodName(
-                    FilesUploadController.class,
-                    "serveFile",
-                    getResultArchive(task).getFileName().toString()
-                ).build().toUri()
-            );
-    }
+    // public void setUriToDownloadResult(TaskToProc task) throws Exception{
+    //     if(task.getStatus() == TaskToProcStatus.FINISHED)
+    //         task.setUriToDownloadResult(
+    //             MvcUriComponentsBuilder.fromMethodName(
+    //                 FilesUploadController.class,
+    //                 "serveFile",
+    //                 getResultArchive(task).getFileName().toString()
+    //             ).build().toUri()
+    //         );
+    // }
 }

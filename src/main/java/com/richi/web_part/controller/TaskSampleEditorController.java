@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskSampleParam;
@@ -155,13 +154,13 @@ public class TaskSampleEditorController {
 
         if(taskSample.getScriptFilePath() != null){
             Path scriptLocationPath = Path.of(taskSample.getScriptFilePath());
-            model.addAttribute("file",
-                MvcUriComponentsBuilder.fromMethodName(
-                    FilesUploadController.class,
-                    "serveFile",
-                    scriptLocationPath.getFileName().toString()
-                ).build().toUri().toString()
-            );
+            //! model.addAttribute("file",
+            //!     MvcUriComponentsBuilder.fromMethodName(
+            //!         FilesUploadController.class,
+            //!         "serveFile",
+            //!         scriptLocationPath.getFileName().toString()
+            //!     ).build().toUri().toString()
+            //! );
             model.addAttribute("fileName", scriptLocationPath.getFileName());
         }
 

@@ -36,10 +36,10 @@
 					<td th:text="${task.joinedParams}"></td>
 					<td th:text="${task.status}"></td>
 					<div>
-						<td th:if="${task.uriToDownloadResult}">
-							<a th:href="${task.uriToDownloadResult}" th:text="#{placeholder}"></a>
+						<td th:if="${task.isFinished}">
+							<a th:href="@{/download/{taskId}(taskId = ${task.id})}" th:text="#{placeholder}"></a>
 						</td>
-						<td th:unless="${task.uriToDownloadResult}">-</td>
+						<td th:unless="${task.isFinished}">-</td>
 					</div>
 				</tr>
 			</tbody>

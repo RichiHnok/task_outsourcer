@@ -1,6 +1,5 @@
 package com.richi.common.entity;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 
 import com.richi.common.enums.TaskToProcStatus;
@@ -44,8 +43,9 @@ public class TaskToProc {
     @Enumerated(EnumType.STRING)
     private TaskToProcStatus status = TaskToProcStatus.CREATED;
 
+    //* Это для условия отображения ссылки на скачивание в шаблонизаторе
     @Transient
-    private URI uriToDownloadResult;
+    private boolean isFinished = false;
 
     public TaskToProc() {
     }
@@ -61,7 +61,7 @@ public class TaskToProc {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -105,12 +105,12 @@ public class TaskToProc {
         this.status = status;
     }
 
-    public URI getUriToDownloadResult() {
-        return uriToDownloadResult;
+    public boolean isFinished() {
+        return isFinished;
     }
 
-    public void setUriToDownloadResult(URI uriToDownloadResult) {
-        this.uriToDownloadResult = uriToDownloadResult;
+    public void setFinished(boolean isFinished) {
+        this.isFinished = isFinished;
     }
 
     @Override
