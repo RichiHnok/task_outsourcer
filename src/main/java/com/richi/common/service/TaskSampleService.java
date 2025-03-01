@@ -27,7 +27,10 @@ public class TaskSampleService {
         return repository.findAll();
     }
 
-    public TaskSample getTaskSample(int taskSampleId) {
+    public TaskSample getTaskSample(Integer taskSampleId) {
+        if (taskSampleId == null) {
+            throw new EntityNotFoundException("Cannot return Task Sample because of null input");
+        }
         return repository.findById(taskSampleId).orElseThrow(
             () -> new EntityNotFoundException("There is no task sample with ID:: " + taskSampleId)
         );

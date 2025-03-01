@@ -58,21 +58,19 @@ public class TaskSampleEditorController {
     public String saveTaskSample(
         @ModelAttribute TaskSample taskSample
     ) throws Exception{
-        //DONE+ При изменении скрипта старого на новый, старый не удаляется. Это надо исправить
         //TODO При заугрузке скрипта, переименовывать его используя название шаблона
-        //DONE+ Сделать обработку пустых файлов
         //TODO при изменении параметров удалять старый шаблон и создавать новый, а не изменять старый, чтобы в базе данных в таблице task_to_proc_не былопутаницы с параметрами
 
-        // System.out.println("-888-  " + taskSample.getScriptFile().getOriginalFilename());
         try {
-            TaskSample currentTaskSampleInDB = taskSampleService.getTaskSample(taskSample.getId());
+            TaskSample currentTaskSampleInDB = taskSampleService.getTaskSample(
+                taskSample.getId()
+            );
             String olderScriptPath = currentTaskSampleInDB.getScriptFilePath();
             if(!taskSample.getScriptFile().isEmpty() && olderScriptPath != null){
                 Path olderFilePath = Path.of(olderScriptPath);
                 storageService.deleteFile(olderFilePath);
             }
 
-            // System.out.println("script file: " + taskSample.getScriptFile().toString());
             if(!taskSample.getScriptFile().isEmpty()){
                 //TODO стльно торопился поэтому пришлось наговнокодить сохранение файла и запись пути сохранения в базу. Надо поправить
                 Path relativePathToStore = storageService.storeInFolder(

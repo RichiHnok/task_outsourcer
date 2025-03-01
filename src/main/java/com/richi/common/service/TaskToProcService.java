@@ -58,8 +58,13 @@ public class TaskToProcService {
         );
     }
 
+    //? TODO Что это и зачем я это создавал?
     public TaskToProc getTaskToProcByTopPriority(){
         return taskToProcRepository.findFirstByStatusOrderByUser_PriorityDescStartTimeDesc(TaskToProcStatus.CREATED);
+    }
+
+    public List<TaskToProc> getTaskWithStatuses(List<TaskToProcStatus> statuses){
+        return taskToProcRepository.findAllByStatusIn(statuses);
     }
 
     public TaskToProc saveTaskToProc(TaskToProc taskToProc) {

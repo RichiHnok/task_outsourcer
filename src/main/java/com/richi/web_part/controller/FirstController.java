@@ -21,6 +21,7 @@ import com.richi.common.entity.User;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
+import com.richi.task_manager.TaskManager;
 import com.richi.common.service.TaskSampleService;
 import com.richi.common.service.TaskToProcFilesService;
 
@@ -32,6 +33,7 @@ public class FirstController {
     @Autowired private TaskToProcService taskToProcService;
     @Autowired private TaskToProcFilesService taskToProcFilesService;
     @Autowired private StorageService storageService;
+    @Autowired private TaskManager taskManager;
     
     @RequestMapping("/")
     public String welcomePage(
@@ -92,6 +94,9 @@ public class FirstController {
         if(!file.isEmpty()){
             storageService.storeInFolder(file, taskToProcFilesService.getInputFolderForTask(task));
         }
+
+        //Кидаем задачу TaskManager-у
+        taskManager.addTaskToQuee(task);
         
         return "tasks/task-launched-info";
     }

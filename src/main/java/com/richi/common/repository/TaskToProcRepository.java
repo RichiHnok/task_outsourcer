@@ -17,5 +17,7 @@ public interface TaskToProcRepository extends JpaRepository<TaskToProc, Integer>
     List<TaskToProc> findAllByOrderByStartTimeDesc();
     Page<TaskToProc> findAllByOrderByStartTimeDesc(Pageable pageable);
     TaskToProc findFirstByStatusOrderByUser_PriorityDescStartTimeDesc(TaskToProcStatus status);
+    //? TODO Обязательно ли в таком виде записи передавать искомые парамтеры по одному полю
+    List<TaskToProc> findAllByStatusIn(List<TaskToProcStatus> statuses);
     TaskToProc deleteById(int taskId);
 }

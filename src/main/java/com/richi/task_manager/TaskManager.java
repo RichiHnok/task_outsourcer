@@ -1,79 +1,189 @@
 package com.richi.task_manager;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskToProc;
-import com.richi.common.entity.TaskValues;
-import com.richi.common.entity.User;
 import com.richi.common.enums.TaskToProcStatus;
-import com.richi.common.service.TaskSampleService;
 import com.richi.common.service.TaskToProcFilesService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.ZipService;
 
+import jakarta.annotation.PreDestroy;
+
+//TODO Сделать возможность остановки пользоватлем своих задач
 @Service
-public class TaskManager extends Thread{
+public class TaskManager{
 
-    @Autowired private TaskToProcService taskToProcService;
-    @Autowired private TaskToProcFilesService taskToProcFilesService;
-    @Autowired private TaskSampleService taskSampleService;
-    @Autowired private ZipService zipService;
+    private Logger log = LoggerFactory.getLogger(TaskManager.class);
 
-    public TaskManager(){
-        super("TaskManager");
+    private final TaskToProcService taskToProcService;
+    private final TaskToProcFilesService taskToProcFilesService;
+    private final ZipService zipService;
+
+    private ExecutorService executorService;
+    private int processingThreadsAmount = 3;
+
+    private PriorityQueue<TaskToProc> createdTasks;
+    private List<Future<TaskProcessingResult>> processingTasks;
+
+    //? TODO Создание и запуск потока черз анонимный класс нормально выглядит?
+    //TODO Мне не нравится название переменной
+    private Thread updater = new Thread(){
+        //? TODO Этот метод очень неприятно выглядит
+        @Override
+        public void run(){
+            while(true){
+                log.info("Task manager updater running. Active threads: "
+                    + ((ThreadPoolExecutor) executorService).getActiveCount()
+                    + ". 'Created Tasks' Size: " + createdTasks.size()
+                );
+                try {
+                    while(((ThreadPoolExecutor) executorService).getActiveCount() < processingThreadsAmount
+                        && !createdTasks.isEmpty()
+                    ){
+                        Future<TaskProcessingResult> newTask;
+                        synchronized(createdTasks){
+                            TaskToProc nextTaskToExecute = createdTasks.poll();
+                            taskToProcService.updateTaskStatus(nextTaskToExecute, TaskToProcStatus.IN_PROCESSING);
+                            newTask = executorService.submit(
+                                new TaskToProcCallable(
+                                    nextTaskToExecute
+                                    , taskToProcFilesService
+                                    , zipService
+                                )
+                            );
+                        }
+                        processingTasks.add(newTask);
+                    }
+                    
+                    // Когда перебираешь элементы нельзя изменять коллекцию
+                    List<Future<TaskProcessingResult>> toRemove = null;
+                    for(var task : processingTasks){
+                        if (task.isDone()) {
+                            TaskProcessingResult processingResult;
+                            try {
+                                processingResult = task.get();
+                                switch (processingResult.endType()) {
+                                    case "ok":
+                                        taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.FINISHED);
+                                        break;
+                                    case "cancel":
+                                        taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.CANCELED);
+                                        break;
+                                    case "error":
+                                        taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.ERROR);
+                                        break;
+                                }
+                            } catch (ExecutionException e) {
+                                // TODO Я не знаю как это здесь должно быть
+                            }
+
+                            toRemove = (toRemove == null) ? new ArrayList<>() : toRemove;
+                            toRemove.add(task);
+                        }
+                    }
+
+                    if(toRemove != null)
+                        processingTasks.removeAll(toRemove);
+
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        }
+    };
+
+    // Создаём executor service, который будет принмать задачи
+    // реализации Callable, в которых будет запускаться скрипт с укзанными параметрами
+
+    public TaskManager(
+        TaskToProcService taskToProcService
+        , TaskToProcFilesService taskToProcFilesService
+        , ZipService zipService
+    ) {
+        log.info("Task Manager Constructor in action");
+        this.taskToProcService = taskToProcService;
+        this.taskToProcFilesService = taskToProcFilesService;
+        this.zipService = zipService;
+
+        executorService = Executors.newFixedThreadPool(processingThreadsAmount);
+
+        createdTasks = new PriorityQueue<>(
+            (task1, task2) -> task1.getUser().getPriority() - task2.getUser().getPriority()
+        );
+        processingTasks = new CopyOnWriteArrayList<>();
+
+        initTasks();
+
+
+        updater.start();
     }
 
-    public void run(){
+    private void initTasks(){
+        createdTasks.addAll(
+            taskToProcService.getTaskWithStatuses(
+                Arrays.asList(
+                    TaskToProcStatus.CREATED
+                    , TaskToProcStatus.IN_PROCESSING
+                )
+            )  
+        );
+    }
 
+    @PreDestroy
+    public void destroy(){
+        executorService.shutdown();
     }
 
     public void launchTaskProcessing(){
 
     }
 
-    public void addTaskToQuee(TaskSample taskSample, TaskValues values, User user){
-        
+    public synchronized void addTaskToQuee(TaskToProc task){
+        createdTasks.add(task);
     }
 
     //TODO должен быть приватным методом
-    public void doTask(TaskToProc task) throws Exception{
-        String scriptPath = task.getTaskSample().getScriptFilePath().toString();
-        ProcessBuilder processBuilder = new ProcessBuilder(
-            "python"
-            , scriptPath
-            , taskToProcFilesService.getOutputFolderForTask(task).toString()
-        ).inheritIO();
-
-        Process demoProcess = processBuilder.start();
-
+    public synchronized void doTask(TaskToProc task) throws Exception{
+        TaskToProcCallable taskProcess = new TaskToProcCallable(task, taskToProcFilesService, zipService);
         taskToProcService.updateTaskStatus(task, TaskToProcStatus.IN_PROCESSING);
+        Future<TaskProcessingResult> futureTaskProcessing = executorService.submit(taskProcess);
 
-        demoProcess.waitFor();
 
-        //TODO Надо как-то сообразить передачу сообщений о результате выполнения из скрипта
-        // BufferedReader bufferedReader = new BufferedReader(
-        //     new InputStreamReader(
-        //         demoProcess.getInputStream()
-        //     )
-        // );
-
-        // String outputLine = "";
-        // outputLine = bufferedReader.readLine();
-
-        // if (!outputLine.equals("end")) {
-        //     throw new Exception();
-        // }
+    //     String taskEndType;
+    //     try {
+    //         if(futureTaskProcessing.isDone())
+    //             taskEndType = futureTaskProcessing.get();
+    //     } catch (InterruptedException | CancellationException e){
+    //         taskEndType = "canceled";
+    //     } catch (ExecutionException e){
+    //         taskEndType = "error";
+    //     }
         
-        taskToProcService.updateTaskStatus(task, TaskToProcStatus.FINISHED);
-        zipService.zipDirectory(
-            taskToProcFilesService.getOutputFolderForTask(task)
-            , taskToProcFilesService.getWorkFolderForTask(task)
-            , taskToProcFilesService.getNameForResultFile(task, false)
-        );
+    //     switch (taskEndType) {
+    //         case "ok":
+                
+    //             break;
+    //         case "ok":
+                
+    //             break;
+    //         case "ok":
+                
+    //             break;
+    //     }
     }
 }

@@ -1,10 +1,13 @@
 import sys
 import os
+import time
 
 result_save_path = sys.argv[1]
 print(result_save_path)
 # result_save_path = 'src\\main\\resources\\files\\users\\R\\1119333901022025\\output'
 import random
+
+time.sleep(20)
 
 def generate_random_numbers():
     random_numbers = [str(random.randint(0, 9)) for _ in range(10)]
@@ -22,6 +25,6 @@ def create_and_write_file(directory, filename, content):
     my_file.write(generate_random_numbers())
     my_file.close()
 
-create_and_write_file(result_save_path, 'result', generate_random_numbers())
+create_and_write_file(result_save_path, 'result.txt', generate_random_numbers())
 
 # print("end")
