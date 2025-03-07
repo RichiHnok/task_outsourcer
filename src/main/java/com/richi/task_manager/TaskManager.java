@@ -45,11 +45,15 @@ public class TaskManager{
         //? TODO Этот метод очень неприятно выглядит
         @Override
         public void run(){
-            while(true){
-                log.info("Task manager updater running. Active threads: "
-                    + ((ThreadPoolExecutor) executorService).getActiveCount()
-                    + ". 'Created Tasks' Size: " + createdTasks.size()
-                );
+            int counterForLog = 0;
+            while(!isInterrupted()){
+                if(counterForLog++ == 10){
+                    log.info("Task manager updater running. Active threads: "
+                        + ((ThreadPoolExecutor) executorService).getActiveCount()
+                        + ". 'Created Tasks' Size: " + createdTasks.size()
+                    );
+                    counterForLog = 0;
+                }
                 try {
                     while(((ThreadPoolExecutor) executorService).getActiveCount() < processingThreadsAmount
                         && !createdTasks.isEmpty()
@@ -146,7 +150,9 @@ public class TaskManager{
 
     @PreDestroy
     public void destroy(){
+        log.info("Task Manager predestroyer in action");
         executorService.shutdown();
+        updater.interrupt();
     }
 
     public void launchTaskProcessing(){
@@ -154,6 +160,7 @@ public class TaskManager{
     }
 
     public synchronized void addTaskToQuee(TaskToProc task){
+        log.info("Adding a task");
         createdTasks.add(task);
     }
 

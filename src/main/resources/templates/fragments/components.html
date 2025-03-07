@@ -37,7 +37,7 @@
 					<td th:text="${task.status}"></td>
 					<div>
 						<td th:if="${task.isFinished}">
-							<a th:href="@{/download/{taskId}(taskId = ${task.id})}" th:text="#{placeholder}"></a>
+							<a th:href="@{/download/taskToProc/{taskId}(taskId = ${task.id})}" th:text="#{placeholder}"></a>
 						</td>
 						<td th:unless="${task.isFinished}">-</td>
 					</div>

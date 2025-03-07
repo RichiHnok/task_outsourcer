@@ -3,7 +3,6 @@ package com.richi.common.service;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.richi.common.entity.TaskSample;
@@ -14,7 +13,13 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class TaskSampleService {
     
-    @Autowired private TaskSampleRepository repository;
+    private final TaskSampleRepository repository;
+
+    public TaskSampleService(
+        TaskSampleRepository repository
+    ){
+        this.repository = repository;
+    }
 
     public void deleteTaskSampleById(int taskSampleId) {
         repository.findById(taskSampleId).orElseThrow(

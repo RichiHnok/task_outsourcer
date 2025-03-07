@@ -8,53 +8,42 @@
 </head>
 <body>
     <div th:insert="~{fragments/header.html :: app-header}"></div>
-    Back to main Page
-    <a th:href="@{/}">
-        <button type="button">Main page</button> 
-    </a>
+
+    <span th:text="#{spn.current-user}">Current user is</span> 
+    <span th:text="${#authentication.getPrincipal().getUser().getName()}"/>
+    <span th:text="${#authentication.getPrincipal().getUser().getSurname()}"/>
     <br>
-    Back to editor
-    <a th:href="@{/editor}">
-        <button type="button">Editor</button> 
-    </a>
-    <br>
-    <br>
-    Current selected user is <span th:text="${currentUser.name}"/> <span th:text="${currentUser.surname}"/>
-    <br>
-    <h2>User in DB editor</h2>
-    <table>
+    <h2 th:text="#{h.users-editor}">Users in DB editor</h2>
+    <table border="1">
         <tr>
-            <th>ID|</th>
-            <th>Name|</th>
-            <th>Surname|</th>
-            <th>Priority|</th>
-            <th>Minutes to proc task|</th>
-            <th>Update|</th>
-            <th>Delete</th>
+            <th th:text="#{th.user-id}">ID</th>
+            <th th:text="#{th.user-name}">Name</th>
+            <th th:text="#{th.user-surname}">Surname</th>
+            <th th:text="#{th.user-priority}">Priority</th>
+            <th th:text="#{th.user-minutes-to-proc-task}">Minutes to proc task</th>
+            <th th:text="#{th.update}">Update</th>
+            <th th:text="#{th.delete}">Delete</th>
         </tr>
         <tr th:each="user : ${users}">
 
-            <div th:with="updateButton=@{/editor/updateInfo/user(userId=${user.id})}, deleteButton=@{/editor/deleteInfo/user(userId=${user.id})}">
-                
-                <td th:text="${user.id}"></td>
-                <td th:text="${user.name}"></td>
-                <td th:text="${user.surname}"></td>
-                <td th:text="${user.priority}"></td>
-                <td th:text="${user.minutesToProcessTask}"></td>
-                <td>
-                    <a th:href="${updateButton}">
-                        <button type="button">Update</button> 
-                    </a>
-                </td>
-                <td>
-                    <a th:href="${deleteButton}">
-                        <button type="button">Delete</button> 
-                    </a>    
-                </td>
-            </div>
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.surname}"></td>
+            <td th:text="${user.priority}"></td>
+            <td th:text="${user.minutesToProcessTask}"></td>
+            <td>
+                <a th:href="@{/editor/updateInfo/user(userId=${user.id})}">
+                    <button type="button" th:text="#{btn.update}">Update</button> 
+                </a>
+            </td>
+            <td>
+                <a th:href="@{/editor/deleteInfo/user(userId=${user.id})}">
+                    <button type="button" th:text="#{btn.delete}">Delete</button> 
+                </a>    
+            </td>
         </tr>
     </table>
     <br>
-    <input type="button" value="Add" onclick="window.location.href = 'addUser'"/>
+    <input type="button" th:value="#{btn.add-user}" onclick="window.location.href = 'addUser'"/>
 </body>
 </html>

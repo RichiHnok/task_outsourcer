@@ -34,6 +34,7 @@ public class TaskSample {
     @Column(name = "description")
     private String description;
 
+    //? TODO Я не знаю, где надо хранить путь к скрипту. В БД или создать отдельный сервис, который будет генерировать путь? Пока пусть путь будет храниться в БД
     @Column(name = "script_path")
     private String scriptFilePath;
 

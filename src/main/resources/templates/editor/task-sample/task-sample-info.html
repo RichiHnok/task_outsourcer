@@ -9,26 +9,30 @@
 <body>
     <div th:insert="~{fragments/header.html :: app-header}"></div>
 
-    <h2>Task Sample Data</h2>
-    <br>
-    <form action="#"
-    th:action="@{/editor/saveTaskSample}"
-    th:object="${taskSample}"
-    method="post"
-    enctype="multipart/form-data">
+    <h2 th:text="|#{h.task-sample-info-of} #${taskSample.id}|">Task Sample Data</h2>
+    <form action="#" th:action="@{/editor/saveTaskSample}" th:object="${taskSample}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}"/>
     
-        Name:<br> <input type="text" th:field="*{name}"/>
+        <span th:text="#{lbl.task-sample-name}" >Name</span>:
         <br>
-        Description:<br> <textarea type="text" th:field="*{description}" style="height:100px;width:200px;resize:none"/>
+        <input type="text" th:field="*{name}" style="width:400px;"/>
+        <br>
+        <span th:text="#{lbl.task-sample-description}">Description</span>:
+        <br>
+        <textarea type="text" th:field="*{description}" style="height:120px;width:400px;resize:none"/>
+        <br>
         <br>
         
-        Set <span th:if="${file}">new</span> script file: <input type="file" th:field="*{scriptFile}"/>
-        <div th:if="${file}">
-            Download current file: <a th:href="${file}" th:text="${fileName}"/>
+        <span th:if="${fileName}" th:text="#{lbl.set-new-script-file}" /><span th:unless="${fileName}" th:text="#{lbl.set-script-file}" />:
+        <input type="file" th:field="*{scriptFile}"/>
+
+        <div th:if="${fileName}">
+            <span th:text="#{lbl.download-script}">Download current script file</span>: <a th:href="@{/download/taskSample/{taskSampleId}(taskSampleId = ${taskSample.id})}" th:text="${fileName}"/>
         </div>
         <br>
-        Params:<br>
+        <br>
+        <span th:text="#{lbl.task-sample-params}">Params</span>:
+        <br>
         
         <div th:if="${not #lists.isEmpty(taskSample.params)}">
             <div th:each="par, itemStat : *{params}">
@@ -45,16 +49,17 @@
             </div>
         </div>
         <div th:unless="${not #lists.isEmpty(taskSample.params)}">
-            <p>This sample dont have parameteres</p>
+            <p th:text="#{lbl.no-params}">This sample dont have parameteres</p>
         </div>
         <input type="hidden" th:value="${file}" name="fileUrl">
         <input type="hidden" th:value="${fileName}" name="fileName">
-        <input type="submit" name="addParam" value="Add param"/>
+        <input type="submit" name="addParam" th:value="#{btn.add-param}"/>
         <br>
-        <input type="submit" name="save" value="Save"/>
+        <br>
+        <input type="submit" name="save" th:value="#{btn.save}"/>
     </form>
     <a th:href="@{/editor/taskSamples}">
-        <button type="button">Cancel</button> 
+        <button type="button" th:text="#{btn.cancel}">Cancel</button> 
     </a>
 </body>
 </html>

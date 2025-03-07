@@ -9,14 +9,13 @@
 <body>
     <div th:insert="~{fragments/header.html :: app-header}"></div>
     
-    <h1>Editor</h1>
-    <br>
+    <h1 th:text="#{h.editor}">Editor</h1>
     <a th:href="@{/editor/taskSamples}">
-        <button type="button">Task Samples</button> 
+        <button type="button" th:text="#{btn.task-samples}">Task Samples</button> 
     </a>
     <br>
     <a th:href="@{/editor/users}">
-        <button type="button">Users</button> 
+        <button type="button" th:text="#{btn.users}">Users</button> 
     </a>
 </body>
 </html>

@@ -145,21 +145,16 @@ public class TaskSampleEditorController {
     }
 
     @RequestMapping("/updateInfo/taskSample")
-    public String updateTaskSample(@RequestParam("taskSampleId") int id
+    public String updateTaskSample(
+        @RequestParam("taskSampleId") int id
         , Model model
     ){
         TaskSample taskSample = taskSampleService.getTaskSample(id);
 
         if(taskSample.getScriptFilePath() != null){
-            Path scriptLocationPath = Path.of(taskSample.getScriptFilePath());
-            //! model.addAttribute("file",
-            //!     MvcUriComponentsBuilder.fromMethodName(
-            //!         FilesUploadController.class,
-            //!         "serveFile",
-            //!         scriptLocationPath.getFileName().toString()
-            //!     ).build().toUri().toString()
-            //! );
-            model.addAttribute("fileName", scriptLocationPath.getFileName());
+            // Path scriptLocationPath = Path.of(taskSample.getScriptFilePath());
+            
+            model.addAttribute("fileName", Path.of(taskSample.getScriptFilePath()).getFileName());
         }
 
         model.addAttribute("taskSample", taskSample);
