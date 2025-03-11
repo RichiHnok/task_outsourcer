@@ -36,6 +36,10 @@ public class TaskSampleParam {
         this.name = name;
     }
 
+    public TaskSampleParam(TaskSampleParamType type) {
+        this.type = type;
+    }
+
     public TaskSampleParam(String name, TaskSampleParamType type) {
         this.name = name;
         this.type = type;

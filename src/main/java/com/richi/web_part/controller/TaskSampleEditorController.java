@@ -18,10 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.taskSampleParam.TaskSampleParam;
+import com.richi.common.entity.taskSampleParam.subTypes.TaskSampleFileParam;
+import com.richi.common.entity.taskSampleParam.subTypes.TaskSampleIntegerParam;
+import com.richi.common.entity.taskSampleParam.subTypes.TaskSampleStringParam;
+import com.richi.common.enums.TaskSampleParamType;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskSampleService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/editor")
@@ -43,8 +48,9 @@ public class TaskSampleEditorController {
 
 
     @GetMapping("/taskSamples")
-    public String showAllTaskSamples(Model model){
-
+    public String showAllTaskSamples(
+        Model model
+    ){
         List<TaskSample> allTaskSamples = taskSampleService.getAllTaskSamples();
         model.addAttribute("taskSamples", allTaskSamples);
         return "editor/task-sample/task-samples-editor";
@@ -107,8 +113,9 @@ public class TaskSampleEditorController {
         @ModelAttribute("taskSample") TaskSample taskSample
         // , @RequestParam("fileUrl") String fileUrl
         , @RequestParam(name = "fileName", required = false) String fileName
+        , HttpServletRequest request
         , Model model
-    ){
+    ) throws Exception{
         //TODO при добавлении/удаления параметра и страница обновляется исчезает информация о прикреплённом скрипте
         String paramName = "";
         
@@ -119,8 +126,25 @@ public class TaskSampleEditorController {
                 break;
             }
         }
+        TaskSampleParamType typeOfNewParam = TaskSampleParamType.valueOf(request.getParameter("addingType"));
+        
+        TaskSampleParam param;
+        //? TODO Делать что-то черех свитч это как будто такое себе и по-хорошему это надо всё через рефлексию сделать, но...
+        switch (typeOfNewParam) {
+            case TaskSampleParamType.INTEGER:
+                param = new TaskSampleIntegerParam(paramName);
+                break;
+            case TaskSampleParamType.STRING:
+                param = new TaskSampleStringParam(paramName);
+                break;
+            case TaskSampleParamType.FILE:
+                param = new TaskSampleFileParam(paramName);
+                break;
+            default:
+                throw new Exception("Problems with creating task sample param");
+        }
 
-        TaskSampleParam param = new TaskSampleParam(paramName);
+        
         taskSample.addParamToTaskSample(param);
         model.addAttribute("taskSample", taskSample);
         // model.addAttribute("file", fileUrl);

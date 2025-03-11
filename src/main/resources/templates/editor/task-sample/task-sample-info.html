@@ -33,20 +33,15 @@
         </div>
         <br>
         <br>
-        <span th:text="#{lbl.task-sample-params}">Params</span>:
+        <span th:text="|#{lbl.task-sample-params}:|">Params</span>
         <br>
         
         <div th:unless="${taskSample.params.empty}">
             <div th:each="par, itemStat : *{params}">
                 <input type="hidden" th:field="*{params[__${itemStat.index}__].id}"/>
                 <span><input th:field="*{params[__${itemStat.index}__].name}" /></span>
-                <select th:field="*{params[__${itemStat.index}__].type}">
-                    <option
-                        th:each="typeOpt : ${T(com.richi.common.enums.TaskSampleParamType).values()}" 
-                        th:value="${typeOpt}"
-                        th:text="${typeOpt}">
-                    </option>
-                </select>
+                <input type="hidden" th:field="*{params[__${itemStat.index}__].type}"/>
+                <span th:text="*{params[__${itemStat.index}__].type}"></span>
 
                 <button th:if="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/editTaskSample(taskSampleParamId=${par.id}, taskSampleParamName=${par.name})}" th:text="X">X</button>
                 <button th:unless="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/editTaskSample(taskSampleParamId=0, taskSampleParamName=${par.name})}" th:text="X">X</button>
@@ -55,13 +50,13 @@
         <div th:if="${taskSample.params.empty}">
             <p th:text="#{lbl.no-params}">This sample dont have parameteres</p>
         </div>
-        <!-- <input type="hidden" th:value="${fileName}" name="fileName"> -->
-        <!-- <select name=addingParam onchange="location = this.value;">
-            <option value='' th:text="#{placeholder}"></option>
-            <option th:value='http://localhost:8081/?locale=ru'></option>
-            <option th:value='http://localhost:8081/?locale=en'></option>
-        </select> -->
-        <!-- <input type="submit" name="addParam" th:value="#{btn.add-param}"/> -->
+        <select id="addingType" name="addingType">
+            <option th:each="typeOpt : ${T(com.richi.common.enums.TaskSampleParamType).values()}" 
+                th:value="${typeOpt}"
+                th:text="${typeOpt}">
+            </option>
+        </select>
+        <input type="submit" name="addParam" th:value="#{btn.add-param}"/>
         <br>
         <br>
         <input type="submit" name="save" th:value="#{btn.save}"/>

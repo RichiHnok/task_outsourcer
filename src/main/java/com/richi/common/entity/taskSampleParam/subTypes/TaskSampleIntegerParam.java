@@ -1,26 +1,22 @@
 package com.richi.common.entity.taskSampleParam.subTypes;
 
 import com.richi.common.entity.taskSampleParam.TaskSampleParam;
+import com.richi.common.enums.TaskSampleParamType;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "task_sample_param_integer")
 public class TaskSampleIntegerParam extends TaskSampleParam{
-    
-    @Column(name = "int_value")
-    private Integer intValue = 0;
+
+    //? TODO Здесь должны прописываться ограничения для вводимых данных типа целое число
 
     public TaskSampleIntegerParam() {
+        super(TaskSampleParamType.INTEGER);
     }
 
-    public Integer getIntValue() {
-        return intValue;
-    }
-
-    public void setIntValue(Integer intValue) {
-        this.intValue = intValue;
+    public TaskSampleIntegerParam(String paramName){
+        super(paramName, TaskSampleParamType.INTEGER);
     }
 }
