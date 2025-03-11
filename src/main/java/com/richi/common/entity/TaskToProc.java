@@ -57,7 +57,7 @@ public class TaskToProc {
         this.joinedParams = params;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

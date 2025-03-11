@@ -7,7 +7,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.persistence.CascadeType;
+import com.richi.common.entity.taskSampleParam.TaskSampleParam;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -41,7 +42,7 @@ public class TaskSample {
     @Transient
     private MultipartFile scriptFile;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "task_sample_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TaskSampleParam> params;

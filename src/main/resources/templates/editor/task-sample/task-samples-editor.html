@@ -22,7 +22,7 @@
             <td th:text="${taskSample.name}"></td>
             <td th:text="${taskSample.description}" style="height:20px;width:20px;"></td>
             <td>
-                <a th:href="@{/editor/updateInfo/taskSample(taskSampleId=${taskSample.id})}">
+                <a th:href="@{/editor/updateTaskSample/{taskSampleId}(taskSampleId = ${taskSample.id})}">
                     <button type="button" th:text="#{btn.update}">Update</button> 
                 </a>
             </td>

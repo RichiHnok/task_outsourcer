@@ -1,4 +1,4 @@
-package com.richi.common.entity;
+package com.richi.common.entity.taskSampleParam;
 
 import com.richi.common.enums.TaskSampleParamType;
 
@@ -8,15 +8,18 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tasks_params")
+@Table(name = "task_sample_param")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class TaskSampleParam {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "task_sample_param_id")
     private Integer id;
     
     @Column(name = "name")
@@ -24,7 +27,7 @@ public class TaskSampleParam {
 
     @Column(name = "type")
     @Enumerated
-    private TaskSampleParamType type = TaskSampleParamType.INTEGER;
+    private TaskSampleParamType type;
 
     public TaskSampleParam() {
     }
@@ -38,11 +41,11 @@ public class TaskSampleParam {
         this.type = type;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

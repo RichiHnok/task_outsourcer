@@ -5,17 +5,19 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.richi.common.entity.TaskSample;
-import com.richi.common.entity.TaskSampleParam;
+import com.richi.common.entity.taskSampleParam.TaskSampleParam;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskSampleService;
 
@@ -24,21 +26,22 @@ import jakarta.persistence.EntityNotFoundException;
 @Controller
 @RequestMapping("/editor")
 public class TaskSampleEditorController {
+
+    private Logger log = LoggerFactory.getLogger(TaskSampleEditorController.class);
     
-    @Autowired
-    private TaskSampleService taskSampleService;
-
-    @Autowired
-    private StorageService storageService;
-
-    // @Autowired
-    // public TaskSampleEditorController(StorageService storageService) {
-    // 	this.storageService = storageService;
-    // }
-
-    // @Autowired
-    // private RandomString randomString;
+    private final TaskSampleService taskSampleService;
+    private final StorageService storageService;
     
+    public TaskSampleEditorController(
+        TaskSampleService taskSampleService
+        , StorageService storageService
+    ) {
+        log.info("Creating task sample editor controller");
+        this.taskSampleService = taskSampleService;
+        this.storageService = storageService;
+    }
+
+
     @GetMapping("/taskSamples")
     public String showAllTaskSamples(Model model){
 
@@ -47,14 +50,16 @@ public class TaskSampleEditorController {
         return "editor/task-sample/task-samples-editor";
     }
 
-    @RequestMapping("/addTaskSample")
-    public String addNewTaskSample(Model model){
+    @GetMapping("/addTaskSample")
+    public String addNewTaskSample(
+        Model model
+    ){
         TaskSample taskSample = new TaskSample();
         model.addAttribute("taskSample", taskSample);
         return "editor/task-sample/task-sample-info";
     }
 
-    @PostMapping(value = "/saveTaskSample", params = "save")
+    @PostMapping(value = "/editTaskSample", params = "save")
     public String saveTaskSample(
         @ModelAttribute TaskSample taskSample
     ) throws Exception{
@@ -97,15 +102,17 @@ public class TaskSampleEditorController {
         return "redirect:/editor/taskSamples";
     }
 
-    @PostMapping(value = "/saveTaskSample", params = "addParam")
-    public String addParamToTaskSample(@ModelAttribute("taskSample") TaskSample taskSample
-        , @RequestParam("fileUrl") String fileUrl
-        , @RequestParam("fileName") String fileName
+    @PostMapping(value = "/editTaskSample", params = "addParam")
+    public String addParamToTaskSample(
+        @ModelAttribute("taskSample") TaskSample taskSample
+        // , @RequestParam("fileUrl") String fileUrl
+        , @RequestParam(name = "fileName", required = false) String fileName
         , Model model
     ){
         //TODO при добавлении/удаления параметра и страница обновляется исчезает информация о прикреплённом скрипте
         String paramName = "";
         
+        //? TODO Это выглядит мега костыльно
         while(true){
             paramName = "No name " + (Integer.toString(1000 + (int)(ThreadLocalRandom.current().nextDouble() * ((9999 - 1000) + 1))));
             if(taskSample.getParams() == null || !taskSample.getParams().stream().map(TaskSampleParam::getName).collect(Collectors.toList()).contains(paramName)){
@@ -116,7 +123,7 @@ public class TaskSampleEditorController {
         TaskSampleParam param = new TaskSampleParam(paramName);
         taskSample.addParamToTaskSample(param);
         model.addAttribute("taskSample", taskSample);
-        model.addAttribute("file", fileUrl);
+        // model.addAttribute("file", fileUrl);
         model.addAttribute("fileName", fileName);
         return "editor/task-sample/task-sample-info";
     }
@@ -129,27 +136,27 @@ public class TaskSampleEditorController {
     //     return "editor/task-sample/task-sample-info";
     // }
 
-    @RequestMapping(value = "/removeParam")
-    public String removeParamFromTaskSample(@RequestParam("taskSampleParamId") int paramId
+    //? TODO Как по человечески передавать несколько параметров в поле value в html странице
+    @PostMapping(value = "/editTaskSample", params = "removeParam")
+    public String removeParamFromTaskSample(
+        Model model
+        , @RequestParam("taskSampleParamId") int paramId
         , @RequestParam("taskSampleParamName") String paramName
-        , @RequestParam String fileUrl
-        , @RequestParam String fileName
+        , @RequestParam(name = "fileName", required = false) String fileName
         , @ModelAttribute TaskSample taskSample
-        , Model model
     ){
         taskSample.removeParamFromTaskSample(paramId, paramName);
         model.addAttribute("taskSample", taskSample);
-        model.addAttribute("file", fileUrl);
         model.addAttribute("fileName", fileName);
         return "editor/task-sample/task-sample-info";
     }
 
-    @RequestMapping("/updateInfo/taskSample")
+    @GetMapping("/updateTaskSample/{taskSampleId}")
     public String updateTaskSample(
-        @RequestParam("taskSampleId") int id
+        @PathVariable("taskSampleId") Integer taskSampleId
         , Model model
     ){
-        TaskSample taskSample = taskSampleService.getTaskSample(id);
+        TaskSample taskSample = taskSampleService.getTaskSample(taskSampleId);
 
         if(taskSample.getScriptFilePath() != null){
             // Path scriptLocationPath = Path.of(taskSample.getScriptFilePath());
@@ -162,22 +169,11 @@ public class TaskSampleEditorController {
     }
 
     @RequestMapping("/deleteInfo/taskSample")
-    public String deleteTaskSample(@RequestParam("taskSampleId") int id){
+    public String deleteTaskSample(
+        @RequestParam("taskSampleId") int id
+    ){
         //TODO Сделать удаление в виде изменения статуса (доп. поля) на "REMOVED". Это нужно для того, чтобы при просмотре tasksToProc не пропадала информация о пользователе.
         taskSampleService.deleteTaskSampleById(id);
         return "redirect:/editor/taskSamples";
     }
-
-    // @GetMapping("/files/{filename:.+}")
-	// @ResponseBody
-	// public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-
-	// 	Resource file = storageService.loadAsResource(filename);
-
-	// 	if (file == null)
-	// 		return ResponseEntity.notFound().build();
-
-	// 	return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-	// 			"attachment; filename=\"" + file.getFilename() + "\"").body(file);
-	// }
 }

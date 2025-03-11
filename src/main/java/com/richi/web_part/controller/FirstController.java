@@ -57,7 +57,8 @@ public class FirstController {
     }
 
     @RequestMapping("/task/{id}")
-    public String chooseTaskSample(@PathVariable("id") int id, Model model){
+    public String chooseTaskSample(
+        @PathVariable("id") int id, Model model){
         TaskSample taskSample = taskSampleService.getTaskSample(id);
         model.addAttribute("taskSample", taskSample);
         TaskValues taskValues = new TaskValues(taskSample);

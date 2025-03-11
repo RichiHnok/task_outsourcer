@@ -9,8 +9,10 @@
 <body>
     <div th:insert="~{fragments/header.html :: app-header}"></div>
 
-    <h2 th:text="|#{h.task-sample-info-of} #${taskSample.id}|">Task Sample Data</h2>
-    <form action="#" th:action="@{/editor/saveTaskSample}" th:object="${taskSample}" method="post" enctype="multipart/form-data">
+    <h2 th:if="${taskSample.id}" th:text="|#{h.task-sample-info-of} #${taskSample.id}|">Task Sample Data</h2>
+    <h2 th:unless="${taskSample.id}" th:text="#{h.creating-new-task-sample}">Creating new task sample</h2>
+
+    <form action="#" th:action="@{/editor/editTaskSample}" th:object="${taskSample}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}"/>
     
         <span th:text="#{lbl.task-sample-name}" >Name</span>:
@@ -34,7 +36,7 @@
         <span th:text="#{lbl.task-sample-params}">Params</span>:
         <br>
         
-        <div th:if="${not #lists.isEmpty(taskSample.params)}">
+        <div th:unless="${taskSample.params.empty}">
             <div th:each="par, itemStat : *{params}">
                 <input type="hidden" th:field="*{params[__${itemStat.index}__].id}"/>
                 <span><input th:field="*{params[__${itemStat.index}__].name}" /></span>
@@ -45,15 +47,21 @@
                         th:text="${typeOpt}">
                     </option>
                 </select>
-                <input type="submit" th:formaction="@{/editor/removeParam(taskSampleParamId=${par.id}, taskSampleParamName=${par.name})}" value="X"/> 
+
+                <button th:if="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/editTaskSample(taskSampleParamId=${par.id}, taskSampleParamName=${par.name})}" th:text="X">X</button>
+                <button th:unless="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/editTaskSample(taskSampleParamId=0, taskSampleParamName=${par.name})}" th:text="X">X</button>
             </div>
         </div>
-        <div th:unless="${not #lists.isEmpty(taskSample.params)}">
+        <div th:if="${taskSample.params.empty}">
             <p th:text="#{lbl.no-params}">This sample dont have parameteres</p>
         </div>
-        <input type="hidden" th:value="${file}" name="fileUrl">
-        <input type="hidden" th:value="${fileName}" name="fileName">
-        <input type="submit" name="addParam" th:value="#{btn.add-param}"/>
+        <!-- <input type="hidden" th:value="${fileName}" name="fileName"> -->
+        <!-- <select name=addingParam onchange="location = this.value;">
+            <option value='' th:text="#{placeholder}"></option>
+            <option th:value='http://localhost:8081/?locale=ru'></option>
+            <option th:value='http://localhost:8081/?locale=en'></option>
+        </select> -->
+        <!-- <input type="submit" name="addParam" th:value="#{btn.add-param}"/> -->
         <br>
         <br>
         <input type="submit" name="save" th:value="#{btn.save}"/>

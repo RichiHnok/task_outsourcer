@@ -1,0 +1,31 @@
+spring:
+    application:
+        name: richis_app
+    datasource:
+        url: jdbc:mysql://localhost:3306/my_db?useSSL=false&serverTimezone=UTC
+        username: bestuser
+        password: bestuser
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: validate
+        database: mysql
+        show-sql: false
+    flyway:
+        baseline-on-migrate: true
+    thymeleaf:
+        encoding: utf-8
+    servlet:
+        multipart: 
+            max-file-size: 64MB
+            max-request-size: 64MB
+            enabled: true
+    devtools:
+        restart:
+            additional-paths: src/main/resources
+            exclude: files/**,logs/**
+    messages:
+        basename: lang/messages
+
+server:
+    port: 8081

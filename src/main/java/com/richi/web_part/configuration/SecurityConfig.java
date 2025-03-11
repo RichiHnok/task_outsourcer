@@ -57,13 +57,14 @@ public class SecurityConfig {
                     , "/personal"
                     , "/tasks"
                     , "/placeholder"
-                    , "/download/**"
+                    , "/download/taskToProc/**"
                 ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
                 auth.requestMatchers(
                     "/editor"
                     , "/editor/**"
                     , "/controlPanel/**"
                     , "/test/**"
+                    , "/download/taskSample/**"
                 ).hasAuthority("ROLE_ADMIN");
             })
             .formLogin(form -> form
