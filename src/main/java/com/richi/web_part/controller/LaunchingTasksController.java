@@ -33,7 +33,6 @@ public class LaunchingTasksController {
     private final UserService userService;
     private final TaskToProcService taskToProcService;
     private final FileFolderManipulationService fileFolderManipulationService;
-    //! private final StorageService storageService;
     private final TaskManager taskManager;
     
     public LaunchingTasksController(
@@ -48,7 +47,6 @@ public class LaunchingTasksController {
         this.userService = userService;
         this.taskToProcService = taskToProcService;
         this.fileFolderManipulationService = fileFolderManipulationService;
-        //! this.storageService = storageService;
         this.taskManager = taskManager;
     }
 
@@ -67,11 +65,9 @@ public class LaunchingTasksController {
         TaskSample taskSample = taskSampleService.getTaskSample(taskSampleId);
         model.addAttribute("taskSample", taskSample);
         
-        // TaskValues taskValues = new TaskValues(taskSample);
-        // model.addAttribute("taskValues", taskValues);
-        
         TaskToProcValues taskValues = new TaskToProcValues(taskSample);
         model.addAttribute("taskValues", taskValues);
+
         return "tasks/launching-task";
     }
 
@@ -79,7 +75,6 @@ public class LaunchingTasksController {
     public String startProcessingTask(
         Model model
         , @PathVariable("taskSampleId") int taskSampleId
-        //! , @RequestParam("file") MultipartFile file
         , @ModelAttribute("taskValues") TaskToProcValues values
         , @AuthenticationPrincipal UserDetails userDetails
     ) throws Exception
@@ -96,19 +91,15 @@ public class LaunchingTasksController {
             , currentUser
             , LocalDateTime.now()
         );
+        task = taskToProcService.saveTaskToProc(task);
+        
+        fileFolderManipulationService.createInputOutputFoldersForTask(task);
+        
+        String chekingParamsLine = taskToProcService.saveValuesAndPutThemIntoTaskToProc(task, values);
+        log.info("Cheking params line: " + chekingParamsLine);
+        task = taskToProcService.saveTaskToProc(task);
 
-       fileFolderManipulationService.createInputOutputFoldersForTask(task);
-
-       String chekingParamsLine = taskToProcService.saveValuesAndPutThemIntoTaskToProc(task, values);
-       log.info("Cheking params line: " + chekingParamsLine);
-        // task = taskToProcService.saveTaskToProc(task);
-
-        //! TODO я здесь поставил проверку на нулл для тестирования, наверное
-        //! if(!file.isEmpty()){
-        //!     storageService.storeInFolder(file, taskToProcFilesService.getInputFolderForTask(task));
-        //! }
-
-        // Кидаем задачу TaskManager-у
+        //// Кидаем задачу TaskManager-у
         // taskManager.addTaskToQuee(task);
         
         return "tasks/task-launched-info";

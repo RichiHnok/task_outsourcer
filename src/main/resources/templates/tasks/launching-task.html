@@ -15,10 +15,7 @@
         
         <div th:each="value, itemStat : *{values}">
             <span th:text="|${value.param.name}: |"></span>
-            <!-- <input type="text" th:field="*{values[__${itemStat.index}__].value}"/> -->
-             <!-- <span th:if="${value.param.type.name() == 'FILE'}">A</span> -->
-             <!-- <span th:if="${value.param.type.name() == 'STRING'}">B</span> -->
-             <!-- <span th:if="${value.param.type.name() == 'INTEGER'}">C</span> -->
+            <input type="hidden" th:field="*{values[__${itemStat.index}__].param.type}"/>
             <input th:if="${value.param.type.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="file"/>
             <input th:unless="${value.param.type.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="text"/>
         </div>
@@ -27,9 +24,9 @@
             <span th:text="${taskSample.params[__${itemStat.index}__].name}"/>
             <input th:field="*{values[__${itemStat.index}__]}" />
         </div>
-        <input type="file" name="file"/>
+        <input type="file" name="file"/> -->
         <br>
-        <input type="submit" value="Start"/> -->
+        <input type="submit" value="Start"/>
     </form>
 </body>
 </html>

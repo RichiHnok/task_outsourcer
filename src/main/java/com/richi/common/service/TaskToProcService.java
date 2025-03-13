@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.richi.common.dto.TaskToProcValue;
 import com.richi.common.dto.TaskToProcValues;
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.User;
@@ -101,7 +102,7 @@ public class TaskToProcService {
         Path inputFolder = fileFolderManipulationService.getInputFolderForTask(taskToProc);
 
         StringBuilder argumentsInStringBuilder = new StringBuilder();
-        for(TaskToProcValues.TaskToProcValue value : taskToProcValues.getValues()){
+        for(TaskToProcValue value : taskToProcValues.getValues()){
             argumentsInStringBuilder.append(" \"");
 
             if(value.getParam().getType() == TaskSampleParamType.FILE){

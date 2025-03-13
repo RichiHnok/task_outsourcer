@@ -36,7 +36,7 @@
         <span th:text="|#{lbl.task-sample-params}:|">Params</span>
         <br>
         
-        <div th:unless="${taskSample.params.empty}">
+        <div th:if="${taskSample.params != null and !#lists.isEmpty(taskSample.params)}">
             <div th:each="par, itemStat : *{params}">
                 <input type="hidden" th:field="*{params[__${itemStat.index}__].id}"/>
                 <span><input th:field="*{params[__${itemStat.index}__].name}" /></span>
@@ -47,7 +47,7 @@
                 <button th:unless="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/editTaskSample(taskSampleParamId=0, taskSampleParamName=${par.name})}" th:text="X">X</button>
             </div>
         </div>
-        <div th:if="${taskSample.params.empty}">
+        <div th:unless="${taskSample.params != null and !#lists.isEmpty(taskSample.params)}">
             <p th:text="#{lbl.no-params}">This sample dont have parameteres</p>
         </div>
         <select id="addingType" name="addingType">

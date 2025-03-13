@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ import com.richi.common.exception.StorageException;
 
 @Service
 public class StorageService {
+
+	private Logger log = LoggerFactory.getLogger(StorageService.class);
+
     //? Я не уверен, что этот метод мне нужен
 	@Deprecated
     public void saveFile(MultipartFile file, Path destinationFolder){
@@ -40,12 +45,17 @@ public class StorageService {
 			}
 			if (!destinationFile.getParent().equals(folderPath.toAbsolutePath())) {
 				// This is a security check
-				throw new StorageException(
-						"Cannot store file outside current directory.");
+				throw new StorageException("Cannot store file outside current directory.");
 			}
 			try (InputStream inputStream = file.getInputStream()) {
-				Files.copy(inputStream, destinationFile,
-					StandardCopyOption.REPLACE_EXISTING);
+				
+				//@ TODO Расскоментить после тестирования
+				log.info("Saving file by path " + destinationFile);
+				// Files.copy(
+				// 	inputStream
+				// 	, destinationFile
+				// 	, StandardCopyOption.REPLACE_EXISTING
+				// );
 			}
 		}
 		catch (IOException e) {
