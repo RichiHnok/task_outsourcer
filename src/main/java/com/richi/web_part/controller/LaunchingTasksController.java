@@ -12,13 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.richi.common.dto.TaskToProcValues;
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskToProc;
-import com.richi.common.entity.TaskValues;
 import com.richi.common.entity.User;
 import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.StorageService;
@@ -26,7 +23,6 @@ import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
 import com.richi.task_manager.TaskManager;
 import com.richi.common.service.TaskSampleService;
-import com.richi.common.service.TaskToProcFilesService;
 
 @Controller
 public class LaunchingTasksController {
@@ -37,8 +33,7 @@ public class LaunchingTasksController {
     private final UserService userService;
     private final TaskToProcService taskToProcService;
     private final FileFolderManipulationService fileFolderManipulationService;
-    private final TaskToProcFilesService taskToProcFilesService;
-    private final StorageService storageService;
+    //! private final StorageService storageService;
     private final TaskManager taskManager;
     
     public LaunchingTasksController(
@@ -46,7 +41,6 @@ public class LaunchingTasksController {
         , UserService userService
         , TaskToProcService taskToProcService
         , FileFolderManipulationService fileFolderManipulationService
-        , TaskToProcFilesService taskToProcFilesService
         , StorageService storageService
         , TaskManager taskManager
     ) {
@@ -54,8 +48,7 @@ public class LaunchingTasksController {
         this.userService = userService;
         this.taskToProcService = taskToProcService;
         this.fileFolderManipulationService = fileFolderManipulationService;
-        this.taskToProcFilesService = taskToProcFilesService;
-        this.storageService = storageService;
+        //! this.storageService = storageService;
         this.taskManager = taskManager;
     }
 
@@ -86,7 +79,7 @@ public class LaunchingTasksController {
     public String startProcessingTask(
         Model model
         , @PathVariable("taskSampleId") int taskSampleId
-        , @RequestParam("file") MultipartFile file
+        //! , @RequestParam("file") MultipartFile file
         , @ModelAttribute("taskValues") TaskToProcValues values
         , @AuthenticationPrincipal UserDetails userDetails
     ) throws Exception
@@ -110,12 +103,12 @@ public class LaunchingTasksController {
        log.info("Cheking params line: " + chekingParamsLine);
         // task = taskToProcService.saveTaskToProc(task);
 
-        // TODO я здесь поставил проверку на нулл для тестирования, наверное
-        // if(!file.isEmpty()){
-        //     storageService.storeInFolder(file, taskToProcFilesService.getInputFolderForTask(task));
-        // }
+        //! TODO я здесь поставил проверку на нулл для тестирования, наверное
+        //! if(!file.isEmpty()){
+        //!     storageService.storeInFolder(file, taskToProcFilesService.getInputFolderForTask(task));
+        //! }
 
-        // //Кидаем задачу TaskManager-у
+        // Кидаем задачу TaskManager-у
         // taskManager.addTaskToQuee(task);
         
         return "tasks/task-launched-info";

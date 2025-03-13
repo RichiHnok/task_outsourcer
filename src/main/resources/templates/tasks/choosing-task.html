@@ -11,7 +11,7 @@
 	
 	<h2>Задачи:</h2>
 	<div th:each="taskSample : ${taskSamples}">
-		<a th:href="@{/task/{id}(id = ${taskSample.id})}">
+		<a th:href="@{/task/{taskSampleId}(taskSampleId = ${taskSample.id})}">
 				<span th:text="${taskSample.name}"/><br><br>
 		</a>
 	</div>

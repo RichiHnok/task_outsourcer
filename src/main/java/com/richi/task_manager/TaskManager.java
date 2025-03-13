@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.enums.TaskToProcStatus;
-import com.richi.common.service.TaskToProcFilesService;
+import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.ZipService;
 
@@ -30,7 +30,7 @@ public class TaskManager{
     private Logger log = LoggerFactory.getLogger(TaskManager.class);
 
     private final TaskToProcService taskToProcService;
-    private final TaskToProcFilesService taskToProcFilesService;
+    private final FileFolderManipulationService fileFolderManipulationService;
     private final ZipService zipService;
 
     private ExecutorService executorService;
@@ -65,7 +65,7 @@ public class TaskManager{
                             newTask = executorService.submit(
                                 new TaskToProcCallable(
                                     nextTaskToExecute
-                                    , taskToProcFilesService
+                                    , fileFolderManipulationService
                                     , zipService
                                 )
                             );
@@ -116,12 +116,12 @@ public class TaskManager{
 
     public TaskManager(
         TaskToProcService taskToProcService
-        , TaskToProcFilesService taskToProcFilesService
+        , FileFolderManipulationService fileFolderManipulationService
         , ZipService zipService
     ) {
         log.info("Task Manager Constructor in action");
         this.taskToProcService = taskToProcService;
-        this.taskToProcFilesService = taskToProcFilesService;
+        this.fileFolderManipulationService = fileFolderManipulationService;
         this.zipService = zipService;
 
         executorService = Executors.newFixedThreadPool(processingThreadsAmount);
@@ -166,7 +166,7 @@ public class TaskManager{
 
     //TODO должен быть приватным методом
     public synchronized void doTask(TaskToProc task) throws Exception{
-        TaskToProcCallable taskProcess = new TaskToProcCallable(task, taskToProcFilesService, zipService);
+        TaskToProcCallable taskProcess = new TaskToProcCallable(task, fileFolderManipulationService, zipService);
         taskToProcService.updateTaskStatus(task, TaskToProcStatus.IN_PROCESSING);
         Future<TaskProcessingResult> futureTaskProcessing = executorService.submit(taskProcess);
 

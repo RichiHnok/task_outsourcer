@@ -93,27 +93,29 @@ public class TaskToProcService {
         return taskToProcRepository.save(task);
     }
 
-    public String saveAndPutValuesIntoTaskToProc(
+    public String saveValuesAndPutThemIntoTaskToProc(
         TaskToProc taskToProc
         , TaskToProcValues taskToProcValues
     ) throws Exception{
-        // TODO Вынести делиметр в константу куда-нибудь
-        // String delimeter = "~";
 
         Path inputFolder = fileFolderManipulationService.getInputFolderForTask(taskToProc);
 
-        StringBuilder argumentsInString = new StringBuilder();
+        StringBuilder argumentsInStringBuilder = new StringBuilder();
         for(TaskToProcValues.TaskToProcValue value : taskToProcValues.getValues()){
-            
+            argumentsInStringBuilder.append(" \"");
+
             if(value.getParam().getType() == TaskSampleParamType.FILE){
-                storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder);
+                Path fileLocation = storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder);
+                argumentsInStringBuilder.append(fileLocation.toString());
             }else{
                 String valueAsString = (String) value.getValue();
-                argumentsInString.append(" \"")
-                    .append(valueAsString)
-                    .append("\"");
+                argumentsInStringBuilder.append(valueAsString);
             }
+            argumentsInStringBuilder.append("\"");
         }
-        return argumentsInString.toString().trim();
+        
+        String endArgumentsString = argumentsInStringBuilder.toString().trim();
+        taskToProc.setJoinedParams(endArgumentsString);
+        return endArgumentsString;
     }
 }

@@ -16,6 +16,7 @@ import com.richi.common.exception.StorageException;
 @Service
 public class StorageService {
     //? Я не уверен, что этот метод мне нужен
+	@Deprecated
     public void saveFile(MultipartFile file, Path destinationFolder){
         String fileName = file.getOriginalFilename();
         try {
