@@ -12,9 +12,9 @@
     
     <span th:text="#{s-text-task-launched-info-1}"/>
     <b th:text="${taskSample.name}"/>
-    <span th:text="#{s-text-task-launched-info-2}"/>:
+    <span th:text="|#{s-text-task-launched-info-2}:|"/>
     <div th:each="val, itemStat : ${taskValues.values}">
-        <span th:text="${taskSample.params[__${itemStat.index}__].name}"/>: <span th:text="${val}"/>
+        <span th:text="|${taskSample.params[__${itemStat.index}__].name}:|"/> <span th:text="${val}"/>
     </div>
 </body>
 </html>

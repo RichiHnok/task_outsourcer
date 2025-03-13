@@ -15,21 +15,21 @@
     <form action="#" th:action="@{/editor/editTaskSample}" th:object="${taskSample}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}"/>
     
-        <span th:text="#{lbl.task-sample-name}" >Name</span>:
+        <span th:text="|#{lbl.task-sample-name}:|" >Name</span>
         <br>
         <input type="text" th:field="*{name}" style="width:400px;"/>
         <br>
-        <span th:text="#{lbl.task-sample-description}">Description</span>:
+        <span th:text="|#{lbl.task-sample-description}:|">Description</span>
         <br>
         <textarea type="text" th:field="*{description}" style="height:120px;width:400px;resize:none"/>
         <br>
         <br>
         
-        <span th:if="${fileName}" th:text="#{lbl.set-new-script-file}" /><span th:unless="${fileName}" th:text="#{lbl.set-script-file}" />:
+        <span th:if="${fileName}" th:text="#{lbl.set-new-script-file}" /><span th:unless="${fileName}" th:text="|#{lbl.set-script-file}:|" />
         <input type="file" th:field="*{scriptFile}"/>
 
         <div th:if="${fileName}">
-            <span th:text="#{lbl.download-script}">Download current script file</span>: <a th:href="@{/download/taskSample/{taskSampleId}(taskSampleId = ${taskSample.id})}" th:text="${fileName}"/>
+            <span th:text="|#{lbl.download-script}:|">Download current script file:</span> <a th:href="@{/download/taskSample/{taskSampleId}(taskSampleId = ${taskSample.id})}" th:text="${fileName}"/>
         </div>
         <br>
         <br>

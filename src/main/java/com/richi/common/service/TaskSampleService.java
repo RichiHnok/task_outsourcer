@@ -49,6 +49,7 @@ public class TaskSampleService {
         return repository.existsById(taskSampleId);
     }
 
+    @Deprecated
     public Path getFolderForStoringScriptFile(TaskSample taskSample) {
         if(!checkIfTaskSampleExists(taskSample.getId())){
             throw new EntityNotFoundException("There is no task sample with ID:: " + taskSample.getId());

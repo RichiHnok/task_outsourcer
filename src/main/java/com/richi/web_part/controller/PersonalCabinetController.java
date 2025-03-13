@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,18 +16,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.User;
 import com.richi.common.enums.TaskToProcStatus;
-import com.richi.common.service.StorageService;
-import com.richi.common.service.TaskToProcFilesService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
 
 @Controller
 public class PersonalCabinetController {
 
-	@Autowired TaskToProcService taskToProcService;
-	@Autowired TaskToProcFilesService taskToProcFilesService;
-	@Autowired StorageService storageService;
-	@Autowired UserService userService;
+	private final TaskToProcService taskToProcService;
+	private final UserService userService;
+
+	public PersonalCabinetController(
+		TaskToProcService taskToProcService
+		, UserService userService
+	) {
+		this.taskToProcService = taskToProcService;
+		this.userService = userService;
+	}
 
 	@GetMapping("/personal")
 	public String showPersonalCabinet(

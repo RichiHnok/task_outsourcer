@@ -50,6 +50,12 @@ public class TaskToProc {
     public TaskToProc() {
     }
 
+    public TaskToProc(TaskSample taskSample, User user, LocalDateTime time){
+        this.taskSample = taskSample;
+        this.user = user;
+        this.startTime = time;
+    }
+
     public TaskToProc(TaskSample taskSample, User user, LocalDateTime time, String params){
         this.taskSample = taskSample;
         this.user = user;

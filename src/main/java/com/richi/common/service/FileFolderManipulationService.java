@@ -6,10 +6,30 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.stereotype.Service;
 
+import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskToProc;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
-public class TaskToProcFilesService {
+public class FileFolderManipulationService {
+
+    private final TaskSampleService taskSampleService;
+
+    public FileFolderManipulationService(
+        TaskSampleService taskSampleService
+    ){
+        this.taskSampleService = taskSampleService;
+    }
+
+    public Path getFolderForStoringTaskSampleScriptFile(TaskSample taskSample) {
+        if(!taskSampleService.checkIfTaskSampleExists(taskSample.getId())){
+            throw new EntityNotFoundException("There is no task sample with ID:: " + taskSample.getId());
+        }
+        StringBuilder relativePathBuilder = new StringBuilder();
+        relativePathBuilder.append("src\\main\\resources\\files\\samples\\").append("sample"+taskSample.getId());
+        return Path.of(relativePathBuilder.toString());
+    }
     
     public void createInputOutputFoldersForTask(TaskToProc taskToProc) throws Exception{
         Path taskInputFolder = getInputFolderForTask(taskToProc);

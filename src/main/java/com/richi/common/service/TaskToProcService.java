@@ -1,16 +1,19 @@
 package com.richi.common.service;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.richi.common.dto.TaskToProcValues;
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.User;
+import com.richi.common.enums.TaskSampleParamType;
 import com.richi.common.enums.TaskToProcStatus;
 import com.richi.common.repository.TaskToProcRepository;
 
@@ -19,13 +22,24 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class TaskToProcService {
     
-    @Autowired private TaskToProcRepository taskToProcRepository;
-    @Autowired private TaskToProcFilesService taskToProcFilesService;
+    private final TaskToProcRepository taskToProcRepository;
+    private final FileFolderManipulationService fileFolderManipulationService;
+    private final StorageService storageService;
+
+    public TaskToProcService(
+        TaskToProcRepository taskToProcRepository
+        , FileFolderManipulationService fileFolderManipulationService
+        , StorageService storageService
+    ) {
+        this.taskToProcRepository = taskToProcRepository;
+        this.fileFolderManipulationService = fileFolderManipulationService;
+        this.storageService = storageService;
+    }
 
     public TaskToProc deleteTaskToProc(int taskId) throws Exception{
         TaskToProc task = getTaskToProc(taskId);
         try {
-            FileUtils.deleteDirectory(taskToProcFilesService.getWorkFolderForTask(task).toFile());
+            FileUtils.deleteDirectory(fileFolderManipulationService.getWorkFolderForTask(task).toFile());
         } catch (IOException e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -71,8 +85,35 @@ public class TaskToProcService {
         return taskToProcRepository.save(taskToProc);
     }
 
-    public TaskToProc updateTaskStatus(TaskToProc task, TaskToProcStatus newStatus){
+    public TaskToProc updateTaskStatus(
+        TaskToProc task
+        , TaskToProcStatus newStatus
+    ){
         task.setStatus(newStatus);
         return taskToProcRepository.save(task);
+    }
+
+    public String saveAndPutValuesIntoTaskToProc(
+        TaskToProc taskToProc
+        , TaskToProcValues taskToProcValues
+    ) throws Exception{
+        // TODO Вынести делиметр в константу куда-нибудь
+        // String delimeter = "~";
+
+        Path inputFolder = fileFolderManipulationService.getInputFolderForTask(taskToProc);
+
+        StringBuilder argumentsInString = new StringBuilder();
+        for(TaskToProcValues.TaskToProcValue value : taskToProcValues.getValues()){
+            
+            if(value.getParam().getType() == TaskSampleParamType.FILE){
+                storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder);
+            }else{
+                String valueAsString = (String) value.getValue();
+                argumentsInString.append(" \"")
+                    .append(valueAsString)
+                    .append("\"");
+            }
+        }
+        return argumentsInString.toString().trim();
     }
 }

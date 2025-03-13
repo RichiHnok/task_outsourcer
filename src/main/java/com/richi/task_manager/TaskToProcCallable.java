@@ -3,7 +3,7 @@ package com.richi.task_manager;
 import java.util.concurrent.Callable;
 
 import com.richi.common.entity.TaskToProc;
-import com.richi.common.service.TaskToProcFilesService;
+import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.ZipService;
 
 //? TODO Надо ли этот класс делать бином типа prototype, чтобы в него spring сам добавлял зависимости или можно обойтись без этого?
@@ -12,16 +12,16 @@ import com.richi.common.service.ZipService;
 public class TaskToProcCallable implements Callable<TaskProcessingResult>{
 
     private TaskToProc task;
-    private TaskToProcFilesService taskToProcFilesService;
+    private FileFolderManipulationService fileFolderManipulationService;
     private ZipService zipService;
     
     public TaskToProcCallable(
         TaskToProc task
-        , TaskToProcFilesService taskToProcFilesService
+        , FileFolderManipulationService fileFolderManipulationService
         , ZipService zipService
     ) {
         this.task = task;
-        this.taskToProcFilesService = taskToProcFilesService;
+        this.fileFolderManipulationService = fileFolderManipulationService;
         this.zipService = zipService;
     }
 
@@ -35,7 +35,7 @@ public class TaskToProcCallable implements Callable<TaskProcessingResult>{
             ProcessBuilder processBuilder = new ProcessBuilder(
                 "python"
                 , scriptPath
-                , taskToProcFilesService.getOutputFolderForTask(task).toString()
+                , fileFolderManipulationService.getOutputFolderForTask(task).toString()
             ).inheritIO();
     
             Process demoProcess = processBuilder.start();
@@ -53,9 +53,9 @@ public class TaskToProcCallable implements Callable<TaskProcessingResult>{
             
             // taskToProcService.updateTaskStatus(task, TaskToProcStatus.FINISHED); //* обновление статуса
             zipService.zipDirectory(
-                taskToProcFilesService.getOutputFolderForTask(task)
-                , taskToProcFilesService.getWorkFolderForTask(task)
-                , taskToProcFilesService.getNameForResultFile(task, false)
+                fileFolderManipulationService.getOutputFolderForTask(task)
+                , fileFolderManipulationService.getWorkFolderForTask(task)
+                , fileFolderManipulationService.getNameForResultFile(task, false)
             );
         } catch (Exception e) {
             return new TaskProcessingResult(task, "error");

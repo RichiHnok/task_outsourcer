@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Deprecated
 public class FileService {
     public void saveFile(MultipartFile file, Path destinationFolder){
         String fileName = file.getOriginalFilename();

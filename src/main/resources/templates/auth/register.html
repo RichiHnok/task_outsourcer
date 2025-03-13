@@ -14,27 +14,27 @@
         <form th:action="@{/register}" th:object="${user}" method="post">
             <table>
                 <tr>
-                    <td><label for="login" th:text="#{l-login}"></label>:</td>
+                    <td><label for="login" th:text="|#{l-login}:|"></label></td>
                     <td><input type="text" id="login" th:field="*{login}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="First name" th:text="#{l-first-name}"></label>:</td>
+                    <td><label for="First name" th:text="|#{l-first-name}:|"></label></td>
                     <td><input type="text" id="name" th:field="*{name}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="Surname" th:text="#{l-last-name}"></label>:</td>
+                    <td><label for="Surname" th:text="|#{l-last-name}:|"></label></td>
                     <td><input type="text" id="surname" th:field="*{surname}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="password" th:text="#{l-password}"></label>:</td>
+                    <td><label for="password" th:text="|#{l-password}:|"></label></td>
                     <td><input type="password" id="password" th:field="*{password}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="email" th:text="#{l-email}"></label>:</td>
+                    <td><label for="email" th:text="|#{l-email}:|"></label></td>
                     <td><input type="email"id="email" th:field="*{email}"/></td>
                 </tr>
                 <tr>
-                    <td><label for="role" th:text="#{l-choosing-role}"></label>:</td>
+                    <td><label for="role" th:text="|#{l-choosing-role}:|"></label></td>
                     <td>
                         <select id="role" name="roleName" th:field="*{userRole}" onchange="disablePlaceholder(this)">
                             <option value="" th:text="#{o-choose-role}"></option>

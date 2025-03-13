@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskToProc;
+import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskSampleService;
-import com.richi.common.service.TaskToProcFilesService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.web_part.configuration.MyUserDetails;
 
@@ -28,18 +28,18 @@ public class DownloadController {
     private final TaskSampleService taskSampleService;
     private final StorageService storageService;
     private final TaskToProcService taskToProcService;
-    private final TaskToProcFilesService taskToProcFilesService;
+    private final FileFolderManipulationService fileFolderManipulationService;
 
     public DownloadController(
         TaskSampleService taskSampleService
         , StorageService storageService
         , TaskToProcService taskToProcService
-        , TaskToProcFilesService taskToProcFilesService
+        , FileFolderManipulationService fileFolderManipulationService
     ){
         this.taskSampleService = taskSampleService;
         this.storageService = storageService;
         this.taskToProcService = taskToProcService;
-        this.taskToProcFilesService = taskToProcFilesService;
+        this.fileFolderManipulationService = fileFolderManipulationService;
     }
     
     @GetMapping("/taskSample/{taskSampleId}")
@@ -68,7 +68,7 @@ public class DownloadController {
 			throw new AccessDeniedException("You are not owner of this file");
 		}
 
-		Path taskResultArchive = taskToProcFilesService.getResultArchive(task);
+		Path taskResultArchive = fileFolderManipulationService.getResultArchive(task);
 		Resource file = storageService.loadAsResource(taskResultArchive);
 
 		if (file == null)

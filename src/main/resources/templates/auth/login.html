@@ -14,15 +14,15 @@
         <form th:action="@{/login}" method="post">
             <table>
                 <tr>
-                    <td><label for="username" th:text="#{l-login}"/>:</td>
+                    <td><label for="username" th:text="|#{l-login}:|"/></td>
                     <td><input type="text" id="username" name="username"/></td>
                 </tr>
                 <tr>
-                    <td><label for="password" th:text="#{l-password}"/>:</td>
+                    <td><label for="password" th:text="|#{l-password}:|"/></td>
                     <td><input type="password" id="password" name="password"/></td>
                 </tr>
                 <tr>
-                    <td><label for="remember-me" th:text="#{l-rember-me}"/>:</td>
+                    <td><label for="remember-me" th:text="|#{l-rember-me}:|"/></td>
                     <td><input type="checkbox" id="remember-me" name="remember-me" /></td>
                 </tr>
             </table>

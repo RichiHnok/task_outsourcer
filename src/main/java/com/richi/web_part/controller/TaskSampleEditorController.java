@@ -22,6 +22,7 @@ import com.richi.common.entity.taskSampleParam.subTypes.TaskSampleFileParam;
 import com.richi.common.entity.taskSampleParam.subTypes.TaskSampleIntegerParam;
 import com.richi.common.entity.taskSampleParam.subTypes.TaskSampleStringParam;
 import com.richi.common.enums.TaskSampleParamType;
+import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskSampleService;
 
@@ -36,14 +37,17 @@ public class TaskSampleEditorController {
     
     private final TaskSampleService taskSampleService;
     private final StorageService storageService;
+    private final FileFolderManipulationService fileFolderManipulationService;
     
     public TaskSampleEditorController(
         TaskSampleService taskSampleService
         , StorageService storageService
+        , FileFolderManipulationService fileFolderManipulationService
     ) {
         log.info("Creating task sample editor controller");
         this.taskSampleService = taskSampleService;
         this.storageService = storageService;
+        this.fileFolderManipulationService = fileFolderManipulationService;
     }
 
 
@@ -86,7 +90,7 @@ public class TaskSampleEditorController {
                 //TODO стльно торопился поэтому пришлось наговнокодить сохранение файла и запись пути сохранения в базу. Надо поправить
                 Path relativePathToStore = storageService.storeInFolder(
                     taskSample.getScriptFile()
-                    , taskSampleService.getFolderForStoringScriptFile(taskSample)
+                    , fileFolderManipulationService.getFolderForStoringTaskSampleScriptFile(taskSample)
                 );
                 taskSample.setScriptFilePath(relativePathToStore.toString());
             }else{
@@ -97,7 +101,7 @@ public class TaskSampleEditorController {
             if(!taskSample.getScriptFile().isEmpty()){
                 Path relativePathToStore = storageService.storeInFolder(
                     taskSample.getScriptFile()
-                    , taskSampleService.getFolderForStoringScriptFile(taskSample)
+                    , fileFolderManipulationService.getFolderForStoringTaskSampleScriptFile(taskSample)
                 );
                 taskSample.setScriptFilePath(relativePathToStore.toString());
             }
