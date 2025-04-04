@@ -10,8 +10,8 @@
     <div th:insert="~{fragments/header.html :: app-header}"></div>
 
     <span th:text="#{spn.current-user}">Current user is</span> 
-    <span th:text="${#authentication.getPrincipal().getUser().getName()}"/>
-    <span th:text="${#authentication.getPrincipal().getUser().getSurname()}"/>
+    <span th:text="${#authentication.getPrincipal().getFirstname()}"/>
+    <span th:text="${#authentication.getPrincipal().getSurname()}"/>
     <br>
     <h2 th:text="#{h.users-editor}">Users in DB editor</h2>
     <table border="1">

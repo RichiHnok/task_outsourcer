@@ -8,42 +8,59 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.richi.common.entity.User;
+import com.richi.common.enums.UserRole;
 
 public class MyUserDetails implements UserDetails{
     
-    private User user;
+    private final Integer userId;
+    private final String login;
+    private final String firstname;
+    private final String surname;
+    private final String password;
+    // private final String email;
+    private final UserRole userRole;
 
     public MyUserDetails(User user){
-        this.user = user;
+        userId = user.getId();
+        login = user.getLogin();
+        firstname = user.getName();
+        surname = user.getSurname();
+        password = user.getPassword();
+        // email = user.getEmail();
+        userRole = user.getUserRole();
+    }
+
+    public Integer getUserId(){
+        return userId;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // System.out.println("\n" + user.getUsersRoles().stream()
-        // .map(role -> role.getRoleName())
-        // .map(SimpleGrantedAuthority::new)
-        // .collect(Collectors.toList()) + "\n");
         var authoritiesList = new ArrayList<SimpleGrantedAuthority>();
-        authoritiesList.add(new SimpleGrantedAuthority(user.getUserRole().name()));
+        authoritiesList.add(new SimpleGrantedAuthority(userRole.name()));
         return authoritiesList;
-        // return user.getUserRole().stream()
-        //     .map(role -> role.getRoleName())
-        //     .map(SimpleGrantedAuthority::new)
-        //     .collect(Collectors.toList());
-        
-        // return Arrays.stream(user.getRole().split(", "))
-        //     .map(SimpleGrantedAuthority::new)
-        //     .collect(Collectors.toList());
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getLogin();
+        return login;
     }
 
     @Override
@@ -64,9 +81,5 @@ public class MyUserDetails implements UserDetails{
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public User getUser() {
-        return user;
     }
 }

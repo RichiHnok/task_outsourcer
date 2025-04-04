@@ -22,6 +22,6 @@ public class MyUserDetailsService implements UserDetailsService{
         Optional<User> user = userRepository.findByLogin(login);
 
         return user.map(MyUserDetails::new)
-            .orElseThrow(() -> new UsernameNotFoundException("There is no such user in REPO" + login));
+            .orElseThrow(() -> new UsernameNotFoundException("There is no such user in REPO " + login));
     }
 }

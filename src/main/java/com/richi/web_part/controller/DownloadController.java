@@ -64,7 +64,7 @@ public class DownloadController {
 		, @AuthenticationPrincipal UserDetails userDetails
     ) throws Exception {
 		TaskToProc task = taskToProcService.getTaskToProc(taskId);
-		if(task.getUser().getId() != ((MyUserDetails) userDetails).getUser().getId()){
+		if(task.getUser().getId() != ((MyUserDetails) userDetails).getUserId()){
 			throw new AccessDeniedException("You are not owner of this file");
 		}
 

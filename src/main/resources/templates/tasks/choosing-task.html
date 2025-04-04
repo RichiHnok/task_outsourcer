@@ -9,7 +9,7 @@
 <body>
 	<div th:insert="~{fragments/header.html :: app-header}"></div>
 	
-	<h2>Задачи:</h2>
+	<h2 th:text="|#{h.tasks}:|">Задачи:</h2>
 	<div th:each="taskSample : ${taskSamples}">
 		<a th:href="@{/task/{taskSampleId}(taskSampleId = ${taskSample.id})}">
 				<span th:text="${taskSample.name}"/><br><br>

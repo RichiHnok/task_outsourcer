@@ -12,7 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.richi.common.dto.TaskToProcValue;
 import com.richi.common.dto.TaskToProcValues;
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskToProc;
@@ -82,7 +84,6 @@ public class LaunchingTasksController {
         TaskSample taskSample = taskSampleService.getTaskSample(taskSampleId);
 
         model.addAttribute("taskSample", taskSample);
-        model.addAttribute("taskValues", values);
 
         User currentUser = (User) userService.getUserByLogin(userDetails.getUsername());
 
@@ -101,6 +102,13 @@ public class LaunchingTasksController {
 
         //// Кидаем задачу TaskManager-у
         // taskManager.addTaskToQuee(task);
+
+        for(TaskToProcValue val : values.getValues()){
+            if(val.getValue() instanceof MultipartFile){
+                val.setValue(((MultipartFile) val.getValue()).getOriginalFilename());
+            }
+        }
+        model.addAttribute("taskValues", values);
         
         return "tasks/task-launched-info";
     }

@@ -51,11 +51,11 @@ public class StorageService {
 				
 				//@ TODO Расскоментить после тестирования
 				log.info("Saving file by path " + destinationFile);
-				// Files.copy(
-				// 	inputStream
-				// 	, destinationFile
-				// 	, StandardCopyOption.REPLACE_EXISTING
-				// );
+				Files.copy(
+					inputStream
+					, destinationFile
+					, StandardCopyOption.REPLACE_EXISTING
+				);
 			}
 		}
 		catch (IOException e) {

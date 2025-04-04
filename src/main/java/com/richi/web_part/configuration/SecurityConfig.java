@@ -44,43 +44,45 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> {
-                auth.requestMatchers("/").permitAll();
-                auth.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
-                auth.requestMatchers("/register", "/login").anonymous();
-                auth.requestMatchers(
-                    "/task"
-                    , "/task/**"
-                    , "/taskHistory"
-                    , "/personal"
-                    , "/tasks"
-                    , "/placeholder"
-                    , "/download/taskToProc/**"
-                ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
-                auth.requestMatchers(
-                    "/editor"
-                    , "/editor/**"
-                    , "/controlPanel/**"
-                    , "/test/**"
-                    , "/download/taskSample/**"
-                ).hasAuthority("ROLE_ADMIN");
-            })
-            .formLogin(form -> form
-                .loginPage("/login")
-                .successHandler(customAuthenticationSuccessHandler())
-                .permitAll(false)
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .permitAll()
-            )
-            .rememberMe(remember -> remember
-                .rememberMeServices(rememberMeServices(userDetailsService()))
-            )
-            .build();
+        SecurityFilterChain securityFilterChain = http.csrf(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(auth -> {
+            auth.requestMatchers("/").permitAll();
+            auth.requestMatchers("/css/**", "/js/**", "/images/**").permitAll();
+            auth.requestMatchers("/register", "/login").anonymous();
+            auth.requestMatchers(
+                "/task"
+                , "/task/**"
+                , "/taskHistory"
+                , "/personal"
+                , "/tasks"
+                , "/placeholder"
+                , "/download/taskToProc/**"
+            ).hasAnyAuthority("ROLE_USER", "ROLE_ADMIN");
+            auth.requestMatchers(
+                "/editor"
+                , "/editor/**"
+                , "/controlPanel/**"
+                , "/test/**"
+                , "/download/taskSample/**"
+            ).hasAuthority("ROLE_ADMIN");
+        })
+        // .rememberMe(remember -> remember
+        //     .rememberMeServices(rememberMeServices(userDetailsService()))
+        // )
+        .formLogin(form -> form
+            .loginPage("/login")
+            .successHandler(customAuthenticationSuccessHandler())
+            .defaultSuccessUrl("/", true)
+            .permitAll(false)
+        )
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/")
+            .deleteCookies("remember-me")
+            .permitAll()
+        )
+        .build();
+        return securityFilterChain;
     }
 
     @Bean
@@ -108,11 +110,12 @@ public class SecurityConfig {
         };
     }
 
-    @Bean
+    @Bean //TODO Из-за сохранения сессий пользователей в редисе эта штука стала не нужна? Я её пока убиарть не буду, просто из filterchain уберу
     RememberMeServices rememberMeServices(UserDetailsService userDetailsService){
         RememberMeTokenAlgorithm encodingAlgorithm = RememberMeTokenAlgorithm.SHA256;
         TokenBasedRememberMeServices rememberMe = new TokenBasedRememberMeServices("key", userDetailsService, encodingAlgorithm);
         rememberMe.setMatchingAlgorithm(RememberMeTokenAlgorithm.MD5);
+        rememberMe.setTokenValiditySeconds(3600);
         return rememberMe;
     }
 }

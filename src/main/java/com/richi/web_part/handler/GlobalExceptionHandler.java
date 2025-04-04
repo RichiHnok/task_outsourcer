@@ -7,8 +7,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    GlobalExceptionHandler() {
+
+    }
     
     public ResponseEntity<String> handleForbiddenAccessException(AccessDeniedException e){
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
+
+    // public ResponseEntity<String> handleException(Exception e){
+    //     return ResponseEntity.badRequest().body();
+    // }
 }
