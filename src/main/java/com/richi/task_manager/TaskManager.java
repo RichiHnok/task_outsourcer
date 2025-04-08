@@ -13,6 +13,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.richi.common.entity.TaskToProc;
@@ -41,6 +42,7 @@ public class TaskManager{
 
     //? TODO Создание и запуск потока черз анонимный класс нормально выглядит?
     //TODO Мне не нравится название переменной
+    @Deprecated
     private Thread updater = new Thread(){
         //? TODO Этот метод очень неприятно выглядит
         @Override
@@ -134,7 +136,71 @@ public class TaskManager{
         initTasks();
 
 
-        updater.start();
+        //TODO тестирую @Schedule
+        // updater.start(); 
+    }
+
+    @Scheduled(fixedDelay = 10000, initialDelay = 4000)
+    private void logStatus(){
+        log.info("Task manager updater running. Active threads: "
+            + ((ThreadPoolExecutor) executorService).getActiveCount()
+            + ". 'Created Tasks' Size: " + createdTasks.size()
+        );
+    }
+
+    @Scheduled(fixedDelay = 2500, initialDelay = 4000)
+    private void updateTaskProcessing(){
+        while(
+            ((ThreadPoolExecutor) executorService).getActiveCount() < processingThreadsAmount
+            && !createdTasks.isEmpty()
+        ){
+            Future<TaskProcessingResult> newTask;
+            synchronized(createdTasks){
+                TaskToProc nextTaskToExecute = createdTasks.poll();
+                taskToProcService.updateTaskStatus(nextTaskToExecute, TaskToProcStatus.IN_PROCESSING);
+                newTask = executorService.submit(
+                    new TaskToProcCallable(
+                        nextTaskToExecute
+                        , fileFolderManipulationService
+                        , zipService
+                    )
+                );
+            }
+            processingTasks.add(newTask);
+        }
+        
+        // Когда перебираешь элементы нельзя изменять коллекцию
+        List<Future<TaskProcessingResult>> toRemove = null;
+        for(var task : processingTasks){
+            if (task.isDone()) {
+                TaskProcessingResult processingResult;
+                try {
+                    processingResult = task.get();
+                    switch (processingResult.endType()) {
+                        case "ok":
+                            taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.FINISHED);
+                            break;
+                        case "cancel":
+                            taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.CANCELED);
+                            break;
+                        case "error":
+                            taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.ERROR);
+                            break;
+                    }
+                } catch (ExecutionException e) {
+                    // TODO Я пока не знаю как это здесь должно быть
+                } catch (InterruptedException e){
+                    // TODO Я пока не знаю как это здесь должно быть
+                }
+
+                toRemove = (toRemove == null) ? new ArrayList<>() : toRemove;
+                toRemove.add(task);
+            }
+        }
+
+        if(toRemove != null){
+            processingTasks.removeAll(toRemove);
+        }
     }
 
     private void initTasks(){

@@ -10,13 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.richi.common.dto.TaskToProcValue;
-import com.richi.common.dto.TaskToProcValues;
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.User;
 import com.richi.common.enums.TaskSampleParamType;
 import com.richi.common.enums.TaskToProcStatus;
 import com.richi.common.repository.TaskToProcRepository;
+import com.richi.web_part.dto.taskToProcVal.TaskToProcValue;
+import com.richi.web_part.dto.taskToProcVal.TaskToProcValues;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -102,17 +102,19 @@ public class TaskToProcService {
         Path inputFolder = fileFolderManipulationService.getInputFolderForTask(taskToProc);
 
         StringBuilder argumentsInStringBuilder = new StringBuilder();
-        for(TaskToProcValue value : taskToProcValues.getValues()){
-            argumentsInStringBuilder.append(" \"");
-
-            if(value.getParam().getType() == TaskSampleParamType.FILE){
-                Path fileLocation = storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder);
-                argumentsInStringBuilder.append(fileLocation.toString());
-            }else{
-                String valueAsString = (String) value.getValue();
-                argumentsInStringBuilder.append(valueAsString);
+        if(taskToProcValues.getValues() != null){
+            for(TaskToProcValue value : taskToProcValues.getValues()){
+                argumentsInStringBuilder.append(" \"");
+    
+                if(value.getParam().getType() == TaskSampleParamType.FILE){
+                    Path fileLocation = storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder);
+                    argumentsInStringBuilder.append(fileLocation.toString());
+                }else{
+                    String valueAsString = (String) value.getValue();
+                    argumentsInStringBuilder.append(valueAsString);
+                }
+                argumentsInStringBuilder.append("\"");
             }
-            argumentsInStringBuilder.append("\"");
         }
         
         String endArgumentsString = argumentsInStringBuilder.toString().trim();

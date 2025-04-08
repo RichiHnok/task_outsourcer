@@ -13,8 +13,11 @@
     <span th:text="#{lbl.text-task-launched-info-1}"/>
     <b th:text="${taskSample.name}"/>
     <span th:text="|#{lbl.text-task-launched-info-2}:|"/>
-    <div th:each="val, itemStat : ${taskValues.values}">
-        <span th:text="|${taskSample.params[__${itemStat.index}__].name}:|"/> <span th:text="${val.value}"/>
-    </div>
+    <table>
+        <tr th:each="val, itemStat : ${taskValues.values}">
+            <td><span th:text="|${taskSample.params[__${itemStat.index}__].name}:|"/></td>
+            <td><span th:text="${val.value}"/></td>
+        </tr>
+    </table>
 </body>
 </html>

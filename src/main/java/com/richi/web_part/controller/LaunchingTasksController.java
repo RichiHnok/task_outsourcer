@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.richi.common.dto.TaskToProcValue;
-import com.richi.common.dto.TaskToProcValues;
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.User;
@@ -24,6 +22,8 @@ import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
 import com.richi.task_manager.TaskManager;
+import com.richi.web_part.dto.taskToProcVal.TaskToProcValue;
+import com.richi.web_part.dto.taskToProcVal.TaskToProcValues;
 import com.richi.common.service.TaskSampleService;
 
 @Controller
@@ -101,11 +101,13 @@ public class LaunchingTasksController {
         task = taskToProcService.saveTaskToProc(task);
 
         //// Кидаем задачу TaskManager-у
-        // taskManager.addTaskToQuee(task);
+        taskManager.addTaskToQuee(task);
 
-        for(TaskToProcValue val : values.getValues()){
-            if(val.getValue() instanceof MultipartFile){
-                val.setValue(((MultipartFile) val.getValue()).getOriginalFilename());
+        if(values.getValues() != null){
+            for(TaskToProcValue val : values.getValues()){
+                if(val.getValue() instanceof MultipartFile){
+                    val.setValue(((MultipartFile) val.getValue()).getOriginalFilename());
+                }
             }
         }
         model.addAttribute("taskValues", values);

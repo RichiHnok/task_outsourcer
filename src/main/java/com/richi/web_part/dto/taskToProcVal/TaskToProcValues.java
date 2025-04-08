@@ -1,4 +1,4 @@
-package com.richi.common.dto;
+package com.richi.web_part.dto.taskToProcVal;
 
 import java.util.ArrayList;
 import java.util.List;

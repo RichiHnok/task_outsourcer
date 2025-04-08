@@ -1,4 +1,4 @@
-package com.richi.common.dto;
+package com.richi.web_part.dto.taskToProcVal;
 
 import com.richi.common.entity.taskSampleParam.TaskSampleParam;
 
