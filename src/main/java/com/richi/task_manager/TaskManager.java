@@ -40,79 +40,6 @@ public class TaskManager{
     private PriorityQueue<TaskToProc> createdTasks;
     private List<Future<TaskProcessingResult>> processingTasks;
 
-    //? TODO Создание и запуск потока черз анонимный класс нормально выглядит?
-    //TODO Мне не нравится название переменной
-    @Deprecated
-    private Thread updater = new Thread(){
-        //? TODO Этот метод очень неприятно выглядит
-        @Override
-        public void run(){
-            int counterForLog = 0;
-            while(!isInterrupted()){
-                if(counterForLog++ == 10){
-                    log.info("Task manager updater running. Active threads: "
-                        + ((ThreadPoolExecutor) executorService).getActiveCount()
-                        + ". 'Created Tasks' Size: " + createdTasks.size()
-                    );
-                    counterForLog = 0;
-                }
-                try {
-                    while(((ThreadPoolExecutor) executorService).getActiveCount() < processingThreadsAmount
-                        && !createdTasks.isEmpty()
-                    ){
-                        Future<TaskProcessingResult> newTask;
-                        synchronized(createdTasks){
-                            TaskToProc nextTaskToExecute = createdTasks.poll();
-                            taskToProcService.updateTaskStatus(nextTaskToExecute, TaskToProcStatus.IN_PROCESSING);
-                            newTask = executorService.submit(
-                                new TaskToProcCallable(
-                                    nextTaskToExecute
-                                    , fileFolderManipulationService
-                                    , zipService
-                                )
-                            );
-                        }
-                        processingTasks.add(newTask);
-                    }
-                    
-                    // Когда перебираешь элементы нельзя изменять коллекцию
-                    List<Future<TaskProcessingResult>> toRemove = null;
-                    for(var task : processingTasks){
-                        if (task.isDone()) {
-                            TaskProcessingResult processingResult;
-                            try {
-                                processingResult = task.get();
-                                switch (processingResult.endType()) {
-                                    case "ok":
-                                        taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.FINISHED);
-                                        break;
-                                    case "cancel":
-                                        taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.CANCELED);
-                                        break;
-                                    case "error":
-                                        taskToProcService.updateTaskStatus(processingResult.task(), TaskToProcStatus.ERROR);
-                                        break;
-                                }
-                            } catch (ExecutionException e) {
-                                // TODO Я не знаю как это здесь должно быть
-                            }
-
-                            toRemove = (toRemove == null) ? new ArrayList<>() : toRemove;
-                            toRemove.add(task);
-                        }
-                    }
-
-                    if(toRemove != null)
-                        processingTasks.removeAll(toRemove);
-
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    break;
-                }
-            }
-        }
-    };
-
     // Создаём executor service, который будет принмать задачи
     // реализации Callable, в которых будет запускаться скрипт с укзанными параметрами
 
@@ -134,10 +61,6 @@ public class TaskManager{
         processingTasks = new CopyOnWriteArrayList<>();
 
         initTasks();
-
-
-        //TODO тестирую @Schedule
-        // updater.start(); 
     }
 
     @Scheduled(fixedDelay = 10000, initialDelay = 4000)
@@ -218,7 +141,6 @@ public class TaskManager{
     public void destroy(){
         log.info("Task Manager predestroyer in action");
         executorService.shutdown();
-        updater.interrupt();
     }
 
     public void launchTaskProcessing(){

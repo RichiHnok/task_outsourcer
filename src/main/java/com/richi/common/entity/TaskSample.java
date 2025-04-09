@@ -40,6 +40,10 @@ public class TaskSample {
     @Column(name = "script_path")
     private String scriptFilePath;
 
+    //? TODO надо ли это делать так, чтобы админ мог настроить этот параметр доступа к серверу. условно сделать разные роли админов: admin-with-access-to-server и admin-without-access-to-server. И первый получается может любую строку здесь вводить, потому что у него есть понимание что есть на сервере, а второй будет собирать её через конструктор, потому что с ним обратная ситуация
+    @Column(name = "launch_command_template")
+    private String launchCommandTemplate;
+
     @Transient
     private MultipartFile scriptFile;
 
@@ -54,11 +58,12 @@ public class TaskSample {
     public TaskSample() {
     }
 
-    public TaskSample(int id, String name, String description, String sciptFilePath) {
+    public TaskSample(int id, String name, String description, String sciptFilePath, String launchCommandTemplate) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.scriptFilePath = sciptFilePath;
+        this.launchCommandTemplate = launchCommandTemplate;
     }
 
     public void addParamToTaskSample(TaskSampleParam param){
@@ -132,6 +137,14 @@ public class TaskSample {
 
     public void setScriptFile(MultipartFile scriptFile) {
         this.scriptFile = scriptFile;
+    }
+
+    public String getLaunchCommandTemplate() {
+        return launchCommandTemplate;
+    }
+
+    public void setLaunchCommandTemplate(String launchCommandTemplate) {
+        this.launchCommandTemplate = launchCommandTemplate;
     }
 
     public List<TaskToProc> getTasksToProc() {

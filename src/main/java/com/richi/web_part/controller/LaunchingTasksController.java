@@ -1,8 +1,11 @@
 package com.richi.web_part.controller;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -90,7 +93,7 @@ public class LaunchingTasksController {
         TaskToProc task = new TaskToProc(
             taskSample
             , currentUser
-            , LocalDateTime.now()
+            , DateUtils.truncate(new Date(), Calendar.SECOND).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
         );
         task = taskToProcService.saveTaskToProc(task);
         

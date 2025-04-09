@@ -107,7 +107,7 @@ public class TaskToProcService {
                 argumentsInStringBuilder.append(" \"");
     
                 if(value.getParam().getType() == TaskSampleParamType.FILE){
-                    Path fileLocation = storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder);
+                    Path fileLocation = storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder).toAbsolutePath();
                     argumentsInStringBuilder.append(fileLocation.toString());
                 }else{
                     String valueAsString = (String) value.getValue();

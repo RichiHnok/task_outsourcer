@@ -1,6 +1,10 @@
 package com.richi.task_manager;
 
+import java.nio.file.Paths;
 import java.util.concurrent.Callable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.richi.common.entity.TaskToProc;
 import com.richi.common.service.FileFolderManipulationService;
@@ -10,6 +14,8 @@ import com.richi.common.service.ZipService;
 //? TODO Если всё-таки надо этот класс делать бином типа prototype, то какова методология работы с такими объектами?
 //? TODO Сделать возращаемый код завершения не в виде строки "id type", а в виде отдельного класса с enum-ом?
 public class TaskToProcCallable implements Callable<TaskProcessingResult>{
+
+    private Logger log = LoggerFactory.getLogger(TaskToProcCallable.class);
 
     private TaskToProc task;
     private FileFolderManipulationService fileFolderManipulationService;
@@ -31,11 +37,19 @@ public class TaskToProcCallable implements Callable<TaskProcessingResult>{
     @Override
     public TaskProcessingResult call()/*  throws Exception  */{
         try {
-            String scriptPath = task.getTaskSample().getScriptFilePath().toString();
+            String launchCommandTemplate = task.getTaskSample().getLaunchCommandTemplate();
+            String actualLaunchCommand = String.format(launchCommandTemplate
+                , Paths.get(task.getTaskSample().getScriptFilePath()).toAbsolutePath().toString()
+                , fileFolderManipulationService.getOutputFolderForTask(task).toAbsolutePath().toString()
+                , task.getJoinedParams()
+            );
+            // String scriptPath = task.getTaskSample().getScriptFilePath().toString();
+            log.info("Starting task with launching command: " + actualLaunchCommand);
             ProcessBuilder processBuilder = new ProcessBuilder(
-                "python"
-                , scriptPath
-                , fileFolderManipulationService.getOutputFolderForTask(task).toString()
+                actualLaunchCommand.split(" ")
+                // beginingOfLaunchCommand
+                // , scriptPath
+                // , fileFolderManipulationService.getOutputFolderForTask(task).toString()
             ).inheritIO();
     
             Process demoProcess = processBuilder.start();
@@ -58,6 +72,8 @@ public class TaskToProcCallable implements Callable<TaskProcessingResult>{
                 , fileFolderManipulationService.getNameForResultFile(task, false)
             );
         } catch (Exception e) {
+            log.error("Error happens during task proccessing :: \n");
+            e.printStackTrace();
             return new TaskProcessingResult(task, "error");
         }
         return new TaskProcessingResult(task, "ok");

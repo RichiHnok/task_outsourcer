@@ -2,8 +2,11 @@ package com.richi.common.service;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
 import com.richi.common.entity.TaskSample;
@@ -83,7 +86,7 @@ public class FileFolderManipulationService {
             .append("-")
             .append(task.getUser().getLogin())
             .append("-")
-            .append(task.getStartTime().format(dtf));
+            .append(DateUtils.truncate(java.sql.Timestamp.valueOf(task.getStartTime()), Calendar.SECOND).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(dtf));
         if(withZipEnding)
             resultArchiveName.append(".zip");
         return resultArchiveName.toString();

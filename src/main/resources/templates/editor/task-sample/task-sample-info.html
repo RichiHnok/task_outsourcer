@@ -24,7 +24,10 @@
         <textarea type="text" th:field="*{description}" style="height:120px;width:400px;resize:none"/>
         <br>
         <br>
-        
+
+        <span th:text="|#{placeholder}:|">Begining of launch command</span>
+        <input type="text" th:field="*{launchCommandTemplate}"/>
+        <br>
         <span th:if="${fileName}" th:text="#{lbl.set-new-script-file}" /><span th:unless="${fileName}" th:text="|#{lbl.set-script-file}:|" />
         <input type="file" th:field="*{scriptFile}"/>
 
