@@ -1,6 +1,6 @@
 package com.richi.common.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.richi.common.enums.TaskToProcStatus;
 
@@ -34,7 +34,7 @@ public class TaskToProc {
     private User user;
 
     @Column(name = "start_time", updatable = false, nullable = false)
-    private LocalDateTime startTime;
+    private Date startTime;
 
     @Column(name = "params")
     private String joinedParams;
@@ -50,16 +50,16 @@ public class TaskToProc {
     public TaskToProc() {
     }
 
-    public TaskToProc(TaskSample taskSample, User user, LocalDateTime time){
+    public TaskToProc(TaskSample taskSample, User user, Date startTime){
         this.taskSample = taskSample;
         this.user = user;
-        this.startTime = time;
+        this.startTime = startTime;
     }
 
-    public TaskToProc(TaskSample taskSample, User user, LocalDateTime time, String params){
+    public TaskToProc(TaskSample taskSample, User user, Date startTime, String params){
         this.taskSample = taskSample;
         this.user = user;
-        this.startTime = time;
+        this.startTime = startTime;
         this.joinedParams = params;
     }
 
@@ -87,11 +87,11 @@ public class TaskToProc {
         this.user = user;
     }
 
-    public LocalDateTime getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 

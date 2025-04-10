@@ -1,7 +1,5 @@
 package com.richi.web_part.controller;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -93,7 +91,7 @@ public class LaunchingTasksController {
         TaskToProc task = new TaskToProc(
             taskSample
             , currentUser
-            , DateUtils.truncate(new Date(), Calendar.SECOND).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+            , DateUtils.truncate(new Date(), Calendar.SECOND)
         );
         task = taskToProcService.saveTaskToProc(task);
         

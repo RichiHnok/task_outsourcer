@@ -83,10 +83,13 @@
 						</form>
 					</td>
 					<td>
-						<form th:if="${task.status.name() == 'CREATED'}"
-							th:action="@{/controlPanel/launch/{taskId}(taskId=${task.id})}" method="post">
+						<form th:if="${task.status.name() == 'CREATED'}">
 							<button type="subbmit">Start</button>
 						</form>
+						<!-- <form th:if="${task.status.name() == 'CREATED'}"
+							th:action="@{/controlPanel/launch/{taskId}(taskId=${task.id})}" method="post">
+							<button type="subbmit">Start</button>
+						</form> -->
 					</td>
 					<td>
 						<form  th:if="${task.status.name() == 'IN_PROCESSING'}"

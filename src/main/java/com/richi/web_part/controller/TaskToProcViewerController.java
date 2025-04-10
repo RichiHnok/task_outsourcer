@@ -64,6 +64,7 @@ public class TaskToProcViewerController {
     public String handLaunchTask(
         @PathVariable(name = "taskId") Integer taskId
     ) throws Exception{
+        // Пока отключён во view-шке
         TaskToProc task = taskToProcService.getTaskToProc(taskId);
         taskManager.doTask(task);
         return "redirect:/controlPanel";

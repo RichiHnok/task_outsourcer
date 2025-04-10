@@ -92,7 +92,7 @@ public class TaskManager{
             processingTasks.add(newTask);
         }
         
-        // Когда перебираешь элементы нельзя изменять коллекцию
+        // Когда перебираешь элементы, нельзя изменять коллекцию
         List<Future<TaskProcessingResult>> toRemove = null;
         for(var task : processingTasks){
             if (task.isDone()) {
@@ -153,6 +153,7 @@ public class TaskManager{
     }
 
     //TODO должен быть приватным методом
+    //TODO Этот метод меня бесит, я не знаю пока чё с ним делать
     public synchronized void doTask(TaskToProc task) throws Exception{
         TaskToProcCallable taskProcess = new TaskToProcCallable(task, fileFolderManipulationService, zipService);
         taskToProcService.updateTaskStatus(task, TaskToProcStatus.IN_PROCESSING);
