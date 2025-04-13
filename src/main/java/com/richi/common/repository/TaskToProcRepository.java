@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.User;
+import com.richi.common.entity.taskToProc.TaskToProc;
 import com.richi.common.enums.TaskToProcStatus;
 
 public interface TaskToProcRepository extends JpaRepository<TaskToProc, Integer>{

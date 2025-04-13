@@ -1,7 +1,15 @@
-package com.richi.common.entity;
+package com.richi.common.entity.taskToProc;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.richi.common.entity.TaskSample;
+import com.richi.common.entity.User;
 import com.richi.common.enums.TaskToProcStatus;
 
 import jakarta.persistence.Column;
@@ -35,16 +43,21 @@ public class TaskToProc {
 
     @Column(name = "start_time", updatable = false, nullable = false)
     private Date startTime;
-
+    
     @Column(name = "params")
-    private String joinedParams;
+    private String taskParamsJson;
+
+    @Transient
+    private List<TaskToProcParam> taskParams;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private TaskToProcStatus status = TaskToProcStatus.CREATED;
 
+
     //* Это для условия отображения ссылки на скачивание в шаблонизаторе
     @Transient
+    @Deprecated
     private boolean isFinished = false;
 
     public TaskToProc() {
@@ -54,13 +67,6 @@ public class TaskToProc {
         this.taskSample = taskSample;
         this.user = user;
         this.startTime = startTime;
-    }
-
-    public TaskToProc(TaskSample taskSample, User user, Date startTime, String params){
-        this.taskSample = taskSample;
-        this.user = user;
-        this.startTime = startTime;
-        this.joinedParams = params;
     }
 
     public Integer getId() {
@@ -95,12 +101,25 @@ public class TaskToProc {
         this.startTime = startTime;
     }
 
-    public String getJoinedParams() {
-        return joinedParams;
+    public List<TaskToProcParam> convertTaskParamsToListFromJson() throws JsonMappingException, JsonProcessingException{
+        if(taskParams == null){
+            taskParams = new ArrayList<>();
+        }
+        if (this.taskParams.isEmpty() && this.taskParamsJson != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            this.taskParams = mapper.readValue(this.taskParamsJson, new TypeReference<List<TaskToProcParam>>(){});
+        }
+        return taskParams;
     }
 
-    public void setJoinedParams(String joinedParams) {
-        this.joinedParams = joinedParams;
+    public List<TaskToProcParam> getTaskParams() throws JsonMappingException, JsonProcessingException {
+        return convertTaskParamsToListFromJson();
+    }
+
+    public void setTaskParams(List<TaskToProcParam> taskParams) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        this.taskParamsJson = mapper.writeValueAsString(taskParams);
+        this.taskParams = taskParams;
     }
 
     public TaskToProcStatus getStatus() {
@@ -122,6 +141,6 @@ public class TaskToProc {
     @Override
     public String toString() {
         return "TaskToProc [id=" + id + ", taskSample=" + taskSample.getName() + ", user=" + user.getLogin() + ", startTime=" + startTime
-                + ", joinedParams=" + joinedParams + "]";
+                + "]";
     }
 }

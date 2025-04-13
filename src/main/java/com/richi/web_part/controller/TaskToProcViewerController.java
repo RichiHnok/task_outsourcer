@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.richi.common.entity.TaskToProc;
+import com.richi.common.entity.taskToProc.TaskToProc;
 import com.richi.common.service.TaskToProcService;
 import com.richi.task_manager.TaskManager;
 

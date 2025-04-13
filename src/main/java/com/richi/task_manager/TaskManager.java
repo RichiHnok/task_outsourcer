@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.richi.common.entity.TaskToProc;
+import com.richi.common.entity.taskToProc.TaskToProc;
 import com.richi.common.enums.TaskToProcStatus;
 import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.TaskToProcService;

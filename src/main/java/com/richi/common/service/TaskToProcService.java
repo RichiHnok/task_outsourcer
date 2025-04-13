@@ -2,6 +2,7 @@ package com.richi.common.service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
@@ -10,13 +11,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.User;
+import com.richi.common.entity.taskToProc.TaskToProc;
+import com.richi.common.entity.taskToProc.TaskToProcParam;
 import com.richi.common.enums.TaskSampleParamType;
 import com.richi.common.enums.TaskToProcStatus;
 import com.richi.common.repository.TaskToProcRepository;
-import com.richi.web_part.dto.taskToProcVal.TaskToProcValue;
-import com.richi.web_part.dto.taskToProcVal.TaskToProcValues;
+import com.richi.web_part.dto.taskToProcVal.TaskToProcValueDto;
+import com.richi.web_part.dto.taskToProcVal.TaskToProcValuesDto;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -63,14 +65,20 @@ public class TaskToProcService {
         return taskToProcRepository.findByUserOrderByStartTimeDesc(user);
     }
 
-    public Page<TaskToProc> getTaskToProcsByUser(User user, Pageable pageable){
-        return taskToProcRepository.findByUserOrderByStartTimeDesc(user, pageable);
+    public Page<TaskToProc> getTaskToProcsByUser(User user, Pageable pageable) throws Exception{
+        Page<TaskToProc> tasks = taskToProcRepository.findByUserOrderByStartTimeDesc(user, pageable);
+        for(TaskToProc task : tasks){
+            task.convertTaskParamsToListFromJson();
+        }
+        return tasks;
     }
 
-    public TaskToProc getTaskToProc(int id){
-        return taskToProcRepository.findById(id).orElseThrow(
+    public TaskToProc getTaskToProc(int id) throws Exception{
+        TaskToProc task =taskToProcRepository.findById(id).orElseThrow(
             () -> new EntityNotFoundException("Cannot find task to proc by id: " + id)
         );
+        task.convertTaskParamsToListFromJson();
+        return task;
     }
 
     //? TODO Что это и зачем я это создавал?
@@ -94,31 +102,40 @@ public class TaskToProcService {
         return taskToProcRepository.save(task);
     }
 
-    public String saveValuesAndPutThemIntoTaskToProc(
+    public List<TaskToProcParam> saveValuesAndPutThemIntoTaskToProc(
         TaskToProc taskToProc
-        , TaskToProcValues taskToProcValues
+        , TaskToProcValuesDto taskToProcValues
     ) throws Exception{
 
         Path inputFolder = fileFolderManipulationService.getInputFolderForTask(taskToProc);
 
-        StringBuilder argumentsInStringBuilder = new StringBuilder();
+        List<TaskToProcParam> params = new ArrayList<>();
+
         if(taskToProcValues.getValues() != null){
-            for(TaskToProcValue value : taskToProcValues.getValues()){
-                argumentsInStringBuilder.append(" \"");
-    
+            for(TaskToProcValueDto value : taskToProcValues.getValues()){
                 if(value.getParam().getType() == TaskSampleParamType.FILE){
                     Path fileLocation = storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder).toAbsolutePath();
-                    argumentsInStringBuilder.append(fileLocation.toString());
+                    
+                    TaskToProcParam param = new TaskToProcParam(
+                        value.getParam().getName()
+                        , TaskSampleParamType.FILE
+                        , fileLocation.toString()
+                    );
+                    params.add(param);
                 }else{
                     String valueAsString = (String) value.getValue();
-                    argumentsInStringBuilder.append(valueAsString);
+
+                    TaskToProcParam param = new TaskToProcParam(
+                        value.getParam().getName()
+                        , value.getParam().getType()
+                        , valueAsString
+                    );
+                    params.add(param);
                 }
-                argumentsInStringBuilder.append("\"");
             }
         }
-        
-        String endArgumentsString = argumentsInStringBuilder.toString().trim();
-        taskToProc.setJoinedParams(endArgumentsString);
-        return endArgumentsString;
+
+        taskToProc.setTaskParams(params);
+        return params;
     }
 }

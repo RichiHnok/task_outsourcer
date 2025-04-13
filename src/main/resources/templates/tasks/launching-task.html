@@ -16,6 +16,8 @@
             <tr th:each="value, itemStat : *{values}">
                 <td><span th:text="|${value.param.name}: |"></span></td>
                 <td>
+                    <input type="hidden" th:field="*{values[__${itemStat.index}__].param.id}"/>
+                    <input type="hidden" th:field="*{values[__${itemStat.index}__].param.name}"/>
                     <input type="hidden" th:field="*{values[__${itemStat.index}__].param.type}"/>
                     <input th:if="${value.param.type.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="file"/>
                     <input th:unless="${value.param.type.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="text"/>    

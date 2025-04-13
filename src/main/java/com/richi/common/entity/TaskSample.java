@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.richi.common.entity.taskSampleParam.TaskSampleParam;
+import com.richi.common.entity.taskToProc.TaskToProc;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

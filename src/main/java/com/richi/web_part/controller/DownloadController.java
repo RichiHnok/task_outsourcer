@@ -10,11 +10,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.richi.common.entity.TaskSample;
-import com.richi.common.entity.TaskToProc;
+import com.richi.common.entity.taskToProc.TaskToProc;
+import com.richi.common.enums.TaskToProcStatus;
 import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskSampleService;
@@ -58,12 +60,15 @@ public class DownloadController {
         ).body(file);
     }
     
-    @GetMapping("/taskToProc/{taskId}")
+    @GetMapping("/taskToProc/{taskId}/result")
     public ResponseEntity<Resource> serveTaskResultFile(
         @PathVariable Integer taskId
 		, @AuthenticationPrincipal UserDetails userDetails
     ) throws Exception {
 		TaskToProc task = taskToProcService.getTaskToProc(taskId);
+        if(task.getStatus() != TaskToProcStatus.FINISHED){
+            throw new Exception("There is no result for this task");
+        }
 		if(task.getUser().getId() != ((MyUserDetails) userDetails).getUserId()){
 			throw new AccessDeniedException("You are not owner of this file");
 		}
@@ -79,4 +84,28 @@ public class DownloadController {
 		).body(file);
 	}
     
+    @GetMapping("/taskToProc/{taskId}/fileParam")
+    public ResponseEntity<Resource> serveTaskParamFile(
+        @PathVariable Integer taskId
+        , @RequestParam String fileParamName
+        , @AuthenticationPrincipal UserDetails userDetails
+    ) throws Exception{
+        TaskToProc task = taskToProcService.getTaskToProc(taskId);
+
+        if(task.getUser().getId() != ((MyUserDetails) userDetails).getUserId()){
+			throw new AccessDeniedException("You are not owner of this file");
+		}
+
+        Path taskFileParamPath = fileFolderManipulationService.getFileParamOfTask(task, fileParamName);
+        Resource file = storageService.loadAsResource(taskFileParamPath);
+
+        if(file == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION
+        , "attachment; filename=\"" + file.getFilename() + "\""
+        ).body(file);
+
+    }
 }

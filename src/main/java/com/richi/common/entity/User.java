@@ -3,6 +3,7 @@ package com.richi.common.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.richi.common.entity.taskToProc.TaskToProc;
 import com.richi.common.enums.UserRole;
 
 import jakarta.persistence.Column;

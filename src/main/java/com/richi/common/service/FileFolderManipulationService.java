@@ -10,7 +10,8 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
 import com.richi.common.entity.TaskSample;
-import com.richi.common.entity.TaskToProc;
+import com.richi.common.entity.taskToProc.TaskToProc;
+import com.richi.common.entity.taskToProc.TaskToProcParam;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -92,5 +93,18 @@ public class FileFolderManipulationService {
     public Path getResultArchive(TaskToProc task) throws Exception{
         Path resultFilePath = getWorkFolderForTask(task).resolve(getNameForResultFile(task, true));
         return resultFilePath;
+    }
+
+    public Path getFileParamOfTask(TaskToProc task, String fileParamName) throws Exception{
+
+        for(int i = 0, n = task.getTaskParams().size(); i < n; i++){
+            TaskToProcParam param = task.getTaskParams().get(i);
+            if(param.getParamName().equals(fileParamName)){
+                Path fileParamPath = getInputFolderForTask(task).resolve(param.getParamValue());
+                return fileParamPath;
+            }
+        }
+
+        throw new Exception("This task dont have param with name: \"" + fileParamName + "\"");
     }
 }

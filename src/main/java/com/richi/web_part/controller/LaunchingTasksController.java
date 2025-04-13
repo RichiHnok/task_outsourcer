@@ -2,6 +2,7 @@ package com.richi.web_part.controller;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -16,15 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.richi.common.entity.TaskSample;
-import com.richi.common.entity.TaskToProc;
 import com.richi.common.entity.User;
+import com.richi.common.entity.taskToProc.TaskToProc;
+import com.richi.common.entity.taskToProc.TaskToProcParam;
 import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
 import com.richi.task_manager.TaskManager;
-import com.richi.web_part.dto.taskToProcVal.TaskToProcValue;
-import com.richi.web_part.dto.taskToProcVal.TaskToProcValues;
+import com.richi.web_part.dto.taskToProcVal.TaskToProcValueDto;
+import com.richi.web_part.dto.taskToProcVal.TaskToProcValuesDto;
 import com.richi.common.service.TaskSampleService;
 
 @Controller
@@ -68,7 +70,7 @@ public class LaunchingTasksController {
         TaskSample taskSample = taskSampleService.getTaskSample(taskSampleId);
         model.addAttribute("taskSample", taskSample);
         
-        TaskToProcValues taskValues = new TaskToProcValues(taskSample);
+        TaskToProcValuesDto taskValues = new TaskToProcValuesDto(taskSample);
         model.addAttribute("taskValues", taskValues);
 
         return "tasks/launching-task";
@@ -78,7 +80,7 @@ public class LaunchingTasksController {
     public String startProcessingTask(
         Model model
         , @PathVariable("taskSampleId") int taskSampleId
-        , @ModelAttribute("taskValues") TaskToProcValues values
+        , @ModelAttribute("taskValues") TaskToProcValuesDto values
         , @AuthenticationPrincipal UserDetails userDetails
     ) throws Exception
     {
@@ -97,15 +99,16 @@ public class LaunchingTasksController {
         
         fileFolderManipulationService.createInputOutputFoldersForTask(task);
         
-        String chekingParamsLine = taskToProcService.saveValuesAndPutThemIntoTaskToProc(task, values);
-        log.info("Cheking params line: " + chekingParamsLine);
+        List<TaskToProcParam> savedValues = taskToProcService.saveValuesAndPutThemIntoTaskToProc(task, values);
+
+        log.info("Cheking params: " + savedValues.toString());
         task = taskToProcService.saveTaskToProc(task);
 
         //// Кидаем задачу TaskManager-у
         taskManager.addTaskToQuee(task);
 
         if(values.getValues() != null){
-            for(TaskToProcValue val : values.getValues()){
+            for(TaskToProcValueDto val : values.getValues()){
                 if(val.getValue() instanceof MultipartFile){
                     val.setValue(((MultipartFile) val.getValue()).getOriginalFilename());
                 }

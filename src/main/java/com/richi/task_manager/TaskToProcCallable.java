@@ -1,12 +1,13 @@
 package com.richi.task_manager;
 
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.richi.common.entity.TaskToProc;
+import com.richi.common.entity.taskToProc.TaskToProc;
 import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.ZipService;
 
@@ -38,10 +39,14 @@ public class TaskToProcCallable implements Callable<TaskProcessingResult>{
     public TaskProcessingResult call()/*  throws Exception  */{
         try {
             String launchCommandTemplate = task.getTaskSample().getLaunchCommandTemplate();
-            String actualLaunchCommand = String.format(launchCommandTemplate
+            
+            List<String> taskParams = task.getTaskParams().stream().map(task -> task.getParamValue()).toList();
+
+            String actualLaunchCommand = String.format(
+                launchCommandTemplate
                 , Paths.get(task.getTaskSample().getScriptFilePath()).toAbsolutePath().toString()
                 , fileFolderManipulationService.getOutputFolderForTask(task).toAbsolutePath().toString()
-                , task.getJoinedParams()
+                , String.join(" ", taskParams)
             );
             // String scriptPath = task.getTaskSample().getScriptFilePath().toString();
             log.info("Starting task with launching command: " + actualLaunchCommand);

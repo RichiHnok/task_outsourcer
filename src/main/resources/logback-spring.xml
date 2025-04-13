@@ -13,7 +13,7 @@
         <file>src/main/resources/logs/task-manager/task-manager.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>src/main/resources/logs/task-manager/task-manager-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>1MB</maxFileSize>
+            <maxFileSize>10MB</maxFileSize>
         </rollingPolicy>
         <encoder>
             <!-- <pattern>${CONSOLE_LOG_PATTERN}</pattern> -->

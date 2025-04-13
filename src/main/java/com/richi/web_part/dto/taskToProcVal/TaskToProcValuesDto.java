@@ -6,25 +6,25 @@ import java.util.List;
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.taskSampleParam.TaskSampleParam;
 
-public class TaskToProcValues{
+public class TaskToProcValuesDto{
 
-    private List<TaskToProcValue> values;
+    private List<TaskToProcValueDto> values;
 
-    public TaskToProcValues() {
+    public TaskToProcValuesDto() {
     }
 
-    public TaskToProcValues(TaskSample taskSample){
+    public TaskToProcValuesDto(TaskSample taskSample){
         values = new ArrayList<>();
         for (TaskSampleParam param : taskSample.getParams()) {
-            values.add(new TaskToProcValue(param));
+            values.add(new TaskToProcValueDto(param));
         }
     }
 
-    public List<TaskToProcValue> getValues() {
+    public List<TaskToProcValueDto> getValues() {
         return values;
     }
 
-    public void setValues(List<TaskToProcValue> values) {
+    public void setValues(List<TaskToProcValueDto> values) {
         this.values = values;
     }
 }

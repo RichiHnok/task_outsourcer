@@ -2,15 +2,15 @@ package com.richi.web_part.dto.taskToProcVal;
 
 import com.richi.common.entity.taskSampleParam.TaskSampleParam;
 
-public class TaskToProcValue{
+public class TaskToProcValueDto{
         
     private TaskSampleParam param;
     private Object value;
 
-    public TaskToProcValue() {
+    public TaskToProcValueDto() {
     }
 
-    TaskToProcValue(TaskSampleParam param){
+    TaskToProcValueDto(TaskSampleParam param){
         this.param = param;
     }
 

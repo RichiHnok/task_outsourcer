@@ -29,15 +29,25 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="task, iStat : ${taskPage.content}">
-					<td th:text="${task.id}"></td>
+				<tr th:each="task, iStat : ${personalCabinetDto.pageOfUserTasks.content}">
+					<td th:text="${task.taskId}"></td>
 					<td th:text="${task.startTime}"></td>
-					<td th:text="${task.taskSample.name}"></td>
-					<td th:text="${task.joinedParams}"></td>
-					<td th:text="${task.status}"></td>
+					<td th:text="${task.taskSampleName}"></td>
+					<td>
+						<table th:if="${task.taskParams != null and !#lists.isEmpty(task.taskParams)}">
+							<tr th:each="taskParam, itemStat : ${task.taskParams}">
+								<td th:text="|${task.taskParams[__${itemStat.index}__].paramName}:|"></td>
+								<td th:if="${task.taskParams[__${itemStat.index}__].paramType.name() == 'FILE'}">
+									<a th:href="@{/download/taskToProc/{taskId}/fileParam(taskId = ${task.taskId}, fileParamName=${task.taskParams[__${itemStat.index}__].paramName})}" th:text="${task.taskParams[__${itemStat.index}__].paramValue}"></a>
+								</td>
+								<td th:unless="${task.taskParams[__${itemStat.index}__].paramType.name() == 'FILE'}" th:text="|${task.taskParams[__${itemStat.index}__].paramValue}|"></td>
+							</tr>
+						</table>
+					</td>
+					<td th:text="${task.taskStatus}"></td>
 					<div>
 						<td th:if="${task.isFinished}">
-							<a th:href="@{/download/taskToProc/{taskId}(taskId = ${task.id})}" th:text="#{placeholder}"></a>
+							<a th:href="@{/download/taskToProc/{taskId}/result(taskId = ${task.taskId})}" th:text="#{a.download}"></a>
 						</td>
 						<td th:unless="${task.isFinished}">-</td>
 					</div>
@@ -75,7 +85,14 @@
 					<td th:text="${task.startTime}"></td>
 					<td th:text="${task.user.name + ' ' + task.user.surname}"></td>
 					<td th:text="${task.taskSample.name}"></td>
-					<td th:text="${task.joinedParams}"></td>
+					<td>
+						<table th:if="${task.taskParams != null and !#lists.isEmpty(task.taskParams)}">
+							<tr th:each="taskParam, itemStat : ${task.taskParams}">
+								<td th:text="|${task.taskParams[__${itemStat.index}__].paramName}:|"></td>
+								<td th:text="|${task.taskParams[__${itemStat.index}__].paramValue}|"></td>
+							</tr>
+						</table>
+					</td>
 					<td th:text="${task.status}"></td>
 					<td>
 						<form th:action="@{/controlPanel/delete/{taskId}(taskId=${task.id})}" method="post">

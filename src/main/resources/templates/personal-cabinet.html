@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+    <title th:text="#{placeholder}"></title>
+</head>
+<body>
+
+    <div th:insert="~{fragments/header.html :: app-header}"></div>
+
+    <h2 th:text="#{h-personal-cabinet}"/>
+    <br>
+	<span th:text="|#{s-user}:|"/>
+    <span th:text ="${personalCabinetDto.userFirstname}"/>
+    <span th:text ="${personalCabinetDto.userSurname}"/>
+    <br><br>
+    <a th:href="@{/logout}">
+        <button type="button" th:text="#{b-logout}"></button> 
+    </a>
+    <div th:insert="~{fragments/components.html :: task-history-for-user}"></div>
+</body>
+</html>
