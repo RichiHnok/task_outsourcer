@@ -54,16 +54,16 @@
 				</tr>
 			</tbody>
 		</table>
-		<div th:if="${taskPage.totalPages > 0}"
-			th:each="pageNumber : ${pageNumbers}"
+		<div th:if="${personalCabinetDto.pageOfUserTasks.totalPages > 0}"
+			th:each="pageNumber : ${personalCabinetDto.pageNumbers}"
 			class="pagination">
 			<a th:href="@{/personal(page=${pageNumber})}"
 				th:text=${pageNumber}
-				th:class="${pageNumber==taskPage.number + 1} ? active"></a>
+				th:class="${pageNumber == personalCabinetDto.pageOfUserTasks.number + 1} ? active"></a>
 		</div>
 	</div>
 
-	<div th:fragment="task-history-for-all-users">
+	<div th:fragment="task-history-of-all-users">
 		<h2 th:text="#{h.task-history-for-all-users}">Task To Proc in DB</h2>
 		<table border="1">
 			<thead>
@@ -80,11 +80,11 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="task : ${taskPage}">
-					<td th:text="${task.id}"></td>
+				<tr th:each="task : ${controlPanelDto.pageOfUsersTasks}">
+					<td th:text="${task.taskId}"></td>
 					<td th:text="${task.startTime}"></td>
-					<td th:text="${task.user.name + ' ' + task.user.surname}"></td>
-					<td th:text="${task.taskSample.name}"></td>
+					<td th:text="${task.userLogin}"></td>
+					<td th:text="${task.taskSampleName}"></td>
 					<td>
 						<table th:if="${task.taskParams != null and !#lists.isEmpty(task.taskParams)}">
 							<tr th:each="taskParam, itemStat : ${task.taskParams}">
@@ -93,14 +93,14 @@
 							</tr>
 						</table>
 					</td>
-					<td th:text="${task.status}"></td>
+					<td th:text="${task.taskStatus}"></td>
 					<td>
-						<form th:action="@{/controlPanel/delete/{taskId}(taskId=${task.id})}" method="post">
+						<form th:action="@{/controlPanel/delete/{taskId}(taskId=${task.taskId})}" method="post">
 							<button type="subbmit">Delete</button>
 						</form>
 					</td>
 					<td>
-						<form th:if="${task.status.name() == 'CREATED'}">
+						<form th:if="${task.taskStatus.name() == 'CREATED'}">
 							<button type="subbmit">Start</button>
 						</form>
 						<!-- <form th:if="${task.status.name() == 'CREATED'}"
@@ -109,19 +109,19 @@
 						</form> -->
 					</td>
 					<td>
-						<form  th:if="${task.status.name() == 'IN_PROCESSING'}"
-							th:action="@{/controlPanel/stop/{taskId}(taskId=${task.id})}" method="post">
+						<form  th:if="${task.taskStatus.name() == 'IN_PROCESSING'}"
+							th:action="@{/controlPanel/stop/{taskId}(taskId=${task.taskId})}" method="post">
 							<button type="subbmit">Stop</button>
 						</form>
 					</td>
 				</tr>
 			</tbody>
 		</table>
-		<div th:if="${taskPage.totalPages > 0}"
-			th:each="pageNumber : ${pageNumbers}"
+		<div th:if="${controlPanelDto.pageOfUsersTasks.totalPages > 0}"
+			th:each="pageNumber : ${controlPanelDto.pageNumbers}"
 			class="pagination">
 			<a th:href="@{/personal(page=${pageNumber})}" th:text=${pageNumber}
-				th:class="${pageNumber==taskPage.number + 1} ? active"></a>
+				th:class="${pageNumber == controlPanelDto.pageOfUsersTasks.number + 1} ? active"></a>
 		</div>
 	</div>
 

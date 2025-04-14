@@ -130,10 +130,12 @@ public class TaskToProc {
         this.status = status;
     }
 
+    @Deprecated
     public boolean isFinished() {
         return isFinished;
     }
 
+    @Deprecated
     public void setFinished(boolean isFinished) {
         this.isFinished = isFinished;
     }

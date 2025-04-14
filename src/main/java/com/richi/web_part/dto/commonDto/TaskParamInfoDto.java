@@ -1,4 +1,4 @@
-package com.richi.web_part.dto.personalCabinet;
+package com.richi.web_part.dto.commonDto;
 
 import com.richi.common.enums.TaskSampleParamType;
 

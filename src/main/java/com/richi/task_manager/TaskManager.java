@@ -71,7 +71,7 @@ public class TaskManager{
         );
     }
 
-    @Scheduled(fixedDelay = 2500, initialDelay = 4000)
+    @Scheduled(fixedDelay = 1000, initialDelay = 4000)
     private void updateTaskProcessing(){
         while(
             ((ThreadPoolExecutor) executorService).getActiveCount() < processingThreadsAmount

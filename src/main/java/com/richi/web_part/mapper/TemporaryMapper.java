@@ -16,9 +16,11 @@ import com.richi.common.entity.taskToProc.TaskToProcParam;
 import com.richi.common.enums.TaskSampleParamType;
 import com.richi.common.enums.TaskToProcStatus;
 import com.richi.common.service.TaskToProcService;
+import com.richi.web_part.dto.commonDto.TaskParamInfoDto;
+import com.richi.web_part.dto.controlPanel.ControlPanelDto;
+import com.richi.web_part.dto.controlPanel.TaskInfoForControlPanelDto;
 import com.richi.web_part.dto.personalCabinet.PersonalCabinetDto;
 import com.richi.web_part.dto.personalCabinet.TaskInfoForPersonalCabinetDto;
-import com.richi.web_part.dto.personalCabinet.TaskParamInfoDto;
 
 // TODO Пока что это будет общий маппер для всех ДТО-х. Когда разрастётся, разбить на более мелкие мапперы
 @Service
@@ -81,6 +83,53 @@ public class TemporaryMapper {
             user.getName()
             , user.getSurname()
             , pageOfTasks
+            , pageNumbers
+        );
+    }
+
+    public ControlPanelDto createControlPanelDto(
+        Pageable pageable
+    ) throws Exception{
+
+        Page<TaskToProc> tasks = taskToProcService.getAllTasksToProc(pageable);
+
+        List<TaskInfoForControlPanelDto> tasksInfo = new ArrayList<>();
+
+        for(TaskToProc task : tasks){
+
+            List<TaskParamInfoDto> taskParams = new ArrayList<>();
+            for(TaskToProcParam taskParam : task.getTaskParams()){
+                taskParams.add(new TaskParamInfoDto(
+                    taskParam.getParamType()
+                    , taskParam.getParamName()
+                    , (taskParam.getParamType() != TaskSampleParamType.FILE) ?
+                        taskParam.getParamValue() :
+                        Paths.get(taskParam.getParamValue()).getFileName().toString()
+                ));
+            }
+
+            tasksInfo.add(new TaskInfoForControlPanelDto(
+                task.getId()
+                , task.getStartTime()
+                , task.getUser().getLogin()
+                , task.getTaskSample().getName()
+                , taskParams
+                , task.getStatus()
+            ));
+        }
+
+        Page<TaskInfoForControlPanelDto> pageOfTasks = new PageImpl<>(tasksInfo, pageable, tasksInfo.size());
+
+        int totalPages = pageOfTasks.getTotalPages();
+        List<Integer> pageNumbers = null;
+		if(totalPages > 0){
+			pageNumbers = IntStream.rangeClosed(1, totalPages)
+				.boxed()
+				.toList();
+		}
+
+        return new ControlPanelDto(
+            pageOfTasks   
             , pageNumbers
         );
     }

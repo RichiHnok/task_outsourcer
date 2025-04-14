@@ -39,7 +39,7 @@ public class PersonalCabinetController {
 
 
 		int currentPage = page.orElse(1);
-		// // TODO Запихать количество элементов на странице в нормальную константу
+		// TODO Запихать количество элементов на странице в нормальную константу
 		// int pageSize = size.orElse(5);
 		int pageSize = 15;
 		
@@ -48,26 +48,7 @@ public class PersonalCabinetController {
 			, PageRequest.of(currentPage - 1, pageSize)
 		);
 
-		// Page<TaskToProc> taskPage = taskToProcService.getTaskToProcsByUser(
-		// 	currentUser
-		// 	, PageRequest.of(currentPage - 1, pageSize)
-		// );
-
-		// // TODO Как будто в контроллере модифицировать данные это не ок
-		// for(TaskToProc task : taskPage){
-		// 	if(task.getStatus() == TaskToProcStatus.FINISHED)
-		// 		task.setFinished(true);
-		// }
-
 		model.addAttribute("personalCabinetDto", personalCabinetDto);
-
-		// int totalPages = personalCabinetDto.pageOfUserTasks().getTotalPages();
-		// if(totalPages > 0){
-		// 	List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-		// 		.boxed()
-		// 		.toList();
-		// 	model.addAttribute("pageNumbers", pageNumbers);
-		// }
 
 		return "personal-cabinet";
 	}

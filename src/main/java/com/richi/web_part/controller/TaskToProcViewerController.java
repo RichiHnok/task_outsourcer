@@ -1,11 +1,7 @@
 package com.richi.web_part.controller;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,35 +14,41 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.richi.common.entity.taskToProc.TaskToProc;
 import com.richi.common.service.TaskToProcService;
 import com.richi.task_manager.TaskManager;
+import com.richi.web_part.dto.controlPanel.ControlPanelDto;
+import com.richi.web_part.mapper.TemporaryMapper;
 
 @Controller
 @RequestMapping("/controlPanel")
 public class TaskToProcViewerController {
     
-    @Autowired private TaskToProcService taskToProcService;
-    @Autowired private TaskManager taskManager;
+    private final TaskToProcService taskToProcService;
+    private final TaskManager taskManager;
+    private final TemporaryMapper mapper;
+
+    public TaskToProcViewerController(
+        TaskToProcService taskToProcService
+        , TaskManager taskManager
+        , TemporaryMapper mapper
+    ) {
+        this.taskToProcService = taskToProcService;
+        this.taskManager = taskManager;
+        this.mapper = mapper;
+    }
 
     @GetMapping
     public String showAllTasksToProc(
         Model model
         , @RequestParam("page") Optional<Integer> page
-    ){
+    ) throws Exception{
         int currentPage = page.orElse(1);
         //TODO Запихать количество элементов на странице в нормальную константу
-        int pageSize = 30;
+        int pageSize = 15;
 
-        Page<TaskToProc> taskPage = taskToProcService.getAllTasksToProc(
+        ControlPanelDto controlPanelDto = mapper.createControlPanelDto(
             PageRequest.of(currentPage - 1, pageSize)
         );
 
-        model.addAttribute("taskPage", taskPage);
-        int totalPages = taskPage.getTotalPages();
-		if(totalPages > 0){
-			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-				.boxed()
-				.toList();
-			model.addAttribute("pageNumbers", pageNumbers);
-		}
+        model.addAttribute("controlPanelDto", controlPanelDto);
 
         return "control-panel/control-panel";
     }
