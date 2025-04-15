@@ -35,12 +35,12 @@
 					<td th:text="${task.taskSampleName}"></td>
 					<td>
 						<table th:if="${task.taskParams != null and !#lists.isEmpty(task.taskParams)}">
-							<tr th:each="taskParam, itemStat : ${task.taskParams}">
-								<td th:text="|${task.taskParams[__${itemStat.index}__].paramName}:|"></td>
-								<td th:if="${task.taskParams[__${itemStat.index}__].paramType.name() == 'FILE'}">
-									<a th:href="@{/download/taskToProc/{taskId}/fileParam(taskId = ${task.taskId}, fileParamName=${task.taskParams[__${itemStat.index}__].paramName})}" th:text="${task.taskParams[__${itemStat.index}__].paramValue}"></a>
+							<tr th:each="taskParam : ${task.taskParams}">
+								<td th:text="|${taskParam.paramName}:|"></td>
+								<td th:if="${taskParam.paramType.name() == 'FILE'}">
+									<a th:href="@{/download/taskToProc/{taskId}/fileParam(taskId = ${task.taskId}, fileParamName=${taskParam.paramName})}" th:text="${taskParam.paramValue}"></a>
 								</td>
-								<td th:unless="${task.taskParams[__${itemStat.index}__].paramType.name() == 'FILE'}" th:text="|${task.taskParams[__${itemStat.index}__].paramValue}|"></td>
+								<td th:unless="${taskParam.paramType.name() == 'FILE'}" th:text="|${taskParam.paramValue}|"></td>
 							</tr>
 						</table>
 					</td>
@@ -87,9 +87,9 @@
 					<td th:text="${task.taskSampleName}"></td>
 					<td>
 						<table th:if="${task.taskParams != null and !#lists.isEmpty(task.taskParams)}">
-							<tr th:each="taskParam, itemStat : ${task.taskParams}">
-								<td th:text="|${task.taskParams[__${itemStat.index}__].paramName}:|"></td>
-								<td th:text="|${task.taskParams[__${itemStat.index}__].paramValue}|"></td>
+							<tr th:each="taskParam : ${task.taskParams}">
+								<td th:text="|${taskParam.paramName}:|"></td>
+								<td th:text="|${taskParam.paramValue}|"></td>
 							</tr>
 						</table>
 					</td>

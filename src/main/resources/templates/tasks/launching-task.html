@@ -9,27 +9,22 @@
 <body>
     <div th:insert="~{fragments/header.html :: app-header}"></div>
 
-    <h2 th:text="|#{h.task} &quot${taskSample.name}&quot|"></h2>
-    <span th:text="${taskSample.description != null} ? ${taskSample.description} : 'This task dont have description'"/>
-    <form action="#" th:action="@{/task/{taskSampleId}/start(taskSampleId=${taskSample.id})}" enctype="multipart/form-data" th:object="${taskValues}" method="post">
+    <h2 th:text="|#{h.task} &quot${launchingTaskDto.taskSampleName}&quot|"></h2>
+    <span th:text="${launchingTaskDto.taskSampleDescription != null} ? ${launchingTaskDto.taskSampleDescription} : 'This task dont have description'"/>
+    <form action="#" th:action="@{/task/{taskSampleId}/start(taskSampleId=${launchingTaskDto.taskSampleId})}" th:object="${launchingTaskDto}" enctype="multipart/form-data" method="post">
         <table>
             <tr th:each="value, itemStat : *{values}">
-                <td><span th:text="|${value.param.name}: |"></span></td>
+                <td><span th:text="|${value.paramName}: |"></span></td>
                 <td>
-                    <input type="hidden" th:field="*{values[__${itemStat.index}__].param.id}"/>
-                    <input type="hidden" th:field="*{values[__${itemStat.index}__].param.name}"/>
-                    <input type="hidden" th:field="*{values[__${itemStat.index}__].param.type}"/>
-                    <input th:if="${value.param.type.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="file"/>
-                    <input th:unless="${value.param.type.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="text"/>    
+                    <input type="hidden" th:field="*{values[__${itemStat.index}__].taskSampleParamId}"/>
+                    <input type="hidden" th:field="*{values[__${itemStat.index}__].paramName}"/>
+                    <input type="hidden" th:field="*{values[__${itemStat.index}__].paramType}"/>
+                    <input th:if="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="file"/>
+                    <input th:unless="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="text"/>    
                 </td>
             </tr>
         </table>
         
-        <!-- <div th:each="val, itemStat : *{values}">
-            <span th:text="${taskSample.params[__${itemStat.index}__].name}"/>
-            <input th:field="*{values[__${itemStat.index}__]}" />
-        </div>
-        <input type="file" name="file"/> -->
         <br>
         <input type="submit" th:value="#{btn.start}"/>
     </form>

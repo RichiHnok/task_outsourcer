@@ -11,12 +11,17 @@
 
     
     <span th:text="#{lbl.text-task-launched-info-1}"/>
-    <b th:text="${taskSample.name}"/>
+    <b th:text="${taskProcessingLaunchedDto.taskSampleName}"/>
     <span th:text="|#{lbl.text-task-launched-info-2}:|"/>
     <table>
-        <tr th:each="val, itemStat : ${taskValues.values}">
-            <td><span th:text="|${taskSample.params[__${itemStat.index}__].name}:|"/></td>
-            <td><span th:text="${val.value}"/></td>
+        <tr th:each="value : ${taskProcessingLaunchedDto.taskValues}">
+            <td th:text="|${value.paramName}:|"></td>
+            <td th:if="${value.paramType.name() == 'FILE'}">
+                <a th:href="@{/download/taskToProc/{taskId}/fileParam(taskId = ${value.taskId}, fileParamName=${value.paramName})}" th:text="${value.value}"></a>
+            </td>
+            <td th:unless="${value.paramType.name() == 'FILE'}">
+                <span th:text="${value.value}"></span>
+            </td>
         </tr>
     </table>
 </body>

@@ -2,23 +2,23 @@ package com.richi.common.service;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.User;
 import com.richi.common.entity.taskToProc.TaskToProc;
-import com.richi.common.entity.taskToProc.TaskToProcParam;
-import com.richi.common.enums.TaskSampleParamType;
 import com.richi.common.enums.TaskToProcStatus;
 import com.richi.common.repository.TaskToProcRepository;
-import com.richi.web_part.dto.taskToProcVal.TaskToProcValueDto;
-import com.richi.web_part.dto.taskToProcVal.TaskToProcValuesDto;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -102,40 +102,62 @@ public class TaskToProcService {
         return taskToProcRepository.save(task);
     }
 
-    public List<TaskToProcParam> saveValuesAndPutThemIntoTaskToProc(
-        TaskToProc taskToProc
-        , TaskToProcValuesDto taskToProcValues
-    ) throws Exception{
-
-        Path inputFolder = fileFolderManipulationService.getInputFolderForTask(taskToProc);
-
-        List<TaskToProcParam> params = new ArrayList<>();
-
-        if(taskToProcValues.getValues() != null){
-            for(TaskToProcValueDto value : taskToProcValues.getValues()){
-                if(value.getParam().getType() == TaskSampleParamType.FILE){
-                    Path fileLocation = storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder).toAbsolutePath();
-                    
-                    TaskToProcParam param = new TaskToProcParam(
-                        value.getParam().getName()
-                        , TaskSampleParamType.FILE
-                        , fileLocation.toString()
-                    );
-                    params.add(param);
-                }else{
-                    String valueAsString = (String) value.getValue();
-
-                    TaskToProcParam param = new TaskToProcParam(
-                        value.getParam().getName()
-                        , value.getParam().getType()
-                        , valueAsString
-                    );
-                    params.add(param);
-                }
-            }
-        }
-
-        taskToProc.setTaskParams(params);
-        return params;
+    public TaskToProc createTaskToProcWithoutParams(
+        TaskSample taskSample
+        , User user
+    ) throws JsonProcessingException{
+        TaskToProc newTask = new TaskToProc();
+        newTask.setTaskSample(taskSample);
+        newTask.setUser(user);
+        newTask.setStartTime(DateUtils.truncate(new Date(), Calendar.SECOND));
+        newTask.setStatus(TaskToProcStatus.CREATED);
+        return newTask;
     }
+
+    public Path saveFileTaskToProcParam(
+        TaskToProc taskToProc
+        , MultipartFile fileValue
+    ) throws Exception{
+        Path destinationFolder = fileFolderManipulationService.getInputFolderForTask(taskToProc);
+        Path fileLocation = storageService.storeInFolder(fileValue, destinationFolder);
+        return fileLocation;
+    }
+
+    // @Deprecated
+    // public List<TaskToProcParam> saveValuesAndPutThemIntoTaskToProc(
+    //     TaskToProc taskToProc
+    //     , LaunchingTaskDto taskToProcValues
+    // ) throws Exception{
+
+    //     Path inputFolder = fileFolderManipulationService.getInputFolderForTask(taskToProc);
+
+    //     List<TaskToProcParam> params = new ArrayList<>();
+
+    //     if(taskToProcValues.getValues() != null){
+    //         for(TaskToProcValueDto value : taskToProcValues.getValues()){
+    //             if(value.getParamType() == TaskSampleParamType.FILE){
+    //                 Path fileLocation = storageService.storeInFolder((MultipartFile) value.getValue(), inputFolder).toAbsolutePath();
+                    
+    //                 TaskToProcParam param = new TaskToProcParam(
+    //                     value.getParamName()
+    //                     , TaskSampleParamType.FILE
+    //                     , fileLocation.toString()
+    //                 );
+    //                 params.add(param);
+    //             }else{
+    //                 String valueAsString = (String) value.getValue();
+
+    //                 TaskToProcParam param = new TaskToProcParam(
+    //                     value.getParamName()
+    //                     , value.getParamType()
+    //                     , valueAsString
+    //                 );
+    //                 params.add(param);
+    //             }
+    //         }
+    //     }
+
+    //     taskToProc.setTaskParams(params);
+    //     return params;
+    // }
 }

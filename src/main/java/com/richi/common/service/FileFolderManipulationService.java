@@ -1,5 +1,6 @@
 package com.richi.common.service;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -56,23 +57,33 @@ public class FileFolderManipulationService {
     }
 
     public Path getInputFolderForTask(TaskToProc taskToProc) throws Exception {
-        Path userFolder = Paths.get("src\\main\\resources\\files\\users\\"
+        Path userInputFolderForTask = Paths.get("src\\main\\resources\\files\\users\\"
             , taskToProc.getUser().getLogin() 
             , Integer.toString(taskToProc.getTaskSample().getId())
             + taskToProc.getId()
             , "input"
         );
-        return userFolder;
+        if(!Files.exists(userInputFolderForTask)){
+            if(!userInputFolderForTask.toFile().mkdirs()){
+                throw new Exception("Troubles with creating input folder for task processing");
+            }
+        }
+        return userInputFolderForTask;
     }
 
     public Path getOutputFolderForTask(TaskToProc taskToProc) throws Exception {
-        Path userFolder = Paths.get("src\\main\\resources\\files\\users\\"
+        Path userOutputFolderForTask = Paths.get("src\\main\\resources\\files\\users\\"
             , taskToProc.getUser().getLogin() 
             , Integer.toString(taskToProc.getTaskSample().getId())
             + Integer.toString(taskToProc.getId())
             , "output"
         );
-        return userFolder;
+        if(!Files.exists(userOutputFolderForTask)){
+            if(!userOutputFolderForTask.toFile().mkdirs()){
+                throw new Exception("Troubles with creating output folder for task processing");
+            }
+        }
+        return userOutputFolderForTask;
     }
 
     //TODO Как будто отдельный аргумент для возврата названия с или без '.zip' выглядит не очень
@@ -100,7 +111,7 @@ public class FileFolderManipulationService {
         for(int i = 0, n = task.getTaskParams().size(); i < n; i++){
             TaskToProcParam param = task.getTaskParams().get(i);
             if(param.getParamName().equals(fileParamName)){
-                Path fileParamPath = getInputFolderForTask(task).resolve(param.getParamValue());
+                Path fileParamPath = Paths.get(param.getParamValue());
                 return fileParamPath;
             }
         }
