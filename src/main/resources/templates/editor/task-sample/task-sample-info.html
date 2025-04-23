@@ -9,12 +9,12 @@
 <body>
     <div th:insert="~{fragments/header.html :: app-header}"></div>
 
-    <h2 th:if="${taskSample.id}" th:text="|#{h.task-sample-info-of} #${taskSample.id}|">Task Sample Data</h2>
-    <h2 th:unless="${taskSample.id}" th:text="#{h.creating-new-task-sample}">Creating new task sample</h2>
+    <h2 th:if="${editingTaskSampleDto.id}" th:text="|#{h.task-sample-info-of} #${editingTaskSampleDto.id}|">Task Sample Data</h2>
+    <h2 th:unless="${editingTaskSampleDto.id}" th:text="#{h.creating-new-task-sample}">Creating new task sample</h2>
 
-    <form action="#" th:action="@{/editor/editTaskSample}" th:object="${taskSample}" method="post" enctype="multipart/form-data">
+    <form action="#" th:action="@{/editor/taskSamples/edit}" th:object="${editingTaskSampleDto}" method="post" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}"/>
-    
+
         <span th:text="|#{lbl.task-sample-name}:|" >Name</span>
         <br>
         <input type="text" th:field="*{name}" style="width:400px;"/>
@@ -24,35 +24,101 @@
         <textarea type="text" th:field="*{description}" style="height:120px;width:400px;resize:none"/>
         <br>
         <br>
-
-        <span th:text="|#{placeholder}:|">Begining of launch command</span>
+        
+        <span th:text="|#{lbl.launch-command-template}:|">Launch command template</span>
         <input type="text" th:field="*{launchCommandTemplate}"/>
         <br>
-        <span th:if="${fileName}" th:text="#{lbl.set-new-script-file}" /><span th:unless="${fileName}" th:text="|#{lbl.set-script-file}:|" />
+        <span th:if="*{scriptFileName}" th:text="|#{lbl.set-new-script-file}:|" />
+        <span th:unless="*{scriptFileName}" th:text="|#{lbl.set-script-file}:|" />
         <input type="file" th:field="*{scriptFile}"/>
 
-        <div th:if="${fileName}">
-            <span th:text="|#{lbl.download-script}:|">Download current script file:</span> <a th:href="@{/download/taskSample/{taskSampleId}(taskSampleId = ${taskSample.id})}" th:text="${fileName}"/>
+        <input type="hidden" th:field="*{scriptFileName}">
+        <div th:if="*{scriptFileName}">
+            <span th:text="|#{lbl.download-script}:|">Download current script file:</span>
+            <a th:href="@{/download/taskSampleScript/{taskSampleId}(taskSampleId = *{id})}" th:text="*{scriptFileName}"/>
         </div>
         <br>
         <br>
+
         <span th:text="|#{lbl.task-sample-params}:|">Params</span>
         <br>
-        
-        <div th:if="${taskSample.params != null and !#lists.isEmpty(taskSample.params)}">
-            <div th:each="par, itemStat : *{params}">
-                <input type="hidden" th:field="*{params[__${itemStat.index}__].id}"/>
-                <span><input th:field="*{params[__${itemStat.index}__].name}" /></span>
-                <input type="hidden" th:field="*{params[__${itemStat.index}__].type}"/>
-                <span th:text="*{params[__${itemStat.index}__].type}"></span>
+        <table th:if="*{paramsInfo != null and !#lists.isEmpty(paramsInfo)}">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Constraints</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="paramInfo, i1 : *{paramsInfo}">
+                    <input type="hidden" th:field="*{paramsInfo[__${i1.index}__].id}"/>
+                    <input type="hidden" th:field="*{paramsInfo[__${i1.index}__].type}"/>
+                    <input type="hidden" th:field="*{paramsInfo[__${i1.index}__].uuid}"/>
 
-                <button th:if="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/editTaskSample(taskSampleParamId=${par.id}, taskSampleParamName=${par.name})}" th:text="X">X</button>
-                <button th:unless="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/editTaskSample(taskSampleParamId=0, taskSampleParamName=${par.name})}" th:text="X">X</button>
-            </div>
-        </div>
-        <div th:unless="${taskSample.params != null and !#lists.isEmpty(taskSample.params)}">
+                    <td th:text="${paramInfo.type}"></td>
+                    <td><input type="text" th:field="*{paramsInfo[__${i1.index}__].name}" /></td>
+                    <td>
+                        <div th:if="${paramInfo.type.name() == 'INTEGER'}" th:each="intConstraint, i2 : *{intConstraints}" style="display:inline">
+                            <div th:if="${paramInfo.uuid == intConstraint.uuid}">
+                                <input type="hidden" th:field="*{intConstraints[__${i2.index}__].uuid}"/>
+                                
+                                <input type="text" th:field="*{intConstraints[__${i2.index}__].min}" style="width:40px">
+                                <input type="text" th:field="*{intConstraints[__${i2.index}__].max}" style="width:40px">
+                            </div>
+                        </div>
+                        <div th:if="${paramInfo.type.name() == 'STRING'}" th:each="strConstraint, i2 : *{strConstraints}" style="display:inline">
+                            <div th:if="${paramInfo.uuid == strConstraint.uuid}">
+                                <input type="hidden" th:field="*{strConstraints[__${i2.index}__].uuid}"/>
+                                
+                            </div>
+                        </div>
+                        <div th:if="${paramInfo.type.name() == 'FILE'}" th:each="fileConstraint, i2 : *{fileConstraints}" style="display:inline">
+                            <div th:if="${paramInfo.uuid == fileConstraint.uuid}">
+                                <input type="hidden" th:field="*{fileConstraints[__${i2.index}__].uuid}"/>
+
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="submit" name="removeParam" th:formaction="@{/editor/taskSamples/edit(paramUuid=${paramInfo.uuid})}" th:text="X">X</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div th:unless="*{paramsInfo != null and !#lists.isEmpty(paramsInfo)}">
             <p th:text="#{lbl.no-params}">This sample dont have parameteres</p>
         </div>
+
+        <!-- <div th:if="*{paramsInfo != null and !#lists.isEmpty(paramsInfo)}" th:each="paramInfo, i1 : *{paramsInfo}">
+            <input type="hidden" th:field="*{paramsInfo[__${i1.index}__].id}"/>
+            <input type="hidden" th:field="*{paramsInfo[__${i1.index}__].type}"/>
+            <span th:text="${paramInfo.type}"></span>
+            <input type="text" th:field="*{paramsInfo[__${i1.index}__].name}" />
+
+            <div th:if="${paramInfo.type.name() == 'INTEGER'}" th:each="intConstraint, i2 : *{intConstraints}" style="display:inline">
+                <div th:if="${paramInfo.name == intConstraint.paramName}"  style="display:inline">
+                    <input type="hidden" th:field="*{intConstraints[__${i2.index}__].paramId}"/>
+                    <input type="hidden" th:field="*{intConstraints[__${i2.index}__].paramName}"/>
+                    
+                    <input type="text" th:field="*{intConstraints[__${i2.index}__].min}" style="width:40px">
+                    <input type="text" th:field="*{intConstraints[__${i2.index}__].max}" style="width:40px">
+                </div>
+            </div>
+            <div th:if="${paramInfo.type.name() == 'STRING'}" th:each="strConstraint, i2 : *{strConstraints}" style="display:inline">
+
+            </div>
+            <div th:if="${paramInfo.type.name() == 'FILE'}" th:each="fileConstraint, i2 : *{fileConstraints}" style="display:inline">
+
+            </div>
+            <button th:if="${paramInfo.id}" type="submit" name="removeParam" th:formaction="@{/editor/taskSamples/edit(paramId=${paramInfo.id}, paramName=${paramInfo.name})}" th:text="X">X</button>
+            <button th:unless="${paramInfo.id}" type="submit" name="removeParam" th:formaction="@{/editor/taskSamples/edit(paramId=0, paramName=${paramInfo.name})}" th:text="X">X</button>
+        </div>
+        <div th:unless="*{paramsInfo != null and !#lists.isEmpty(paramsInfo)}">
+            <p th:text="#{lbl.no-params}">This sample dont have parameteres</p>
+        </div> -->
+
         <select id="addingType" name="addingType">
             <option th:each="typeOpt : ${T(com.richi.common.enums.TaskSampleParamType).values()}" 
                 th:value="${typeOpt}"
@@ -67,5 +133,76 @@
     <a th:href="@{/editor/taskSamples}">
         <button type="button" th:text="#{btn.cancel}">Cancel</button> 
     </a>
+    <!-- <form action="#" th:action="@{/editor/taskSamples/edit}" th:object="${taskSample}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
+    
+        <span th:text="|#{lbl.task-sample-name}:|" >Name</span>
+        <br>
+        <input type="text" th:field="*{name}" style="width:400px;"/>
+        <br>
+        <span th:text="|#{lbl.task-sample-description}:|">Description</span>
+        <br>
+        <textarea type="text" th:field="*{description}" style="height:120px;width:400px;resize:none"/>
+        <br>
+        <br>
+
+        <span th:text="|#{lbl.launch-command-template}:|">Launch command template</span>
+        <input type="text" th:field="*{launchCommandTemplate}"/>
+        <br>
+        <span th:if="${fileName}" th:text="|#{lbl.set-new-script-file}: |" /><span th:unless="${fileName}" th:text="|#{lbl.set-script-file}:|" />
+        <input type="file" th:field="*{scriptFile}"/>
+
+        <div th:if="${fileName}">
+            <span th:text="|#{lbl.download-script}:|">Download current script file:</span> <a th:href="@{/download/taskSampleScript/{taskSampleId}(taskSampleId = ${taskSample.id})}" th:text="${fileName}"/>
+        </div>
+        <br>
+        <br>
+
+        <span th:text="|#{lbl.task-sample-params}:|">Params</span>
+        <br>
+        <div th:if="${taskSample.params != null and !#lists.isEmpty(taskSample.params)}">
+            <div th:each="par, itemStat : *{paramsMainInfo}">
+                <input type="hidden" th:field="*{paramsMainInfo[__${itemStat.index}__].type}"/>
+                <span th:text="${par.type}"></span>
+                <input type="hidden" th:field="*{paramsMainInfo[__${itemStat.index}__].id}"/>
+                <span><input th:field="*{paramsMainInfo[__${itemStat.index}__].name}" /></span>
+                <div th:if="${par.type.name() == 'INTEGER'}">
+                    <div th:each="constraint, i2 : *{intParamsConstraints}">
+                        <div th:if="${constraint.paramId == par.id}">
+                            <input type="text" th:field="${constraint.min}"/>
+                            <input type="text" th:field="${constraint.max}"/>
+                        </div>
+                    </div>
+                    <input type="text" th:field="*{params[__${itemStat.index}__].min}"/>
+                    <span th:text="${par}"></span>
+                    <br>
+                    <span th:text="${#conversions.convert(par, 'Object')}"></span>
+                    <span th:text="${#conversions.convert(par, 'com.richi.common.entity.taskSampleParam.subTypes.TaskSampleStringParam')}"></span>
+                    <input type="text" th:field="${#conversions.convert(params[__${itemStat.index}__], 'TaskSampleIntegerParam')}"/>
+                    <input type="text" th:field="*{params[__${itemStat.index}__].max}"/>
+                </div>
+
+                <button th:if="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/taskSamples/edit(taskSampleParamId=${par.id}, taskSampleParamName=${par.name})}" th:text="X">X</button>
+                <button th:unless="${par.id}" type="submit" name="removeParam" th:formaction="@{/editor/taskSamples/edit(taskSampleParamId=0, taskSampleParamName=${par.name})}" th:text="X">X</button>
+            </div>
+        </div>
+        <div th:unless="${taskSample.params != null and !#lists.isEmpty(taskSample.params)}">
+            <p th:text="#{lbl.no-params}">This sample dont have parameteres</p>
+        </div>
+
+        <select id="addingType" name="addingType">
+            <option th:each="typeOpt : ${T(com.richi.common.enums.TaskSampleParamType).values()}" 
+                th:value="${typeOpt}"
+                th:text="${typeOpt}">
+            </option>
+        </select>
+        <input type="submit" name="addParam" th:value="#{btn.add-param}"/>
+        <br>
+        <br>
+        <input type="submit" name="save" th:value="#{btn.save}"/>
+    </form>
+    <a th:href="@{/editor/taskSamples}">
+        <button type="button" th:text="#{btn.cancel}">Cancel</button> 
+    </a> -->
 </body>
 </html>

@@ -17,23 +17,25 @@
             <th th:text="#{th.update}">Update</th>
             <th th:text="#{th.delete}">Delete</th>
         </tr>
-        <tr th:each="taskSample : ${taskSamples}">
+        <tr th:each="taskSample : ${taskSamplesEditorDto.taskSamplesInfo}">
             <td th:text="${taskSample.id}"></td>
             <td th:text="${taskSample.name}"></td>
             <td th:text="${taskSample.description}" style="height:20px;width:20px;"></td>
             <td>
-                <a th:href="@{/editor/updateTaskSample/{taskSampleId}(taskSampleId = ${taskSample.id})}">
+                <a th:href="@{/editor/taskSamples/update/{taskSampleId}(taskSampleId = ${taskSample.id})}">
                     <button type="button" th:text="#{btn.update}">Update</button> 
                 </a>
             </td>
             <td>
-                <a th:href="@{/editor/deleteInfo/taskSample(taskSampleId=${taskSample.id})}">
+                <a th:href="@{/editor/taskSamples/delete/{taskSampleId}(taskSampleId = ${taskSample.id})}">
                     <button type="button" th:text="#{btn.delete}">Delete</button> 
                 </a>    
             </td>
         </tr>
     </table>
     <br>
-    <input type="button" th:value="#{btn.add-task-sample}" onclick="window.location.href = 'addTaskSample'"/>
+    <a th:href="@{/editor/taskSamples/add}">
+        <button type="button" th:text="#{btn.add-task-sample}">Add Task Sample</button> 
+    </a>
 </body>
 </html>

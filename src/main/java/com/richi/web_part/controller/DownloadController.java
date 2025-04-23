@@ -44,7 +44,7 @@ public class DownloadController {
         this.fileFolderManipulationService = fileFolderManipulationService;
     }
     
-    @GetMapping("/taskSample/{taskSampleId}")
+    @GetMapping("/taskSampleScript/{taskSampleId}")
     public ResponseEntity<Resource> serveTaskSampleScriptFilEntity(
         @PathVariable Integer taskSampleId
     ) throws Exception {

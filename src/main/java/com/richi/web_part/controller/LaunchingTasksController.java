@@ -7,8 +7,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.richi.common.entity.TaskSample;
@@ -20,11 +23,15 @@ import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
 import com.richi.task_manager.TaskManager;
 import com.richi.web_part.mapper.TemporaryMapper;
+
+import jakarta.validation.Valid;
+
+import com.richi.web_part.dto.launchingTask.LaunchingTaskDto;
 import com.richi.web_part.dto.taskProcessingLaunched.TaskProcessingLaunchedDto;
-import com.richi.web_part.dto.taskToProcVal.LaunchingTaskDto;
 import com.richi.common.service.TaskSampleService;
 
 @Controller
+@Validated
 public class LaunchingTasksController {
 
     private final TaskSampleService taskSampleService;
@@ -67,14 +74,19 @@ public class LaunchingTasksController {
         return "tasks/launching-task";
     }
 
-    @RequestMapping("/task/{taskSampleId}/start")
+    @PostMapping("/task/{taskSampleId}/start")
     public String startProcessingTask(
         Model model
         , @PathVariable("taskSampleId") int taskSampleId
-        , @ModelAttribute("launchingTaskDto") LaunchingTaskDto launchingTaskDto
+        , @Valid @ModelAttribute("launchingTaskDto") LaunchingTaskDto launchingTaskDto
+        , BindingResult bindingResult
         , @AuthenticationPrincipal UserDetails userDetails
     ) throws Exception
     {
+        if(bindingResult.hasErrors()){
+            return "tasks/launching-task";
+        }
+
         TaskSample taskSample = taskSampleService.getTaskSample(taskSampleId);
         User currentUser = userService.getUserByLogin(userDetails.getUsername());
 
@@ -90,32 +102,9 @@ public class LaunchingTasksController {
         );
         task.setTaskParams(taskParams);
         task = taskToProcService.saveTaskToProc(task);
-        //
-        // TaskToProc task = new TaskToProc(
-        //     taskSample
-        //     , currentUser
-        //     , DateUtils.truncate(new Date(), Calendar.SECOND)
-        // );
-        // task = taskToProcService.saveTaskToProc(task);
-        
-        // fileFolderManipulationService.createInputOutputFoldersForTask(task);
-        
-        // List<TaskToProcParam> savedValues = taskToProcService.saveValuesAndPutThemIntoTaskToProc(task, values);
-
-        // log.info("Cheking params: " + savedValues.toString());
-        // task = taskToProcService.saveTaskToProc(task);
 
         //* Кидаем задачу TaskManager-у
         taskManager.addTaskToQuee(task);
-
-        // if(values.getValues() != null){
-        //     for(TaskToProcValueDto val : values.getValues()){
-        //         if(val.getValue() instanceof MultipartFile){
-        //             val.setValue(((MultipartFile) val.getValue()).getOriginalFilename());
-        //         }
-        //     }
-        // }
-        // model.addAttribute("taskValues", values);
 
         TaskProcessingLaunchedDto taskProcessingLaunchedDto = mapper.createTaskProcessingLaunchedDto(taskSample, task);
         model.addAttribute("taskProcessingLaunchedDto", taskProcessingLaunchedDto);

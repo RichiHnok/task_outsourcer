@@ -11,6 +11,7 @@ import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,6 +40,7 @@ public class TaskToProcService {
         this.storageService = storageService;
     }
 
+    @Transactional
     public TaskToProc deleteTaskToProc(int taskId) throws Exception{
         TaskToProc task = getTaskToProc(taskId);
         try {
@@ -90,10 +92,12 @@ public class TaskToProcService {
         return taskToProcRepository.findAllByStatusIn(statuses);
     }
 
+    @Transactional
     public TaskToProc saveTaskToProc(TaskToProc taskToProc) {
         return taskToProcRepository.save(taskToProc);
     }
 
+    @Transactional
     public TaskToProc updateTaskStatus(
         TaskToProc task
         , TaskToProcStatus newStatus

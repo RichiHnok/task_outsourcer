@@ -63,7 +63,7 @@ public class SecurityConfig {
                 , "/editor/**"
                 , "/controlPanel/**"
                 , "/test/**"
-                , "/download/taskSample/**"
+                , "/download/**"
             ).hasAuthority("ROLE_ADMIN");
         })
         // .rememberMe(remember -> remember

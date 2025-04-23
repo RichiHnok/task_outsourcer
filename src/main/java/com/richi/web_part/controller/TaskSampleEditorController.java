@@ -25,12 +25,16 @@ import com.richi.common.enums.TaskSampleParamType;
 import com.richi.common.service.FileFolderManipulationService;
 import com.richi.common.service.StorageService;
 import com.richi.common.service.TaskSampleService;
+import com.richi.web_part.dto.editingTaskSample.EditingTaskSampleDto;
+import com.richi.web_part.dto.editingTaskSample.taskSampleParam.TaskSampleParamMainInfoDto;
+import com.richi.web_part.dto.taskSamplesEditor.TaskSamplesEditorDto;
+import com.richi.web_part.mapper.TemporaryMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/editor")
+@RequestMapping("/editor/taskSamples")
 public class TaskSampleEditorController {
 
     private Logger log = LoggerFactory.getLogger(TaskSampleEditorController.class);
@@ -38,167 +42,178 @@ public class TaskSampleEditorController {
     private final TaskSampleService taskSampleService;
     private final StorageService storageService;
     private final FileFolderManipulationService fileFolderManipulationService;
+    private final TemporaryMapper mapper;
     
     public TaskSampleEditorController(
         TaskSampleService taskSampleService
         , StorageService storageService
         , FileFolderManipulationService fileFolderManipulationService
+        , TemporaryMapper mapper
     ) {
         log.info("Creating task sample editor controller");
         this.taskSampleService = taskSampleService;
         this.storageService = storageService;
         this.fileFolderManipulationService = fileFolderManipulationService;
+        this.mapper = mapper;
     }
 
 
-    @GetMapping("/taskSamples")
+    @GetMapping
     public String showAllTaskSamples(
         Model model
     ){
         List<TaskSample> allTaskSamples = taskSampleService.getAllTaskSamples();
-        model.addAttribute("taskSamples", allTaskSamples);
+        TaskSamplesEditorDto taskSamplesEditorDto = mapper.createTaskSamplesEditorDto(allTaskSamples);
+        model.addAttribute("taskSamplesEditorDto", taskSamplesEditorDto);
         return "editor/task-sample/task-samples-editor";
     }
 
-    @GetMapping("/addTaskSample")
+    @GetMapping("/add")
     public String addNewTaskSample(
         Model model
     ){
-        TaskSample taskSample = new TaskSample();
-        model.addAttribute("taskSample", taskSample);
+        EditingTaskSampleDto editingTaskSampleDto = mapper.createAddingTaskSampleDto();
+        model.addAttribute("editingTaskSampleDto", editingTaskSampleDto);
+        // model.addAttribute("taskSample", taskSample);
         return "editor/task-sample/task-sample-info";
     }
 
-    @PostMapping(value = "/editTaskSample", params = "save")
+    @PostMapping(value = "/edit", params = "save")
     public String saveTaskSample(
-        @ModelAttribute TaskSample taskSample
+        @ModelAttribute("editingTaskSampleDto") EditingTaskSampleDto editingTaskSampleDto
     ) throws Exception{
-        //TODO При заугрузке скрипта, переименовывать его используя название шаблона
-        //TODO при изменении параметров удалять старый шаблон и создавать новый, а не изменять старый, чтобы в базе данных в таблице task_to_proc_не былопутаницы с параметрами
+        // // TODO При заугрузке скрипта, переименовывать его используя название шаблона
+        // // TODO при изменении параметров удалять старый шаблон и создавать новый, а не изменять старый, чтобы в базе данных в таблице task_to_proc_не былопутаницы с параметрами
 
-        try {
-            TaskSample currentTaskSampleInDB = taskSampleService.getTaskSample(
-                taskSample.getId()
-            );
-            String olderScriptPath = currentTaskSampleInDB.getScriptFilePath();
-            if(!taskSample.getScriptFile().isEmpty() && olderScriptPath != null){
-                Path olderFilePath = Path.of(olderScriptPath);
-                storageService.deleteFile(olderFilePath);
-            }
+        // try {
+        //     TaskSample currentTaskSampleInDB = taskSampleService.getTaskSample(
+        //         taskSample.getId()
+        //     );
+        //     String olderScriptPath = currentTaskSampleInDB.getScriptFilePath();
+        //     if(!taskSample.getScriptFile().isEmpty() && olderScriptPath != null){
+        //         Path olderFilePath = Path.of(olderScriptPath);
+        //         storageService.deleteFile(olderFilePath);
+        //     }
 
-            if(!taskSample.getScriptFile().isEmpty()){
-                //TODO стльно торопился поэтому пришлось наговнокодить сохранение файла и запись пути сохранения в базу. Надо поправить
-                Path relativePathToStore = storageService.storeInFolder(
-                    taskSample.getScriptFile()
-                    , fileFolderManipulationService.getFolderForStoringTaskSampleScriptFile(taskSample)
-                );
-                taskSample.setScriptFilePath(relativePathToStore.toString());
-            }else{
-                taskSample.setScriptFilePath(olderScriptPath);
-            }
-        } catch (EntityNotFoundException e) {
-            taskSample = taskSampleService.saveTaskSample(taskSample);
-            if(!taskSample.getScriptFile().isEmpty()){
-                Path relativePathToStore = storageService.storeInFolder(
-                    taskSample.getScriptFile()
-                    , fileFolderManipulationService.getFolderForStoringTaskSampleScriptFile(taskSample)
-                );
-                taskSample.setScriptFilePath(relativePathToStore.toString());
-            }
+        //     if(!taskSample.getScriptFile().isEmpty()){
+        //         // TODO стльно торопился поэтому пришлось на кодить сохранение файла и запись пути сохранения в базу. Надо поправить
+        //         Path relativePathToStore = storageService.storeInFolder(
+        //             taskSample.getScriptFile()
+        //             , fileFolderManipulationService.getFolderForStoringTaskSampleScriptFile(taskSample)
+        //         );
+        //         taskSample.setScriptFilePath(relativePathToStore.toString());
+        //     }else{
+        //         taskSample.setScriptFilePath(olderScriptPath);
+        //     }
+        // } catch (EntityNotFoundException e) {
+        //     taskSample = taskSampleService.saveTaskSample(taskSample);
+        //     if(!taskSample.getScriptFile().isEmpty()){
+        //         Path relativePathToStore = storageService.storeInFolder(
+        //             taskSample.getScriptFile()
+        //             , fileFolderManipulationService.getFolderForStoringTaskSampleScriptFile(taskSample)
+        //         );
+        //         taskSample.setScriptFilePath(relativePathToStore.toString());
+        //     }
             
-        }
+        // }
         
-        taskSampleService.saveTaskSample(taskSample);
+        // taskSampleService.saveTaskSample(taskSample);
+        taskSampleService.saveTaskSample(mapper.getTaskSampleFromEditingTaskSampleDto(editingTaskSampleDto));
         return "redirect:/editor/taskSamples";
     }
 
-    @PostMapping(value = "/editTaskSample", params = "addParam")
+    @PostMapping(value = "/edit", params = "addParam")
     public String addParamToTaskSample(
-        @ModelAttribute("taskSample") TaskSample taskSample
-        // , @RequestParam("fileUrl") String fileUrl
-        , @RequestParam(name = "fileName", required = false) String fileName
+        @ModelAttribute("editingTaskSampleDto") EditingTaskSampleDto editingTaskSampleDto
+        // , @RequestParam(name = "fileName", required = false) String fileName
         , HttpServletRequest request
         , Model model
     ) throws Exception{
-        //TODO при добавлении/удаления параметра и страница обновляется исчезает информация о прикреплённом скрипте
-        String paramName = "";
-        
-        //? TODO Это выглядит мега костыльно
-        while(true){
-            paramName = "No name " + (Integer.toString(1000 + (int)(ThreadLocalRandom.current().nextDouble() * ((9999 - 1000) + 1))));
-            if(taskSample.getParams() == null || !taskSample.getParams().stream().map(TaskSampleParam::getName).collect(Collectors.toList()).contains(paramName)){
-                break;
-            }
-        }
-        TaskSampleParamType typeOfNewParam = TaskSampleParamType.valueOf(request.getParameter("addingType"));
-        
-        TaskSampleParam param;
-        //? TODO Делать что-то черех свитч это как будто такое себе и по-хорошему это надо всё через рефлексию сделать, но...
-        switch (typeOfNewParam) {
-            case TaskSampleParamType.INTEGER:
-                param = new TaskSampleIntegerParam(paramName);
-                break;
-            case TaskSampleParamType.STRING:
-                param = new TaskSampleStringParam(paramName);
-                break;
-            case TaskSampleParamType.FILE:
-                param = new TaskSampleFileParam(paramName);
-                break;
-            default:
-                throw new Exception("Problems with creating task sample param");
-        }
 
+        // // TODO при добавлении/удаления параметра и страница обновляется исчезает информация о прикреплённом скрипте
+        // String paramName = "";
         
-        taskSample.addParamToTaskSample(param);
-        model.addAttribute("taskSample", taskSample);
-        // model.addAttribute("file", fileUrl);
-        model.addAttribute("fileName", fileName);
+        // // ? TODO Это выглядит мега костыльно
+        // while(true){
+        //     paramName = "No name " + (Integer.toString(1000 + (int)(ThreadLocalRandom.current().nextDouble() * ((9999 - 1000) + 1))));
+        //     if(editingTaskSampleDto.params() == null || !editingTaskSampleDto.params().stream().map(TaskSampleParamDto::getName).collect(Collectors.toList()).contains(paramName)){
+        //         break;
+        //     }
+        // }
+        // TaskSampleParamType typeOfNewParam = TaskSampleParamType.valueOf(request.getParameter("addingType"));
+        
+        // TaskSampleParam param =null;
+        // // ? TODO Делать что-то черех свитч это как будто такое себе и по-хорошему это надо всё через рефлексию сделать, но...
+        // switch (typeOfNewParam) {
+        //     case TaskSampleParamType.INTEGER:
+        //         param = new TaskSampleIntegerParam(paramName, 0L, 0L);
+        //         break;
+        //     case TaskSampleParamType.STRING:
+        //         param = new TaskSampleStringParam(paramName);
+        //         break;
+        //     case TaskSampleParamType.FILE:
+        //         param = new TaskSampleFileParam(paramName);
+        //         break;
+        //     default:
+        //         throw new Exception("Problems with creating task sample param");
+        // }
+
+        // // TODO Не надо получать TaskSample из БД
+        // TaskSample taskSample = taskSampleService.getTaskSample(editingTaskSampleDto.id());
+        // taskSample.addParamToTaskSample(param);
+        editingTaskSampleDto = mapper.addParamToTaskSample(
+            editingTaskSampleDto
+            , TaskSampleParamType.valueOf(request.getParameter("addingType"))
+        );
+        model.addAttribute("editingTaskSampleDto", editingTaskSampleDto);
+        // model.addAttribute("taskSample", taskSample);
+        
+        // model.addAttribute("fileName", fileName);
         return "editor/task-sample/task-sample-info";
     }
-
-    // @RequestMapping(value = "/saveTaskSample", method = RequestMethod.POST, params = "removeParam")
-    // public String removeParamFromTaskSample(@ModelAttribute("taskSample") TaskSample taskSample, Model model){
-    //     TaskSampleParam param = new TaskSampleParam("No name");
-    //     taskSample.addParamToTaskSample(param);
-    //     model.addAttribute("taskSample", taskSample);
-    //     return "editor/task-sample/task-sample-info";
-    // }
 
     //? TODO Как по человечески передавать несколько параметров в поле value в html странице
-    @PostMapping(value = "/editTaskSample", params = "removeParam")
+    @PostMapping(value = "/edit", params = "removeParam")
     public String removeParamFromTaskSample(
         Model model
-        , @RequestParam("taskSampleParamId") int paramId
-        , @RequestParam("taskSampleParamName") String paramName
-        , @RequestParam(name = "fileName", required = false) String fileName
-        , @ModelAttribute TaskSample taskSample
-    ){
-        taskSample.removeParamFromTaskSample(paramId, paramName);
-        model.addAttribute("taskSample", taskSample);
-        model.addAttribute("fileName", fileName);
+        , @RequestParam("paramUuid") String paramUuid
+        // , @ModelAttribute TaskSample taskSample
+        , @ModelAttribute EditingTaskSampleDto editingTaskSampleDto
+    ) throws Exception{
+        editingTaskSampleDto = mapper.removeParamFromTaskSample(
+            editingTaskSampleDto
+            , paramUuid
+        );
+        model.addAttribute("editingTaskSampleDto", editingTaskSampleDto);
+
+        // taskSample.removeParamFromTaskSample(paramId, paramName);
+        // model.addAttribute("taskSample", taskSample);
+        // model.addAttribute("fileName", fileName);
         return "editor/task-sample/task-sample-info";
     }
 
-    @GetMapping("/updateTaskSample/{taskSampleId}")
+    @GetMapping("/update/{taskSampleId}")
     public String updateTaskSample(
         @PathVariable("taskSampleId") Integer taskSampleId
         , Model model
     ){
+        
         TaskSample taskSample = taskSampleService.getTaskSample(taskSampleId);
 
-        if(taskSample.getScriptFilePath() != null){
-            // Path scriptLocationPath = Path.of(taskSample.getScriptFilePath());
+        EditingTaskSampleDto editingTaskSampleDto = mapper.createEditingTaskSampleDto(taskSample);
+        model.addAttribute("editingTaskSampleDto", editingTaskSampleDto);
+        // if(taskSample.getScriptFilePath() != null){
+        //     // Path scriptLocationPath = Path.of(taskSample.getScriptFilePath());
             
-            model.addAttribute("fileName", Path.of(taskSample.getScriptFilePath()).getFileName());
-        }
-
-        model.addAttribute("taskSample", taskSample);
+        //     model.addAttribute("fileName", Path.of(taskSample.getScriptFilePath()).getFileName());
+        // }
+        // model.addAttribute("taskSample", taskSample);
         return "editor/task-sample/task-sample-info";
     }
 
-    @RequestMapping("/deleteInfo/taskSample")
+    @RequestMapping("/delete/{taskSampleId}")
     public String deleteTaskSample(
-        @RequestParam("taskSampleId") int id
+        @PathVariable("taskSampleId") Integer id
     ){
         //TODO Сделать удаление в виде изменения статуса (доп. поля) на "REMOVED". Это нужно для того, чтобы при просмотре tasksToProc не пропадала информация о пользователе.
         taskSampleService.deleteTaskSampleById(id);

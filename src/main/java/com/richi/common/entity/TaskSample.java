@@ -59,12 +59,22 @@ public class TaskSample {
     public TaskSample() {
     }
 
-    public TaskSample(int id, String name, String description, String sciptFilePath, String launchCommandTemplate) {
+    public TaskSample(
+        Integer id
+        , String name
+        , String description
+        , String launchCommandTemplate
+        , MultipartFile scriptFile
+        , String sciptFilePath
+        , List<TaskSampleParam> params
+    ) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.scriptFilePath = sciptFilePath;
         this.launchCommandTemplate = launchCommandTemplate;
+        this.scriptFile = scriptFile;
+        this.scriptFilePath = sciptFilePath;
+        this.params = params;
     }
 
     public void addParamToTaskSample(TaskSampleParam param){

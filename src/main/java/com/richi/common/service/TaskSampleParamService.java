@@ -1,6 +1,7 @@
 package com.richi.common.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.richi.common.entity.taskSampleParam.TaskSampleParam;
 import com.richi.common.repository.TaskSampleParamRepository;
@@ -22,6 +23,7 @@ public class TaskSampleParamService {
         );
     }
 
+    @Transactional
     public void removeParamFromTaskSample(Integer taskSampleParamId) {
         taskSampleParamRepository.deleteById(taskSampleParamId);
     }

@@ -20,7 +20,9 @@
                     <input type="hidden" th:field="*{values[__${itemStat.index}__].paramName}"/>
                     <input type="hidden" th:field="*{values[__${itemStat.index}__].paramType}"/>
                     <input th:if="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="file"/>
-                    <input th:unless="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="text"/>    
+                    <input th:unless="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="text"/>
+                    <!-- <p th:text="${'values[' + itemStat.index + '].value'}"></p> -->
+                    <p th:if="${#fields.hasErrors('values[' + itemStat.index + '].value')}" th:errors="*{values[__${itemStat.index}__].value}">Incorrect date</p>
                 </td>
             </tr>
         </table>

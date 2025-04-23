@@ -16,7 +16,10 @@ public class TaskSampleStringParam extends TaskSampleParam{
         super(TaskSampleParamType.STRING);
     }
 
-    public TaskSampleStringParam(String paramName){
-        super(paramName, TaskSampleParamType.STRING);
+    public TaskSampleStringParam(
+        Integer id    
+        , String paramName
+    ){
+        super(id, paramName, TaskSampleParamType.STRING);
     }
 }

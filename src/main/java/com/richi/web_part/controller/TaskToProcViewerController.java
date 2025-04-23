@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.richi.common.entity.taskToProc.TaskToProc;
 import com.richi.common.service.TaskToProcService;
-import com.richi.task_manager.TaskManager;
 import com.richi.web_part.dto.controlPanel.ControlPanelDto;
 import com.richi.web_part.mapper.TemporaryMapper;
 
@@ -22,16 +20,13 @@ import com.richi.web_part.mapper.TemporaryMapper;
 public class TaskToProcViewerController {
     
     private final TaskToProcService taskToProcService;
-    private final TaskManager taskManager;
     private final TemporaryMapper mapper;
 
     public TaskToProcViewerController(
         TaskToProcService taskToProcService
-        , TaskManager taskManager
         , TemporaryMapper mapper
     ) {
         this.taskToProcService = taskToProcService;
-        this.taskManager = taskManager;
         this.mapper = mapper;
     }
 
@@ -59,16 +54,6 @@ public class TaskToProcViewerController {
         @PathVariable(name = "taskId") Integer taskId
     ) throws Exception{
         taskToProcService.deleteTaskToProc(taskId);
-        return "redirect:/controlPanel";
-    }
-
-    @PostMapping("/launch/{taskId}")
-    public String handLaunchTask(
-        @PathVariable(name = "taskId") Integer taskId
-    ) throws Exception{
-        // Пока отключён во view-шке
-        TaskToProc task = taskToProcService.getTaskToProc(taskId);
-        taskManager.doTask(task);
         return "redirect:/controlPanel";
     }
 

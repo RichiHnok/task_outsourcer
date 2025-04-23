@@ -40,7 +40,12 @@ public class TaskSampleParam {
         this.type = type;
     }
 
-    public TaskSampleParam(String name, TaskSampleParamType type) {
+    public TaskSampleParam(
+        Integer id
+        , String name
+        , TaskSampleParamType type
+    ) {
+        this.id = id;
         this.name = name;
         this.type = type;
     }
