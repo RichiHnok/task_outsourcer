@@ -9,6 +9,8 @@ import com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.
 import com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.IntegerParamConstraintsDto;
 import com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.StringParamConstraintsDto;
 
+import jakarta.validation.Valid;
+
 public record EditingTaskSampleDto(
     Integer id,
     String name,
@@ -18,7 +20,7 @@ public record EditingTaskSampleDto(
     String scriptFileName,
     List<TaskSampleParamMainInfoDto> paramsInfo,
 
-    List<IntegerParamConstraintsDto> intConstraints,
+    @Valid List<IntegerParamConstraintsDto> intConstraints,
     List<StringParamConstraintsDto> strConstraints,
     List<FileParamConstraintsDto> fileConstraints
 ) {

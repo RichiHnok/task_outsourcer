@@ -1,5 +1,6 @@
 package com.richi.web_part.validation.launchingTask;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,7 +11,7 @@ import jakarta.validation.Payload;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-// @Documented
+@Documented
 @Constraint(validatedBy = CheckTaskParamValidator.class)
 public @interface CheckTaskParam {
     

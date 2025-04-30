@@ -12,10 +12,8 @@ import java.util.stream.IntStream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import com.richi.common.entity.TaskSample;
 import com.richi.common.entity.User;
 import com.richi.common.entity.taskSampleParam.TaskSampleParam;
@@ -49,22 +47,14 @@ import com.richi.web_part.dto.taskSamplesEditor.TaskSamplesEditorDto;
 @Service
 public class TemporaryMapper {
 
-    private final LocaleChangeInterceptor localeChangeInterceptor;
-
-    private final UserDetailsService userDetailsService;
-
     private final TaskToProcService taskToProcService;
     private final TaskSampleService taskSampleService;
     
     public TemporaryMapper(
         TaskToProcService taskToProcService
-        , UserDetailsService userDetailsService
-        , LocaleChangeInterceptor localeChangeInterceptor
         , TaskSampleService taskSampleService
     ) {
         this.taskToProcService = taskToProcService;
-        this.userDetailsService = userDetailsService;
-        this.localeChangeInterceptor = localeChangeInterceptor;
         this.taskSampleService = taskSampleService;
     }
 
@@ -302,8 +292,8 @@ public class TemporaryMapper {
                         var intParam = (TaskSampleIntegerParam) param;
                         intConstraints.add(new IntegerParamConstraintsDto(
                             uuid
-                            , intParam.getMin()
-                            , intParam.getMax()
+                            , Long.toString(intParam.getMin())
+                            , Long.toString(intParam.getMax())
                         ));
                         break;
                     case STRING:
@@ -314,6 +304,8 @@ public class TemporaryMapper {
                         var strParam = (TaskSampleStringParam) param;
                         strConstraints.add(new StringParamConstraintsDto(
                             uuid
+                            , strParam.getRegExConstraint()
+                            , strParam.getHintValue()
                         ));
                         break;
                     case FILE:
@@ -355,7 +347,6 @@ public class TemporaryMapper {
         List<StringParamConstraintsDto> strConstraints = editingTaskSampleDto.strConstraints();
         List<FileParamConstraintsDto> fileConstraints = editingTaskSampleDto.fileConstraints();
         
-        // TODO при добавлении/удаления параметра и страница обновляется исчезает информация о прикреплённом скрипте
         String paramName = "";
         
         //! TODO Убрать нахрен 
@@ -376,29 +367,31 @@ public class TemporaryMapper {
         );
 
         switch (type) {
-            case TaskSampleParamType.INTEGER:
+            case INTEGER:
                 if (intConstraints == null) {
                     intConstraints = new ArrayList<>();
                 }
 
                 var intConstraint = new IntegerParamConstraintsDto(
                     uuid
-                    , 0L
-                    , 0L
+                    , Long.toString(0L)
+                    , Long.toString(0L)
                 );
                 intConstraints.add(intConstraint);
                 break;
-            case TaskSampleParamType.STRING:
+            case STRING:
                 if(strConstraints == null){
                     strConstraints = new ArrayList<>();
                 }
 
                 var strConstraint = new StringParamConstraintsDto(
                     uuid
+                    , null
+                    , null
                 );
                 strConstraints.add(strConstraint);
                 break;
-            case TaskSampleParamType.FILE:
+            case FILE:
                 if(fileConstraints == null){
                     fileConstraints = new ArrayList<>();
                 }
@@ -524,8 +517,8 @@ public class TemporaryMapper {
                         taskSampleParams.add(new TaskSampleIntegerParam(
                             paramInfo.id()
                             , paramInfo.name()
-                            , intConstraint.min()
-                            , intConstraint.max()
+                            , Long.valueOf(intConstraint.min())
+                            , Long.valueOf(intConstraint.max())
                         ));
                         break;
                     case STRING:
@@ -542,6 +535,8 @@ public class TemporaryMapper {
                         taskSampleParams.add(new TaskSampleStringParam(
                             paramInfo.id()
                             , paramInfo.name()
+                            , strConstraint.regExConstraint()
+                            , strConstraint.hintValue()
                         ));
                         break;
                     case FILE:

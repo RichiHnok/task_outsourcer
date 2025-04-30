@@ -24,8 +24,6 @@ import com.richi.common.service.UserService;
 import com.richi.task_manager.TaskManager;
 import com.richi.web_part.mapper.TemporaryMapper;
 
-import jakarta.validation.Valid;
-
 import com.richi.web_part.dto.launchingTask.LaunchingTaskDto;
 import com.richi.web_part.dto.taskProcessingLaunched.TaskProcessingLaunchedDto;
 import com.richi.common.service.TaskSampleService;
@@ -78,12 +76,13 @@ public class LaunchingTasksController {
     public String startProcessingTask(
         Model model
         , @PathVariable("taskSampleId") int taskSampleId
-        , @Valid @ModelAttribute("launchingTaskDto") LaunchingTaskDto launchingTaskDto
+        , @Validated @ModelAttribute("launchingTaskDto") LaunchingTaskDto launchingTaskDto
         , BindingResult bindingResult
         , @AuthenticationPrincipal UserDetails userDetails
     ) throws Exception
     {
         if(bindingResult.hasErrors()){
+            model.addAttribute("launchingTaskDto", launchingTaskDto);
             return "tasks/launching-task";
         }
 

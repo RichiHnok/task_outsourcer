@@ -12,6 +12,9 @@
     <h2 th:text="|#{h.task} &quot${launchingTaskDto.taskSampleName}&quot|"></h2>
     <span th:text="${launchingTaskDto.taskSampleDescription != null} ? ${launchingTaskDto.taskSampleDescription} : 'This task dont have description'"/>
     <form action="#" th:action="@{/task/{taskSampleId}/start(taskSampleId=${launchingTaskDto.taskSampleId})}" th:object="${launchingTaskDto}" enctype="multipart/form-data" method="post">
+        <input type="hidden" th:field="${launchingTaskDto.taskSampleName}">
+        <input type="hidden" th:field="${launchingTaskDto.taskSampleDescription}">
+        <input type="hidden" th:field="${launchingTaskDto.taskSampleId}">
         <table>
             <tr th:each="value, itemStat : *{values}">
                 <td><span th:text="|${value.paramName}: |"></span></td>
@@ -21,8 +24,8 @@
                     <input type="hidden" th:field="*{values[__${itemStat.index}__].paramType}"/>
                     <input th:if="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="file"/>
                     <input th:unless="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="text"/>
-                    <!-- <p th:text="${'values[' + itemStat.index + '].value'}"></p> -->
-                    <p th:if="${#fields.hasErrors('values[' + itemStat.index + '].value')}" th:errors="*{values[__${itemStat.index}__].value}">Incorrect date</p>
+                    
+                    <span th:if="${#fields.hasErrors('values[' + itemStat.index + ']')}" th:errors="*{values[__${itemStat.index}__]}" style="color: red">Incorrect data</span>
                 </td>
             </tr>
         </table>

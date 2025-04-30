@@ -1,0 +1,27 @@
+Методичка по работе с подтипами параметров в задачах
+
+Добавление нового типа:
+1. Добавить новый тип в TaskSampleParamType.java
+2. Создать новую таблицу в MySQL с соответствующим названием с первичным/внешним ключом на основную таблицу task_sample_param
+3.1 Создать новый класс в src\main\java\com\richi\common\entity\taskSampleParam\subTypes
+3.2 Расширяем его от TaskSampleParam
+3.3 Вешаем аннотации @Entity, @Table("<название таблицы из 2>")
+3.4 Определяем базовый конструктор, в котором принимаются параметры id, name для super-конструктора родительского класса, который по умолчанию будет принимать определённый тип
+4. Создать новый DTO объект в src\main\java\com\richi\web_part\dto\editingTaskSample\taskSampleParam\typeConstraints, у которого должнj быть обязательно поле String uuid
+5. Добавить в EditingTaskSampleDto.java список с типом из (4)
+6.1 В TemporaryMapper.java в методе createAddingTaskSampleDto() уточняем конструктор EditingTaskSampleDto под измения из (5)
+6.2 В TemporaryMapper.java в методах addParamToTaskSample(...), getTaskSampleFromEditingTaskSampleDto(...), removeParamFromTaskSample(...), createEditingTaskSampleDto(...) создаём/добавляем список для ограничения нового типа, новый сценарий в свитче, уточняем конструктор EditingTaskSampleDto под измения из (5)
+7. В task-sample-info.html в блоке с выводом параметров добавляем новый сценарий с новой переменной, учитывая все изменения сделанные в (5)
+
+Добавление нового ограничения на примере типа STRING:
+1. В TaskSampleStringParam добавляем новое приватное поле нужного типа, даём название, обновляем конструктор на все аргументы, добавляем геттер и сеттер
+2. В MySQL, в соответствующей таблице добавляем новую колонку с нужным типом, добавляем аннотацию @Column к полям из (1)
+3. Обновляем StringParamConstraintsDto в соответствии с (1)
+4. В TemporaryMapper в методах addParamToTaskSample(...), getTaskSampleFromEditingTaskSampleDto(...), createEditingTaskSampleDto(...) модифицируем свитчи в соответствии (1)
+5. В task-sample-info.html в блоке с выводом параметров модифицируем сценарий с изменённой переменной, учитывая все изменения сделанные в (1)
+6. В launching-task.html прописываем описание ограничения
+7. По необходимости добавляем валидацю вводимых ограничений, например, чтобы не было такого "число должно быть от 100 до -100"
+8. В CheckTaskParamValidator прописываем логику валидаии параметра
+
+Удаление типа:
+Реверс добавления нового типа
