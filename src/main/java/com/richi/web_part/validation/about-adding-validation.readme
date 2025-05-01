@@ -1,0 +1,55 @@
+Для добавления валидации надо сделать следующее:
+1. Создать валидатор, который будет возвращать true/false относительно корректности данных в объекте. *1
+2. Для валидируемого объекта создать специальную аннотацию, в которой надо указать, что объект будет проверяться валидаторром из (1). *2
+3. Пометить валидируемый объект аннотацией из (2)
+4. Если валидируемые объекты содержаться в коллекции у общего класса-контейнера, то эту коллекцию надо пометить аннотацией @Valid 
+5. Контроллер, в котором есть метод принимающий модель с валидируемым объектом пометить аннотацией @Validated
+6. В методе, который принимает модель с валидируемым объектом в качестве параметра, пометить этот параметр аннотацией @Validated
+7. В метод из (6) также добавить параметр BindingResult и проверку на наличие ошибок в нём. Если есть возвращать модель с ошибками с тем же представление. *3
+8. В представление добавить вывод сообщения об ошибке
+
+*1
+Валидатор должен реализовывать интрефейс ConstraintValidator<A, B>.
+A - аннотация из (2)
+B - валидируемый объект
+
+*2
+Аннотация должна иметь следующий шаблон:
+
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Constraint(validatedBy = <валидатор объекта из (1)>.class)
+public @interface <название аннотации> {
+    
+    String message() default "wrong input";
+
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+}
+
+*3
+... controllerMethode(
+    ...,
+    Model model,
+    @Validated @ModelAttribute someDto,
+    BindingResult bindingResult
+){
+    ...
+
+    if(bindingResult.hasErrors()){
+        model.addAttribute(
+            "someDto"
+            , someDto
+        );
+        return "someView";
+    }
+
+    ...
+}
+
+*4
+<span th:if="${#fields.hasErrors('<название поля>')}" th:errors="*{<само поле>>}" style="color: red">Wrong input!</span>
+
+Если объект находится в списке:
+<span th:if="${#fields.hasErrors('<имя списка>[' + <i>.index + ']')}" th:errors="*{<имя списка>[__${<i>.index}__]}" style="color: red">Wrong input!</span>

@@ -1,4 +1,4 @@
-package com.richi.web_part.validation.editingTaskSample.checkIntegerParam;
+package com.richi.web_part.validation.editingTaskSample.checkingStringParam;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -11,17 +11,17 @@ import jakarta.validation.Payload;
 
 /**
  * Специальная аннотация для валидации объекта
- * {@link com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.IntegerParamConstraintsDto
- * IntegerParamConstraintsDto}. Инициирует проверку методом
- * {@link IntegerParamConstraintsValidator#isValid(IntegerParamConstraintsDto, jakarta.validation.ConstraintValidatorContext)
- * IntegerConstraintsVaidator.isValid(...)}
+ * {@link com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.StringParamConstraintsDto
+ * StringParamConstraintsDto}. Инициирует проверку методом
+ * {@link StringParamConstraintsValidator#isValid(StringParamConstraintsDto, jakarta.validation.ConstraintValidatorContext)
+ * StringConstraintsVaidator.isValid(...)}
  */
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Constraint(validatedBy = IntegerParamConstraintsValidator.class)
-public @interface CheckIntegerParamConstraints {
+@Constraint(validatedBy = StringParamConstraintsValidator.class)
+public @interface CheckStringParamConstraints {
     
     String message() default "wrong input";
 

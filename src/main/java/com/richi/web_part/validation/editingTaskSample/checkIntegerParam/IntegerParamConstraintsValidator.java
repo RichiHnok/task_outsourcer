@@ -3,6 +3,7 @@ package com.richi.web_part.validation.editingTaskSample.checkIntegerParam;
 import java.math.BigInteger;
 
 import com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.IntegerParamConstraintsDto;
+import com.richi.web_part.validation.common.SetErrorMessage;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -13,7 +14,10 @@ import jakarta.validation.ConstraintValidatorContext;
  * в редакторе шаблона задачи
  */
 
-public class IntegerParamValidator implements ConstraintValidator<CheckIntegerParamConstraints, IntegerParamConstraintsDto>{
+public class IntegerParamConstraintsValidator
+implements ConstraintValidator<CheckIntegerParamConstraints, IntegerParamConstraintsDto>
+    , SetErrorMessage     
+{
     
     /**
      * Проверка, что промежуток допустимых значений задан корректоно.<p>
@@ -79,9 +83,9 @@ public class IntegerParamValidator implements ConstraintValidator<CheckIntegerPa
     }
 
     /**
-     * Получение сообщения, что минимальное допустимое значение выходит за область
+     * Получение сообщения о том, что минимальное допустимое значение выходит за область
      * допустимых значений типа Long, на нужном языке относительно локали пользователя
-     * @return - локализованное сообщение об ошибке
+     * @return {@code errorMessage} - локализованное сообщение об ошибке
      */
     private String getErrorMessageMinOutOfBounds(){
         // TODO сообщение с нужным языком должно браться из отдельного файла
@@ -90,9 +94,9 @@ public class IntegerParamValidator implements ConstraintValidator<CheckIntegerPa
     }
 
     /**
-     * Получение сообщения, что максимальное допустимое значение выходит за область
+     * Получение сообщения о том, что максимальное допустимое значение выходит за область
      * допустимых значений типа Long, на нужном языке относительно локали пользователя
-     * @return - локализованное сообщение об ошибке
+     * @return {@code errorMessage} - локализованное сообщение об ошибке
      */
     private String getErrorMessageMaxOutOfBounds(){
         // TODO сообщение с нужным языком должно браться из отдельного файла
@@ -101,9 +105,9 @@ public class IntegerParamValidator implements ConstraintValidator<CheckIntegerPa
     }
 
     /**
-     * Получение сообщения, что минимальное допустимое значение должно иметь формат
+     * Получение сообщения о том, что минимальное допустимое значение должно иметь формат
      * целого числа, на нужном языке относительно локали пользователя
-     * @return - локализованное сообщение об ошибке
+     * @return {@code errorMessage} - локализованное сообщение об ошибке
      */
     private String getErrorMessageInvalidMinConstraint(){
         // TODO сообщение с нужным языком должно браться из отдельного файла
@@ -112,9 +116,9 @@ public class IntegerParamValidator implements ConstraintValidator<CheckIntegerPa
     }
 
     /**
-     * Получение сообщения, что максимальное допустимое значение должно иметь формат
+     * Получение сообщения о том, что максимальное допустимое значение должно иметь формат
      * целого числа, на нужном языке относительно локали пользователя
-     * @return - локализованное сообщение об ошибке
+     * @return {@code errorMessage} - локализованное сообщение об ошибке
      */
     private String getErrorMessageInvalidMaxConstraint(){
         // TODO сообщение с нужным языком должно браться из отдельного файла
@@ -123,25 +127,13 @@ public class IntegerParamValidator implements ConstraintValidator<CheckIntegerPa
     }
 
     /**
-     * Получение сообщения, что минимальное значение должно быть меньше максимального,
+     * Получение сообщения о том, что минимальное значение должно быть меньше максимального,
      * на нужном языке относительно локали пользователя
-     * @return - локализованное сообщение об ошибке
+     * @return {@code errorMessage} - локализованное сообщение об ошибке
      */
     private String getErrorMessageIncorrectInterval(){
         // TODO сообщение с нужным языком должно браться из отдельного файла
         String errorMessageTemplate = "Минимальное ограничение должно быть меньше максимального";
         return errorMessageTemplate;
-    }
-
-    /**
-     * Установка сообщения об ошибке.
-     * @param errorMessage - сообщение об ошибке
-     * @param context - объект для доставки сообщения
-     */
-    private void setErrorMessage(String errorMessage, ConstraintValidatorContext context){
-        context.disableDefaultConstraintViolation();
-        context
-            .buildConstraintViolationWithTemplate(errorMessage)
-            .addConstraintViolation();
     }
 }

@@ -76,6 +76,8 @@
                                 
                                 <input type="text" th:field="*{strConstraints[__${i2.index}__].regExConstraint}">
                                 <input type="text" th:field="*{strConstraints[__${i2.index}__].hintValue}">
+
+                                <span th:if="${#fields.hasErrors('strConstraints[' + i2.index + ']')}" th:errors="*{strConstraints[__${i2.index}__]}" style="color: red">Wrong input!</span>
                             </div>
                         </div>
                         <div th:if="${paramInfo.type.name() == 'FILE'}" th:each="fileConstraint, i2 : *{fileConstraints}" style="display:inline">

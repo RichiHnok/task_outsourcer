@@ -6,9 +6,9 @@ import com.richi.web_part.validation.editingTaskSample.checkIntegerParam.CheckIn
  * DTO для тарнспортировки ограничений для целочисленного параметра
  * в представление и из него
  * <p>
- * @param String uuid - нужен для сопоставления с основной информацией параметра в шаблонизаторе
- * @param String min - минимальное допустимое значение
- * @param String max - максимальное допустимое значение
+ * @param String {@code uuid} - нужен для сопоставления с основной информацией параметра в шаблонизаторе
+ * @param String {@code min} - минимальное допустимое значение
+ * @param String {@code max} - максимальное допустимое значение
  */
 
 @CheckIntegerParamConstraints

@@ -21,7 +21,7 @@ public record EditingTaskSampleDto(
     List<TaskSampleParamMainInfoDto> paramsInfo,
 
     @Valid List<IntegerParamConstraintsDto> intConstraints,
-    List<StringParamConstraintsDto> strConstraints,
+    @Valid List<StringParamConstraintsDto> strConstraints,
     List<FileParamConstraintsDto> fileConstraints
 ) {
     
