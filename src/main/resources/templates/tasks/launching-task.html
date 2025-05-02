@@ -12,23 +12,65 @@
     <h2 th:text="|#{h.task} &quot${launchingTaskDto.taskSampleName}&quot|"></h2>
     <span th:text="${launchingTaskDto.taskSampleDescription != null} ? ${launchingTaskDto.taskSampleDescription} : 'This task dont have description'"/>
     <form action="#" th:action="@{/task/{taskSampleId}/start(taskSampleId=${launchingTaskDto.taskSampleId})}" th:object="${launchingTaskDto}" enctype="multipart/form-data" method="post">
-        <input type="hidden" th:field="${launchingTaskDto.taskSampleName}">
-        <input type="hidden" th:field="${launchingTaskDto.taskSampleDescription}">
-        <input type="hidden" th:field="${launchingTaskDto.taskSampleId}">
-        <table>
-            <tr th:each="value, itemStat : *{values}">
+        <input type="hidden" th:field="*{taskSampleId}">
+        <input type="hidden" th:field="*{taskSampleName}">
+        <input type="hidden" th:field="*{taskSampleDescription}">
+        
+        <div th:each="paramMainInfo, i1 : *{values}">
+            <span th:text="|${paramMainInfo.name}: |"></span>
+            <input type="hidden" th:field="*{values[__${i1.index}__].taskSampleParamId}"/>
+            <input type="hidden" th:field="*{values[__${i1.index}__].uuid}"/>
+            <input type="hidden" th:field="*{values[__${i1.index}__].name}"/>
+            <input type="hidden" th:field="*{values[__${i1.index}__].type}"/>
+            
+            <input th:if="${paramMainInfo.type.name() == 'FILE'}" th:field="*{values[__${i1.index}__].value}" type="file"/>
+            <input th:unless="${paramMainInfo.type.name() == 'FILE'}" th:field="*{values[__${i1.index}__].value}" type="text"/>
+            
+            <span th:if="${#fields.hasErrors('values[' + i1.index + ']')}" th:errors="*{values[__${i1.index}__]}" style="color: red">Incorrect data</span>
+            
+            <br>
+            
+            <div th:if="${paramMainInfo.type.name() == 'INTEGER'}" th:each="intInfo, i2 : *{intAdditionalInfo}">
+                <div th:if="${paramMainInfo.uuid == intInfo.uuid}">
+                    <input type="hidden" th:field="*{intAdditionalInfo[__${i2.index}__].uuid}">
+                    <input type="hidden" th:field="*{intAdditionalInfo[__${i2.index}__].description}">
+                    <input type="hidden" th:field="*{intAdditionalInfo[__${i2.index}__].minConstraint}">
+                    <input type="hidden" th:field="*{intAdditionalInfo[__${i2.index}__].maxConstraint}">
+
+                    <span th:text="|#{placeholder}: (${intInfo.minConstraint};${intInfo.maxConstraint})|"></span>
+                </div>
+            </div>
+            <div th:if="${paramMainInfo.type.name() == 'STRING'}" th:each="strInfo, i2 : *{strAdditionalInfo}">
+                <div th:if="${paramMainInfo.uuid == strInfo.uuid}">
+                    <input type="hidden" th:field="*{strAdditionalInfo[__${i2.index}__].uuid}">
+                    <input type="hidden" th:field="*{strAdditionalInfo[__${i2.index}__].description}">
+                    <input type="hidden" th:field="*{strAdditionalInfo[__${i2.index}__].hintValue}">
+
+                    <span th:text="|#{placeholder}: ${strInfo.hintValue}|"></span>
+                </div>
+            </div>
+            <div th:if="${paramMainInfo.type.name() == 'FILE'}" th:each="fileInfo, i2 : *{fileAdditionalInfo}">
+                <div th:if="${paramMainInfo.uuid == fileInfo.uuid}">
+                    <input type="hidden" th:field="*{fileAdditionalInfo[__${i2.index}__].uuid}">
+                    <input type="hidden" th:field="*{fileAdditionalInfo[__${i2.index}__].description}">
+                </div>
+            </div>
+        </div>
+        
+        <!-- <table>
+            <tr th:each="value, i1 : *{values}">
                 <td><span th:text="|${value.paramName}: |"></span></td>
                 <td>
-                    <input type="hidden" th:field="*{values[__${itemStat.index}__].taskSampleParamId}"/>
-                    <input type="hidden" th:field="*{values[__${itemStat.index}__].paramName}"/>
-                    <input type="hidden" th:field="*{values[__${itemStat.index}__].paramType}"/>
-                    <input th:if="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="file"/>
-                    <input th:unless="${value.paramType.name() == 'FILE'}" th:field="*{values[__${itemStat.index}__].value}" type="text"/>
+                    <input type="hidden" th:field="*{values[__${i1.index}__].taskSampleParamId}"/>
+                    <input type="hidden" th:field="*{values[__${i1.index}__].paramName}"/>
+                    <input type="hidden" th:field="*{values[__${i1.index}__].paramType}"/>
+                    <input th:if="${value.paramType.name() == 'FILE'}" th:field="*{values[__${i1.index}__].value}" type="file"/>
+                    <input th:unless="${value.paramType.name() == 'FILE'}" th:field="*{values[__${i1.index}__].value}" type="text"/>
                     
-                    <span th:if="${#fields.hasErrors('values[' + itemStat.index + ']')}" th:errors="*{values[__${itemStat.index}__]}" style="color: red">Incorrect data</span>
+                    <span th:if="${#fields.hasErrors('values[' + i1.index + ']')}" th:errors="*{values[__${i1.index}__]}" style="color: red">Incorrect data</span>
                 </td>
             </tr>
-        </table>
+        </table> -->
         
         <br>
         <input type="submit" th:value="#{btn.start}"/>

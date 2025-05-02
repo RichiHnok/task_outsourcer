@@ -20,11 +20,11 @@ implements ConstraintValidator<CheckStringParamConstraints, StringParamConstrain
     , SetErrorMessage
 {
     /**
-     * Проверка, что регулярное выражение с подсказкой задано корректно.<p>
+     * Проверка корректности задания ограничений для параметра.<p>
      * Проверяется следующее:<p>
      * - Что значение для регулярного выражения - это действительно
-     * регулярное выражение
-     * - Что подсказа удовлетворяет регулярному выражению
+     * регулярное выражение;<p>
+     * - Что подсказа удовлетворяет регулярному выражению.
      * @param value - dto, в котором находится ограничение
      * @param context - в этой штуке будет помещаться сообщение об ошибке
      * @return {@code false} если не значение не прошло одну из проверок.
@@ -54,6 +54,7 @@ implements ConstraintValidator<CheckStringParamConstraints, StringParamConstrain
      * @return {@code errorMessage} - локализованное сообщение об ошибке
      */
     private String getErrorMessageInvalidRegex(){
+        // TODO сообщение с нужным языком должно браться из отдельного файла
         String errorMessage = "Неверное регулярное выражение";
         return errorMessage;
     }
@@ -64,6 +65,7 @@ implements ConstraintValidator<CheckStringParamConstraints, StringParamConstrain
      * @return {@code errorMessage} - локализованное сообщение об ошибке
      */
     private String getErrorMessageHintDoesntMatchesRegex(){
+        // TODO сообщение с нужным языком должно браться из отдельного файла
         String errorMessage = "Подсказка не удовлетворяет регулярному выражению";
         return errorMessage;
     }

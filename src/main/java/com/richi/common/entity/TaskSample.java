@@ -53,6 +53,8 @@ public class TaskSample {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<TaskSampleParam> params;
 
+    // TODO Очень хочется поменять тип загрузки на Lazy
+    // TODO Или Просто сделать uni-directional связь
     @OneToMany(/* cascade = CascadeType.ALL, */ mappedBy = "taskSample", fetch = FetchType.EAGER)
     private List<TaskToProc> tasksToProc;
 

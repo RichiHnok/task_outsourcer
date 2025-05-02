@@ -6,10 +6,11 @@ import com.richi.web_part.validation.editingTaskSample.checkingStringParam.Check
  * DTO для тарнспортировки ограничений для строкового
  * в представление и из него
  * <p>
- * @param String {@code uuid} - нужен для сопоставления с основной информацией параметра в шаблонизаторе
- * @param String {@code regExConstraint} - регулярное выражение
- * @param String {@code hintValue} - подсказака-прмиер вводимого значения
+ * @param uuid :{@code String} - нужен для сопоставления с основной информацией параметра в шаблонизаторе
+ * @param regExConstraint :{@code String} - регулярное выражение
+ * @param hintValue :{@code String} - подсказака-прмиер вводимого значения
  */
+
 @CheckStringParamConstraints
 public record StringParamConstraintsDto(
     String uuid

@@ -35,7 +35,10 @@ import com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.
 import com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.IntegerParamConstraintsDto;
 import com.richi.web_part.dto.editingTaskSample.taskSampleParam.typeConstraints.StringParamConstraintsDto;
 import com.richi.web_part.dto.launchingTask.LaunchingTaskDto;
-import com.richi.web_part.dto.launchingTask.TaskToProcValueDto;
+import com.richi.web_part.dto.launchingTask.paramInfo.ParamValueInfo;
+import com.richi.web_part.dto.launchingTask.paramInfo.additionalParamInfo.AdditionalFileParamInfo;
+import com.richi.web_part.dto.launchingTask.paramInfo.additionalParamInfo.AdditionalIntegerParamInfo;
+import com.richi.web_part.dto.launchingTask.paramInfo.additionalParamInfo.AdditionalStringParamInfo;
 import com.richi.web_part.dto.personalCabinet.PersonalCabinetDto;
 import com.richi.web_part.dto.personalCabinet.TaskInfoForPersonalCabinetDto;
 import com.richi.web_part.dto.taskProcessingLaunched.TaskParamWithValueDto;
@@ -162,15 +165,47 @@ public class TemporaryMapper {
         TaskSample taskSample
     ) throws Exception{
 
-        List<TaskToProcValueDto> taskValues = new ArrayList<>();
+        List<ParamValueInfo> taskValues = new ArrayList<>();
+        
+        List<AdditionalIntegerParamInfo> intParamsInfo = new ArrayList<>();
+        List<AdditionalStringParamInfo> strParamsInfo = new ArrayList<>();
+        List<AdditionalFileParamInfo> fileParamsInfo = new ArrayList<>();
 
         for(TaskSampleParam taskSampleParam : taskSample.getParams()){
-            taskValues.add(new TaskToProcValueDto(
-                taskSampleParam.getId()
+            String uuid = UUID.randomUUID().toString();
+            taskValues.add(new ParamValueInfo(
+                uuid
+                , taskSampleParam.getId()
                 , taskSampleParam.getName()
                 , taskSampleParam.getType()
                 , null
             ));
+            
+            switch (taskSampleParam.getType()) {
+                case INTEGER:
+                    intParamsInfo.add(new AdditionalIntegerParamInfo(
+                        uuid
+                        , null //TODO сделать параметрам описание
+                        , ((TaskSampleIntegerParam) taskSampleParam).getMin().toString()
+                        , ((TaskSampleIntegerParam) taskSampleParam).getMax().toString()
+                    ));
+                    break;
+                case STRING:
+                    strParamsInfo.add(new AdditionalStringParamInfo(
+                        uuid
+                        , null //TODO
+                        , ((TaskSampleStringParam) taskSampleParam).getHintValue()
+                    ));
+                    break;
+                case FILE:
+                    fileParamsInfo.add(new AdditionalFileParamInfo(
+                        uuid
+                        , null //TODO
+                    ));
+                    break;
+                default:
+                    break;
+            }
         }
 
         return new LaunchingTaskDto(
@@ -178,6 +213,9 @@ public class TemporaryMapper {
             , taskSample.getName()
             , taskSample.getDescription()
             , taskValues
+            , intParamsInfo
+            , strParamsInfo
+            , fileParamsInfo
         );
     }
 
@@ -212,7 +250,7 @@ public class TemporaryMapper {
     ) throws Exception{
         List<TaskToProcParam> taskParams = new ArrayList<>();
         
-        for(TaskToProcValueDto toSaveParam : launchingTaskDto.values()){
+        for(ParamValueInfo toSaveParam : launchingTaskDto.values()){
             String paramValue = null;
 
             if(toSaveParam.value() instanceof MultipartFile){
@@ -226,8 +264,8 @@ public class TemporaryMapper {
             }
 
             taskParams.add(new TaskToProcParam(
-                toSaveParam.paramName()
-                , toSaveParam.paramType()
+                toSaveParam.name()
+                , toSaveParam.type()
                 , paramValue
             ));
         }

@@ -23,7 +23,6 @@ import com.richi.common.service.TaskToProcService;
 import com.richi.common.service.UserService;
 import com.richi.task_manager.TaskManager;
 import com.richi.web_part.mapper.TemporaryMapper;
-
 import com.richi.web_part.dto.launchingTask.LaunchingTaskDto;
 import com.richi.web_part.dto.taskProcessingLaunched.TaskProcessingLaunchedDto;
 import com.richi.common.service.TaskSampleService;
@@ -75,7 +74,7 @@ public class LaunchingTasksController {
     @PostMapping("/task/{taskSampleId}/start")
     public String startProcessingTask(
         Model model
-        , @PathVariable("taskSampleId") int taskSampleId
+        , @PathVariable("taskSampleId") Integer taskSampleId
         , @Validated @ModelAttribute("launchingTaskDto") LaunchingTaskDto launchingTaskDto
         , BindingResult bindingResult
         , @AuthenticationPrincipal UserDetails userDetails
