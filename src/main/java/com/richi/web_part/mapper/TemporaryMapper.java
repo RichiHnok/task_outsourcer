@@ -178,6 +178,7 @@ public class TemporaryMapper {
                 , taskSampleParam.getId()
                 , taskSampleParam.getName()
                 , taskSampleParam.getType()
+                , taskSampleParam.getDescription()
                 , null
             ));
             
@@ -320,6 +321,7 @@ public class TemporaryMapper {
                     , param.getName()
                     , uuid
                     , param.getType()
+                    , param.getDescription()
                 ));
                 switch (param.getType()) {
                     case INTEGER:
@@ -402,6 +404,7 @@ public class TemporaryMapper {
             , paramName
             , uuid
             , type
+            , null
         );
 
         switch (type) {
@@ -555,6 +558,7 @@ public class TemporaryMapper {
                         taskSampleParams.add(new TaskSampleIntegerParam(
                             paramInfo.id()
                             , paramInfo.name()
+                            , paramInfo.description()
                             , Long.valueOf(intConstraint.min())
                             , Long.valueOf(intConstraint.max())
                         ));
@@ -573,6 +577,7 @@ public class TemporaryMapper {
                         taskSampleParams.add(new TaskSampleStringParam(
                             paramInfo.id()
                             , paramInfo.name()
+                            , paramInfo.description()
                             , strConstraint.regExConstraint()
                             , strConstraint.hintValue()
                         ));
@@ -591,6 +596,7 @@ public class TemporaryMapper {
                         taskSampleParams.add(new TaskSampleFileParam(
                             paramInfo.id()
                             , paramInfo.name()
+                            , paramInfo.description()
                         ));
                         break;
                     default:

@@ -45,6 +45,7 @@ public class TaskSample {
     @Column(name = "launch_command_template")
     private String launchCommandTemplate;
 
+    // TODO надо проверить нужно ли оно мне ещё или нет
     @Transient
     private MultipartFile scriptFile;
 

@@ -47,6 +47,7 @@
                 <tr>
                     <th>Type</th>
                     <th>Name</th>
+                    <th>Description</th>
                     <th>Constraints</th>
                     <th></th>
                 </tr>
@@ -59,6 +60,9 @@
 
                     <td th:text="${paramInfo.type}"></td>
                     <td><input type="text" th:field="*{paramsInfo[__${i1.index}__].name}" /></td>
+                    <td>
+                        <textarea type="text" th:field="*{paramsInfo[__${i1.index}__].description}" style="height:40px;width:300px;resize:none"/>
+                    </td>
                     <td>
                         <div th:if="${paramInfo.type.name() == 'INTEGER'}" th:each="intConstraint, i2 : *{intConstraints}" style="display:inline">
                             <div th:if="${paramInfo.uuid == intConstraint.uuid}">

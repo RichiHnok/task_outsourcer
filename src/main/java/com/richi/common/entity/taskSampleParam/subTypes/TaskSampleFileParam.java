@@ -19,7 +19,8 @@ public class TaskSampleFileParam extends TaskSampleParam{
     public TaskSampleFileParam(
         Integer id
         , String paramName
+        , String description
     ) {
-        super(id, paramName, TaskSampleParamType.FILE);
+        super(id, paramName, TaskSampleParamType.FILE, description);
     }
 }

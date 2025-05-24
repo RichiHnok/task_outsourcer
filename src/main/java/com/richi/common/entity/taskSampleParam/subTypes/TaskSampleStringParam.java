@@ -24,10 +24,11 @@ public class TaskSampleStringParam extends TaskSampleParam{
     public TaskSampleStringParam(
         Integer id    
         , String paramName
+        , String description
         , String regExConstraint
         , String hintValue
     ){
-        super(id, paramName, TaskSampleParamType.STRING);
+        super(id, paramName, TaskSampleParamType.STRING, description);
         this.regExConstraint = regExConstraint;
         this.hintValue = hintValue;
     }

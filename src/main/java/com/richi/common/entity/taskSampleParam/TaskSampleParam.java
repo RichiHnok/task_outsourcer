@@ -29,6 +29,9 @@ public class TaskSampleParam {
     @Enumerated
     private TaskSampleParamType type;
 
+    @Column(name = "description")
+    private String description;
+
     public TaskSampleParam() {
     }
 
@@ -44,10 +47,12 @@ public class TaskSampleParam {
         Integer id
         , String name
         , TaskSampleParamType type
+        , String description
     ) {
         this.id = id;
         this.name = name;
         this.type = type;
+        this.description = description;
     }
 
     public Integer getId() {
@@ -72,6 +77,14 @@ public class TaskSampleParam {
 
     public void setType(TaskSampleParamType type) {
         this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

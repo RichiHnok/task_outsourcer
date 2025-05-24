@@ -13,6 +13,7 @@ import com.richi.web_part.validation.launchingTask.CheckParamInput;
  * на корректность значения
  * @param name :{@code String} - имя параметра
  * @param type :{@code TaskSampleParamType} - тип параметра
+ * @param description :{@code String} - описание параметра
  * @param value :{@code Object} - значение параметра, с которым
  * будет запускаться выполнение задачи
  */
@@ -23,6 +24,7 @@ public record ParamValueInfo(
     , Integer taskSampleParamId
     , String name
     , TaskSampleParamType type
+    , String description
     , Object value
 ) {
     

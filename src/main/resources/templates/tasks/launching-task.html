@@ -21,6 +21,7 @@
             <input type="hidden" th:field="*{values[__${i1.index}__].taskSampleParamId}"/>
             <input type="hidden" th:field="*{values[__${i1.index}__].uuid}"/>
             <input type="hidden" th:field="*{values[__${i1.index}__].name}"/>
+            <input type="hidden" th:field="*{values[__${i1.index}__].description}"/>
             <input type="hidden" th:field="*{values[__${i1.index}__].type}"/>
             
             <input th:if="${paramMainInfo.type.name() == 'FILE'}" th:field="*{values[__${i1.index}__].value}" type="file"/>
@@ -28,6 +29,8 @@
             
             <span th:if="${#fields.hasErrors('values[' + i1.index + ']')}" th:errors="*{values[__${i1.index}__]}" style="color: red">Incorrect data</span>
             
+            <br>
+            <span th:text="*{values[__${i1.index}__].description}"></span>
             <br>
             
             <div th:if="${paramMainInfo.type.name() == 'INTEGER'}" th:each="intInfo, i2 : *{intAdditionalInfo}">
@@ -56,21 +59,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- <table>
-            <tr th:each="value, i1 : *{values}">
-                <td><span th:text="|${value.paramName}: |"></span></td>
-                <td>
-                    <input type="hidden" th:field="*{values[__${i1.index}__].taskSampleParamId}"/>
-                    <input type="hidden" th:field="*{values[__${i1.index}__].paramName}"/>
-                    <input type="hidden" th:field="*{values[__${i1.index}__].paramType}"/>
-                    <input th:if="${value.paramType.name() == 'FILE'}" th:field="*{values[__${i1.index}__].value}" type="file"/>
-                    <input th:unless="${value.paramType.name() == 'FILE'}" th:field="*{values[__${i1.index}__].value}" type="text"/>
-                    
-                    <span th:if="${#fields.hasErrors('values[' + i1.index + ']')}" th:errors="*{values[__${i1.index}__]}" style="color: red">Incorrect data</span>
-                </td>
-            </tr>
-        </table> -->
         
         <br>
         <input type="submit" th:value="#{btn.start}"/>

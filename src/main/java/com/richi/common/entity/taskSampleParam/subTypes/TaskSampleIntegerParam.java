@@ -21,10 +21,11 @@ public class TaskSampleIntegerParam extends TaskSampleParam{
     public TaskSampleIntegerParam(
         Integer id
         , String name
+        , String description
         , Long min
         , Long max
     ) {
-        super(id, name, TaskSampleParamType.INTEGER);
+        super(id, name, TaskSampleParamType.INTEGER, description);
         this.min = min;
         this.max = max;
     }

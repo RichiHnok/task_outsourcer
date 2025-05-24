@@ -47,6 +47,7 @@ public class TaskToProc {
     @Column(name = "params")
     private String taskParamsJson;
 
+    //TODO надо подумать надо ли мне это поле всё ещё
     @Transient
     private List<TaskToProcParam> taskParams;
 
