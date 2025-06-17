@@ -54,7 +54,7 @@ public class LaunchingTasksController {
 
     @RequestMapping("/tasks")
     public String choosingTask(Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception{
-        model.addAttribute("serverTime", new Date());
+        model.addAttribute("serverTime", new Date()); //TODO Убрать этот serverTime
         model.addAttribute("taskSamples", taskSampleService.getAllTaskSamples());
         return "tasks/choosing-task";
     }

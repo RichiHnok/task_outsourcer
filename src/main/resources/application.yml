@@ -12,7 +12,7 @@ spring:
     datasource:
         url: jdbc:mysql://localhost:3306/my_db?useSSL=false&serverTimezone=UTC
         username: bestuser
-        password: bestuser
+        password: OE&r5nk4
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         hibernate:
